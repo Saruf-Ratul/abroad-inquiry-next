@@ -1,0 +1,161 @@
+{
+  "services": [
+    {
+      "category": "Free Counseling",
+      "description": "Our free counseling services offer personalized guidance to help you start your journey to study abroad. We assess your profile and provide tailored advice on university and country selection to ensure a smooth and successful application process.",
+      "services": [
+        {
+          "id": 1,
+          "title": "Profile Assessment",
+          "description": "Profile assessment is the first procedure for studying abroad. In our free counseling, we first review the candidate’s profile. We evaluate the candidates' profiles and suggest suitable universities according to their profiles. Candidates can also choose their preferred universities. We recommend the universities with high acceptance rates. If anything lacks in the candidates’ profile, we strongly recommend them to fulfill that one.",
+          "icon": "mdi:account-search",
+          "image": "https://example.com/images/profile_assessment.jpg"
+        },
+        {
+          "id": 2,
+          "title": "Country Selection & Overall Idea",
+          "description": "Not all countries are alike. Some have working hour restrictions; some have spouse restrictions, some have high living expenses and many more. We inquire about the candidates' motives and what they are looking for. Based on their profiles and motives, we help them choose a perfect country for studying abroad. Moreover, we help our candidates work with two or more countries if they want to do so.",
+          "icon": "mdi:earth",
+          "image": "https://example.com/images/country_selection.jpg"
+        }
+      ]
+    },
+    {
+      "category": "Admission",
+      "description": "Our comprehensive admission services cover every aspect of your application process. From document arrangement to university applications, we ensure that every detail is meticulously handled for a successful admission.",
+      "services": [
+        {
+          "id": 3,
+          "title": "Documents Arrangement",
+          "description": "We, Abroad Inquiry, firstly take all academic certificates and transcripts, Passport copies, IELTS certificates, one passport-size photo, two Recommendation letters (for master’s mainly), a Job experience letter (if needed), and any additional necessary documents. Then, we make a European-standard CV for the candidate. We arrange all the documents professionally according to how the Universities want them.",
+          "icon": "mdi:file-document-outline",
+          "image": "https://example.com/images/documents_arrangement.jpg"
+        },
+        {
+          "id": 4,
+          "title": "Motivation Letter",
+          "description": "Motivation letter is one of the essential factors to get an offer letter. We have expert SOP writers who work all day long for the motivation letter. At the very beginning, we send a motivation guideline to the students and guide them regarding the motivation letter. We also provide samples to the candidates for reference. When they send us the draft file, our experts work on that motivation letter to finalize it and make it a standard one.",
+          "icon": "mdi:letter",
+          "image": "https://example.com/images/motivation_letter.jpg"
+        },
+        {
+          "id": 5,
+          "title": "University Application",
+          "description": "When all the documents, CVs, and motivation letters are ready, we will consult  the candidates and choose the universities for the students. Universities are selected based on both parties' concerns. Before applying to the universities, we check out their academic requirements. If everything matches appropriately, we will apply for the students on their behalf.",
+          "icon": "mdi:school",
+          "image": "https://example.com/images/university_application.jpg"
+        },
+        {
+          "id": 6,
+          "title": "Interview Guidelines",
+          "description": "After successfully submitting all the documents, if the university thinks they are proper and match the admission requirements, they arrange an interview for the students. We guide the students regarding the interview, such as what questions they will ask them during the interview. We make all the arrangements so students can prepare for the interview and pass it successfully.",
+          "icon": "mdi:microphone",
+          "image": "https://example.com/images/interview_guidelines.jpg"
+        },
+        {
+          "id": 7,
+          "title": "Exam & Assignment Related Supports",
+          "description": "In some countries, like Finland, entrance exams and assignments are required instead of interviews for assessment. We help our candidates while they are attending the entrance exam in Finland. Moreover, in many countries, universities ask for assignments to assess the candidate. We, on behalf of the students, complete these assignments and successfully complete the phase.",
+          "icon": "mdi:book-open-outline",
+          "image": "https://example.com/images/exam_assignment_support.jpg"
+        },
+        {
+          "id": 8,
+          "title": "Maintenance of Communication with Universities",
+          "description": "Maintaining communications with the universities is a crucial part of admission. We, on behalf of students, always maintain communication with the universities. For example, if we have any confusion, we mail it to the universities directly. Moreover, if students cannot pay their tuition fees on time, we contact the university to extend the date.",
+          "icon": "mdi:email-outline",
+          "image": "https://example.com/images/communication_with_universities.jpg"
+        },
+        {
+          "id": 9,
+          "title": "Scholarship Application",
+          "description": "Most of the students look for scholarship as the tuition fee used to be high. Almost all the universities provide scholarship depending on the previous academic background. So, we help students to apply for the scholarship. There are some criteria for getting scholarship. If there’s anything lack in student’s profile, we recommend them to complete those so. There are different scholarships in terms of Countries such as Holland scholarship, OKEP scholarship, Erasmus Mundus scholarship in Netherlands. There are many more scholarship which are given to the students depending on their merits. These scholarships are given based on the student’s profile, Such as academic background, IELTS score, Publications, and job experiences.",
+          "icon": "mdi:cash-multiple",
+          "image": "https://example.com/images/scholarship_application.jpg"
+        },
+        {
+          "id": 10,
+          "title": "Tuition Fee Payment Support",
+          "description": "These days, students usually encounter a common complication when transmitting tuition fees. For instance, there is a lack of information regarding which banks open student files and which banks have a low euro/ dollar rate. We consult students about the information above, which generally helps them choose the right bank at the right time. Thus, our registered students can save some money in their pockets. Furthermore, we assist our candidates in buying the insurance required for visa processing.",
+          "icon": "mdi:bank",
+          "image": "https://example.com/images/tuition_fee_support.jpg"
+        }
+      ]
+    },
+    {
+      "category": "Visa Service",
+      "description": "Navigating the visa process can be complex. Our visa services provide comprehensive support, from document arrangement to interview preparation, ensuring you meet all requirements and deadlines for a smooth visa application.",
+      "services": [
+        {
+          "id": 11,
+          "title": "Visa-related Documents Arrangement",
+          "description": "To process the visa, there’s a need for different documents. We support our candidates in arranging all the documents. There’re some documents students cannot manage, and we assist to manage those documents. As example, we help to ready financial declaration document, bank related documents, and many more which are needed to process visa.",
+          "icon": "mdi:passport",
+          "image": "https://example.com/images/visa_documents_arrangement.jpg"
+        },
+        {
+          "id": 12,
+          "title": "Documents Legalization Support",
+          "description": "In some countries, you must legalize all your academic documents before processing your visa. We, Abroad Inquiry, help students legalize their educational documents from the Education Board, Education Ministry, Foreign Ministry, and consulate. Abroad Inquiry also helps candidates get a Police Clearance certificate for their needs. We can complete this task on behalf of the students so that they don’t need to hassle while processing their visas. Bangladeshi nationals live abroad and may not have the time or ability to come to Bangladesh to legalize their documents. In that case, we work hard to complete legalization on their behalf. Additionally, explain to students the documents they must review to complete this task independently. Thus, students do not need to worry about their documents being legalized. However, in this process, candidates must pay the standard legalization fees; for example, the Belgian consulate charges 20 Euros equivalent for each document while attesting documents from the consulate. Moreover, students used to feel tense throughout the process, and we would like to complete the process with a smooth transaction. However, we are here to make you relaxed and do that for you.",
+          "icon": "mdi:file-check-outline",
+          "image": "https://example.com/images/documents_legalization.jpg"
+        },
+        {
+          "id": 13,
+          "title": "VFS Appointment",
+          "description": "In most countries, you have to make a VFS/Embassy appointment to see the embassy. Students face a lot of trouble when making appointments. Without making a VFS appointment, students cannot get their visas. There’s a fee for the appointment; in some countries, there is no need for that. Students must make this payment, and we will make the VFS appointment.",
+          "icon": "mdi:calendar-check",
+          "image": "https://example.com/images/vfs_appointment.jpg"
+        },
+        {
+          "id": 14,
+          "title": "Indian Visa-related Support",
+          "description": "When a student is going to study in Belgium or Finland, they need to visit India to face the embassy. Because there’s no embassy of Finland and Belgium in Bangladesh. Most of the students are facing trouble getting an Indian visa. A small amount is needed to apply for an Indian visa. Students must pay us this amount, and we will apply for an Indian passport. It can be a double entry or tourist visa. When they need to submit different documents to the IVAC center, we provide the documents that should be forwarded to the IVAC. That’s how we help our candidates to get Indian visas.",
+          "icon": "mdi:airplane-takeoff",
+          "image": "https://example.com/images/indian_visa_support.jpg"
+        },
+        {
+          "id": 15,
+          "title": "Sponsor Related Guidelines",
+          "description": "In most countries except Belgium, Netherlands, and Denmark, students need to show sponsors to afford their accommodation fees. For example, students must show around 10 lac BDT for Finland in their bank statements. Some countries accept second blood, and some accept first blood. So, many sponsor-related documents needed to be shown along with the bank statement. Some students face problems regarding their sponsor. We help them arrange all the sponsor-related documents; if anything is missing, we guide them in preparing them.",
+          "icon": "mdi:account-group",
+          "image": "https://example.com/images/sponsor_guidelines.jpg"
+        },
+        {
+          "id": 16,
+          "title": "Embassy Interview Guideline",
+          "description": "Every student needs to face the embassy. An interview is conducted by the embassy. Students feel nervous regarding this embassy appointment. In this segment, we support our candidates through our experience. We guide our students about the interview by letting them know related questions. While facing the Belgian embassy, students must complete a questionnaire. The majority of the students mess up at this stage. We make our candidates prepared for this. We give them the questionnaire first and then make them practice it at home. So, it helps them when they fill out the questionnaire at the embassy.",
+          "icon": "mdi:comment-question-outline",
+          "image": "https://example.com/images/embassy_interview_guideline.jpg"
+        },
+        {
+          "id": 17,
+          "title": "Spouse/Dependent Visa & Tourist Visa",
+          "description": "Apart from the student visa, we also help the candidates by supporting them in getting their dependent visa and tourist visa. Some students want to go abroad with their spouses and other dependents. When a student with dependents gets their offer letter, we apply for the visa both for the candidate and his spouse. Furthermore, we work for the tourist visa as well. There are some criteria for a tourist visa. We let our candidates know about the documents checklist, and by managing those, they can apply for a tourist visa.",
+          "icon": "mdi:family-tree",
+          "image": "https://example.com/images/spouse_dependent_visa.jpg"
+        }
+      ]
+    },
+    {
+      "category": "After Visa Service",
+      "description": "Our after-visa services ensure you are fully prepared for your journey and stay abroad. From air ticket booking to post-arrival support, we provide comprehensive assistance to help you settle in smoothly.",
+      "services": [
+        {
+          "id": 18,
+          "title": "Air Ticket Support",
+          "description": "At Abroad Tickets, we are committed to providing customers with a seamless travel booking experience. Our user-friendly interface and powerful search engines scan hundreds of airlines worldwide. This ensures you quickly find the cheapest fares, shortest travel times, and preferred airlines. Our platform allows you to filter and sort results according to your preferences, making the booking process quick and straightforward. Whether seeking the best deal or the most convenient schedule, our advanced tools ensure you get exactly what you need. To better understand and cater to your unique needs, our dedicated team is always ready to assist. We offer personalized support over the phone and in physical settings, ensuring you have all the help you need throughout your booking journey.",
+          "icon": "mdi:airplane",
+          "image": "https://example.com/images/air_ticket_support.jpg"
+        },
+        {
+          "id": 19,
+          "title": "Other Services",
+          "description": "We, Abroad Inquiry, always endeavor to build a strong relationship with our clients through our services. We not only help our students get visas but also feel a responsibility to support them after getting a visa, including booking tickets, finding accommodation, opening bank accounts abroad, and providing job and PR guidelines. Even if we are asked to receive any candidates at the airport after their arrival, we do that with utter happiness as they are a part of our Abroad Inquiry family.",
+          "icon": "mdi:hand-heart-outline",
+          "image": "https://example.com/images/other_services.jpg"
+        }
+      ]
+    }
+  ]
+}
