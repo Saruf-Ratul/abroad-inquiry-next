@@ -30,7 +30,12 @@ export default function ChatMessageInput({
   conversations,
   setLastMessage,
 }) {
-  const socket = io();
+ 
+  const socket = io("https://realtime.abroadinquiry.com:2096", {
+    path: "/socket.io",       
+    secure: true,             
+  });
+
   const fileInputRef = useRef(null);
   const [message, setMessage] = useState("");
   const [cloudinaryMessage, setCloudinaryMessage] = useState("");
@@ -58,6 +63,9 @@ export default function ChatMessageInput({
       });
     });
   }, [conversations, chatmessages]);
+
+
+
 
   //================ Creating voice ====================//
 
@@ -144,7 +152,7 @@ export default function ChatMessageInput({
 
   //================ Calling handle Send Message when voice and image url get ====================//
   useEffect(() => {
-    if (cloudinaryMessage?.includes("http://res.cloudinary.com")) {
+    if (cloudinaryMessage?.includes("res.cloudinary.com")) {
       handleSend();
     }
   }, [cloudinaryMessage]);

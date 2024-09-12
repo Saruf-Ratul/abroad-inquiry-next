@@ -77,7 +77,6 @@ export const AddacceptOrDenyAppointment = createAsyncThunk(
 export const AddcompleteAnAppointment = createAsyncThunk(
   "completeAnAppointment/AddcompleteAnAppointment",
   async (data) => {
-    console.log("data:",data);
     const response = await completeAnAppointment(data);
     return response;
   }

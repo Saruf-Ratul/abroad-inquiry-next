@@ -1,10 +1,13 @@
+"use client"
 import { Box, Card, Container, Typography } from '@mui/material'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 
 function Disclaimer() {
+    const router = useRouter();
     return (
-        <div style={{marginTop:"120px"}}>
+        <div style={{marginTop:"150px"}}>
             <Container maxWidth="lg" >
                 <Card sx={{px:8 ,mt:8}}>
                 <Box margin="auto" textAlign="center" py={5}>
@@ -25,10 +28,9 @@ function Disclaimer() {
                          about various countries through the website/app is not entirely accurate. Therefore, Abroad Inquiry 
                          advises the applicants to check the information from the relevant website. Last but not least,
                           before aspirants apply through Abroad Inquiry, candidates are strongly advised to double-check
-                           our refund policy, privacy policy & terms, and conditions.
+                           our <span style={{color:"red",fontWeight:"bold"}} onClick={()=>router.push("/refund-policy")}>refund policy</span>, <span style={{color:"red",fontWeight:"bold"}} onClick={()=>router.push("/privacy-policy")}>privacy policy</span> & <span style={{color:"red",fontWeight:"bold"}} onClick={()=>router.push("/terms-and-conditions")}>terms and conditions</span>.
                         <br />
-                        If aspirants have any questions regarding the refund policy, service charge
-                         policy, privacy policy, and term conditions, do not hesitate to contact us.
+                        If aspirants have any questions regarding the <span style={{color:"red",fontWeight:"bold"}} onClick={()=>router.push("/refund-policy")}>refund policy</span>, <span style={{color:"red",fontWeight:"bold"}} onClick={()=>router.push("/privacy-policy")}>privacy policy</span> & <span style={{color:"red",fontWeight:"bold"}} onClick={()=>router.push("/terms-and-conditions")}>terms and conditions</span>. do not hesitate to contact us.
                     </Typography>
                 </Box>
                 </Card>

@@ -55,7 +55,7 @@ const BlogPostDetails = () => {
           <Box sx={{ width: matchSm ? "70%" : "100%", marginRight: matchSm ? 2 : 0 }}>
             <NewsfeedDetails blogDetails={blogDetails} />
           </Box>
-          <Box sx={{ width: matchSm ? "30%" : "100%", marginTop: matchSm ? 0 : 2 }}>
+          <Box sx={{ width: matchSm ? "30%" : "100%",}}>
             <NewsfeedFacebookPost />
           </Box>
         </Container>

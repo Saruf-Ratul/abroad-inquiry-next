@@ -43,14 +43,14 @@ const steps = [
     id: 5,
     title: "Exam & Assignment related supports",
     description:
-      "In some countries, like Finland, entrance exams and assignments are required instead of interviews for assessment. We help our candidates before they are attending the entrance exam in Finland. Moreover, in many countries, universities ask for assignments to assess the candidate. We assist our students to complete their assignments and successfully pass the phase",
+      "In some countries, like Finland, entrance exams and assignments are required instead of interviews for assessment. We help our candidates before they are attending the entrance exam in Finland. Moreover, in many countries, universities ask for assignments to assess the candidate. We assist our students to complete their assignments and successfully pass the phase.",
     icon: "healthicons:i-exam-multiple-choice-outline",
   },
   {
     id: 6,
     title: "Maintenance of communication with Universities",
     description:
-      "Maintaining communications with the universities is a crucial part of admission. We, on behalf of students, always maintain communication with the universities. For example, if we have any confusion, we mail it to the universities directly. Moreover,, if students cannot pay their tuition fees on time, we contact the university to extend the date.",
+      "Maintaining communications with the universities is a crucial part of admission. We, on behalf of students, always maintain communication with the universities. For example, if we have any confusion, we mail it to the universities directly. Moreover, if students cannot pay their tuition fees on time, we contact the university to extend the date.",
     icon: "carbon:license-maintenance",
   },
   {

@@ -1,5 +1,5 @@
 "use client";
-import Iconify from "@/components/Iconify";
+import NextLink from "next/link";
 import TextMaxLine from "@/components/TextMaxLine";
 import { MotionContainer } from "@/components/animate";
 import AnimatedComponent from "@/components/animate/AnimatedComponent";
@@ -9,8 +9,9 @@ import {
   CardContent,
   Container,
   Grid,
+  Link,
   Paper,
-  Typography,
+  Typography
 } from "@mui/material";
 import React, { useState } from "react";
 import {
@@ -21,12 +22,14 @@ import {
   OnlineGuidanceRootStyle,
   OverlayStyle,
 } from "./style";
-import service1 from "@/public/assets/images/img/service-img-1.webp"
-import service2 from "@/public/assets/images/img/service-img-2.webp"
+import service1 from "@/public/assets/images/img/service-img-1.webp";
+import service2 from "@/public/assets/images/img/service-img-2.webp";
+import { useRouter } from "next/navigation";
 
-function ServiceCard({ service }) {
-  const { label, image, description } = service;
+export default function AfterVisaServices() {
+  const router = useRouter();
   const [showDescription, setShowDescription] = useState(false);
+  const [showTicket, setShowTicket] = useState(false);
 
   const handleMouseEnter = () => {
     setShowDescription(true);
@@ -36,54 +39,15 @@ function ServiceCard({ service }) {
     setShowDescription(false);
   };
 
-  return (
-    <CounselingCard
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <MuiImage src={image.src} sx={{ height: 420,borderRadius:"5px" }} />
-      <MuiCardContent className={`content ${showDescription ? "hidden" : ""}`}>
-        <TextMaxLine color="secondary" variant="h4" line={1} persistent>
-          {label}
-        </TextMaxLine>
-        <TextMaxLine variant="subtitle2" line={2} sx={{ mb: 2 }} persistent>
-          {description}
-        </TextMaxLine>
-        <Button color="secondary" variant="outlined">
-          See More
-        </Button>
-      </MuiCardContent>
-      <FullDescription
-        className={`full-description ${showDescription ? "visible" : ""}`}
-      >
-        <Typography color="secondary" variant="h4">
-          {label}
-        </Typography>
-        <Typography textAlign="justify" variant="subtitle1">
-          {description}
-        </Typography>
-        
-      </FullDescription>
-      <OverlayStyle className="overlay" />
-    </CounselingCard>
-  );
-}
+  const handleMouseEnterTicket = () => {
+    setShowTicket(true);
+  };
 
-export default function AfterVisaServices() {
-  const services = [
-    {
-      label: "Air Ticket Support",
-      description:
-        "At Abroad Tickets, we are committed to providing customers with a seamless travel booking experience. Our user-friendly interface and powerful search engines scan hundreds of airlines worldwide. This ensures you quickly find the cheapest fares, shortest travel times, and preferred airlines. Our platform allows you to filter and sort results according to your preferences, making the booking process quick and straightforward. Whether seeking the best deal or the most convenient schedule, our advanced tools ensure you get exactly what you need. To better understand and cater to your unique needs, our dedicated team is always ready to assist. We offer personalized support over the phone and in physical settings, ensuring you have all the help you need throughout your booking journey.",
-      image:service1
-    },
-    {
-      label: "Other Services",
-      description:
-        "We, Abroad Inquiry, always endeavor to build a strong relationship with our clients through our services. We not only help our students get visas but also feel a responsibility to support them after getting a visa, including booking tickets, finding accommodation, opening bank accounts abroad, and providing job and PR guidelines. Even if we are asked to receive any candidates at the airport after their arrival, we do that with utter happiness as they are a part of our Abroad Inquiry family.",
-      image:service2
-    },
-  ];
+  const handleMouseLeaveTicket = () => {
+    setShowTicket(false);
+  };
+
+  
 
   return (
     <OnlineGuidanceRootStyle sx={{ position: "relative" }}>
@@ -119,15 +83,160 @@ export default function AfterVisaServices() {
               </Typography>
             </AnimatedComponent>
           </Grid>
-          <Grid item xs={12} md={12}>
-            <Grid container spacing={3}>
-              {services.map((service, idx) => (
-                <Grid item xs={12} md={6} key={idx}>
-                  <AnimatedComponent animationType="inUp">
-                    <ServiceCard service={service} />
-                  </AnimatedComponent>
-                </Grid>
-              ))}
+          <Grid
+            item
+            xs={12}
+            md={12}
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
+            <Grid  xs={6} md={6} sx={{mr:2}} >
+            <Link
+                  href="https://abroadtickets.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+              <AnimatedComponent animationType="inUp">
+                <CounselingCard
+                  onMouseEnter={handleMouseEnterTicket}
+                  onMouseLeave={handleMouseLeaveTicket}
+                >
+                  <MuiImage
+                    src={service1.src}
+                    sx={{ height: 420, borderRadius: "5px" }}
+                  />
+                  <MuiCardContent
+                    className={`content ${showTicket ? "hidden" : ""}`}
+                  >
+                    <TextMaxLine
+                      color="secondary"
+                      variant="h4"
+                      line={1}
+                      persistent
+                    >
+                      Air Ticket Support
+                    </TextMaxLine>
+                    <TextMaxLine
+                      variant="subtitle2"
+                      line={2}
+                      sx={{ mb: 2 }}
+                      persistent
+                    >
+                      At Abroad Tickets, we are committed to providing customers
+                      with a seamless travel booking experience. Our
+                      user-friendly interface and powerful search engines scan
+                      hundreds of airlines worldwide. This ensures you quickly
+                      find the cheapest fares, shortest travel times, and
+                      preferred airlines. Our platform allows you to filter and
+                      sort results according to your preferences, making the
+                      booking process quick and straightforward. Whether seeking
+                      the best deal or the most convenient schedule, our
+                      advanced tools ensure you get exactly what you need. To
+                      better understand and cater to your unique needs, our
+                      dedicated team is always ready to assist. We offer
+                      personalized support over the phone and in physical
+                      settings, ensuring you have all the help you need
+                      throughout your booking journey. Book Ticket 
+                    </TextMaxLine>
+                    <Button color="secondary" variant="outlined">
+                      See More
+                    </Button>
+                  </MuiCardContent>
+                  <FullDescription
+                    className={`full-description ${
+                      showTicket ? "visible" : ""
+                    }`}
+                  >
+                    <Typography color="secondary" variant="h4">
+                      Air Ticket Support
+                    </Typography>
+                    <Typography textAlign="justify" variant="subtitle1">
+                      At Abroad Tickets, we are committed to providing customers
+                      with a seamless travel booking experience. Our
+                      user-friendly interface and powerful search engines scan
+                      hundreds of airlines worldwide. This ensures you quickly
+                      find the cheapest fares, shortest travel times, and
+                      preferred airlines. Our platform allows you to filter and
+                      sort results according to your preferences, making the
+                      booking process quick and straightforward. Whether seeking
+                      the best deal or the most convenient schedule, our
+                      advanced tools ensure you get exactly what you need. To
+                      better understand and cater to your unique needs, our
+                      dedicated team is always ready to assist. We offer
+                      personalized support over the phone and in physical
+                      settings, ensuring you have all the help you need
+                      throughout your booking journey. <span style={{color:"red"}}>Book Ticket </span>
+                    </Typography>
+                  </FullDescription>
+                  <OverlayStyle className="overlay" />
+                </CounselingCard>
+              </AnimatedComponent>
+              </Link>
+            </Grid>
+
+            <Grid xs={6} md={6}>
+              <AnimatedComponent animationType="inUp">
+                <CounselingCard
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <MuiImage
+                    src={service2.src}
+                    sx={{ height: 420, borderRadius: "5px" }}
+                  />
+                  <MuiCardContent
+                    className={`content ${showDescription ? "hidden" : ""}`}
+                  >
+                    <TextMaxLine
+                      color="secondary"
+                      variant="h4"
+                      line={1}
+                      persistent
+                    >
+                      Other Services
+                    </TextMaxLine>
+                    <TextMaxLine
+                      variant="subtitle2"
+                      line={2}
+                      sx={{ mb: 2 }}
+                      persistent
+                    >
+                      We, Abroad Inquiry, always endeavor to build a strong
+                      relationship with our clients through our services. We not
+                      only help our students get visas but also feel a
+                      responsibility to support them after getting a visa,
+                      including booking tickets, finding accommodation, opening
+                      bank accounts abroad, and providing job and PR guidelines.
+                      Even if we are asked to receive any candidates at the
+                      airport after their arrival, we do that with utter
+                      happiness as they are a part of our Abroad Inquiry family.
+                    </TextMaxLine>
+                    <Button color="secondary" variant="outlined">
+                      See More
+                    </Button>
+                  </MuiCardContent>
+                  <FullDescription
+                    className={`full-description ${
+                      showDescription ? "visible" : ""
+                    }`}
+                  >
+                    <Typography color="secondary" variant="h4">
+                      Other Services
+                    </Typography>
+                    <Typography textAlign="justify" variant="subtitle1">
+                      We, Abroad Inquiry, always endeavor to build a strong
+                      relationship with our clients through our services. We not
+                      only help our students get visas but also feel a
+                      responsibility to support them after getting a visa,
+                      including booking tickets, finding accommodation, opening
+                      bank accounts abroad, and providing job and PR guidelines.
+                      Even if we are asked to receive any candidates at the
+                      airport after their arrival, we do that with utter
+                      happiness as they are a part of our Abroad Inquiry family.
+                    </Typography>
+                  </FullDescription>
+                  <OverlayStyle className="overlay" />
+                </CounselingCard>
+              </AnimatedComponent>
             </Grid>
           </Grid>
         </Grid>

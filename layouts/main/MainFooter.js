@@ -55,6 +55,8 @@ const LINKS = [
       {
         href: "https://forms.swisscare.com/#/isie?icd=3049",
         name: "Swisscare",
+        target: "_blank",  // Ensures the link opens in a new tab
+        rel: "noreferrer",  // Adds security for opening a new tab
       },
       { href: "/office-visit-student", name: "Office Visit Form" },
     ],
@@ -158,6 +160,7 @@ export default function MainFooter() {
                     key={link.name}
                     href={link.href}
                     component={NextLink}
+                    target={link.target}
                     color="inherit"
                     variant="body2"
                     sx={{ display: "block" }}

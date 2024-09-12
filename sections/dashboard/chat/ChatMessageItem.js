@@ -78,7 +78,6 @@ export default function ChatMessageItem({ message, loading, conversationKey }) {
                 ? `${BASE_URL}/${profileDeatails?.mentorProfilePic}`
                 : `${BASE_URL}/${studentProfileView?.studentProfilePic}`
             }
-            alt={userInfo?.name}
             sx={{ width: 36, height: 36, mt: 1 }}
           />
 
@@ -92,7 +91,7 @@ export default function ChatMessageItem({ message, loading, conversationKey }) {
               }}
             >
               {message?.text.includes(
-                "http://res.cloudinary.com/dktbmmmym/image/upload"
+                "res.cloudinary.com/dktbmmmym/image/upload"
               ) ? (
                 <MessageImgStyle>
                   <Image
@@ -107,7 +106,7 @@ export default function ChatMessageItem({ message, loading, conversationKey }) {
                   />
                 </MessageImgStyle>
               ) : message?.text.includes(
-                  "http://res.cloudinary.com/dktbmmmym/video/upload"
+                  "res.cloudinary.com/dktbmmmym/video/upload"
                 ) ? (
                 <audio controls autoplay muted>
                   <source
@@ -121,7 +120,7 @@ export default function ChatMessageItem({ message, loading, conversationKey }) {
                 </audio>
               ) : (
                 <Typography
-                  variant="subtitle2"
+                  variant="body2"
                   style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
                 >
                   {isJsonString(message?.text)

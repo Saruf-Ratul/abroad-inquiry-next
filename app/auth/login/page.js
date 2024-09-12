@@ -19,7 +19,6 @@ import { LoginForm } from "@/sections/auth/login";
 import { m } from "framer-motion";
 import wave from "../../../public/assets/images/others/wave.png";
 import login from "../../../public/assets/images/others/login.png";
-import loginBanner from "../../../public/assets/images/others/bg.svg";
 import AuthHeader from "@/layouts/auth/MainHeader";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -43,10 +42,7 @@ const SectionStyle = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   alignItems: "center",
   padding: theme.spacing(0, 8),
-  backgroundImage: `url(${loginBanner.src})`,
-  backgroundSize: "contain",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
+
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
@@ -85,8 +81,9 @@ export default function LoginPage() {
             left: 0,
             marginTop: "120px",
             height: "85%",
-            width: "56%",
+            width: "50%",
             zIndex: -1,
+            opacity: 0.6,
           }}
           alt="wave"
         />
@@ -133,6 +130,7 @@ export default function LoginPage() {
                       sx={{
                         mx: "auto",
                         maxWidth: 630,
+                        fontWeight:"bold"
                         // color: "common.white",
                       }}
                     >

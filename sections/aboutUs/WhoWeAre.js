@@ -1,6 +1,6 @@
 "use client";
 import { MotionViewport, varFade } from "@/components/animate";
-import img2 from "@/public/assets/bannerImage/aboutUs-banner.webp";
+import img2 from "@/public/assets/bannerImage/about.png";
 import pattern from "@/public/assets/images/patterns/pattern-1.png";
 import { Container, Divider, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
