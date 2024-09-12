@@ -48,55 +48,55 @@ function NewsfeedDetails({ blogDetails }) {
     setAnchorEl(null);
   };
 
-  const handleCopyLink = () => {
-    const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
-    navigator.clipboard
-      .writeText(postLink)
-      .then(() => {
-        setSnackbarOpen({
-          ...snackbarOpen,
-          status: true,
-          severity: "success",
-          text: "The link has been copied to your clipboard",
-        });
-      })
-      .catch((err) => {
-        setSnackbarOpen({
-          ...snackbarOpen,
-          status: true,
-          severity: "error",
-          text: "Sorry! The link has not been copied to your clipboard",
-        });
-      });
-  };
+  // const handleCopyLink = () => {
+  //   const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
+  //   navigator.clipboard
+  //     .writeText(postLink)
+  //     .then(() => {
+  //       setSnackbarOpen({
+  //         ...snackbarOpen,
+  //         status: true,
+  //         severity: "success",
+  //         text: "The link has been copied to your clipboard",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       setSnackbarOpen({
+  //         ...snackbarOpen,
+  //         status: true,
+  //         severity: "error",
+  //         text: "Sorry! The link has not been copied to your clipboard",
+  //       });
+  //     });
+  // };
 
-  const handleShareFacebook = () => {
-    const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
-    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-      postLink
-    )}`;
-    window.open(facebookShareUrl, "_blank");
-  };
+  // const handleShareFacebook = () => {
+  //   const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
+  //   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+  //     postLink
+  //   )}`;
+  //   window.open(facebookShareUrl, "_blank");
+  // };
 
-  const handleShareTwitter = () => {
-    const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
-    const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-      postLink
-    )}`;
-    window.open(twitterShareUrl, "_blank");
-  };
+  // const handleShareTwitter = () => {
+  //   const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
+  //   const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+  //     postLink
+  //   )}`;
+  //   window.open(twitterShareUrl, "_blank");
+  // };
 
-  const handleShareLinkedin = () => {
-    const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
-    const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-      postLink
-    )}`;
-    window.open(linkedinShareUrl, "_blank");
-  };
+  // const handleShareLinkedin = () => {
+  //   const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
+  //   const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+  //     postLink
+  //   )}`;
+  //   window.open(linkedinShareUrl, "_blank");
+  // };
 
   return (
     <Container>
-      <Box my={5}>
+      <Box >
         <Card>
           <Box m={3}>
             {/* Author Info */}
@@ -161,7 +161,7 @@ function NewsfeedDetails({ blogDetails }) {
             />
 
             {/* Actions: Like, Comment, Share */}
-            <Box display="flex" alignItems="center" mt={3}>
+            {/* <Box display="flex" alignItems="center" mt={3}>
               <Button
                 size="small"
                 startIcon={
@@ -240,7 +240,7 @@ function NewsfeedDetails({ blogDetails }) {
                   Share on LinkedIn
                 </MenuItem>
               </Menu>
-            </Box>
+            </Box> */}
           </Box>
         </Card>
       </Box>

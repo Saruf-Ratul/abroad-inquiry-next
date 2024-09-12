@@ -16,6 +16,7 @@ import brackBank from "@/public/assets/images/others/brac.png";
 import premierBank from "@/public/assets/images/others/premier.png";
 import cityBank from "@/public/assets/images/others/cityBank.png";
 import Bkash from "@/public/assets/images/others/bkash.jpeg";
+import Bkash2 from "@/public/assets/images/others/bkash2.jpeg";
 import Nagod from "@/public/assets/images/others/nagad.png";
 import Iconify from "@/components/Iconify";
 import Image from "next/image";
@@ -25,6 +26,12 @@ const PaymentMethod = () => {
   const handlePayment = () => {
     window.open(
       "https://shop.bkash.com/abroad-tickets01911913660/paymentlink",
+      "_blank"
+    );
+  };
+  const handlePaymentBkash = () => {
+    window.open(
+      "https://shop.bkash.com/abroad-ticketsrm60417/paymentlink",
       "_blank"
     );
   };
@@ -359,7 +366,7 @@ const PaymentMethod = () => {
             style={{
               marginTop: "30px",
               display: "flex",
-              justifyContent: "flex-start",
+              justifyContent:"space-between",
               marginRight: matchesMd ? "20px" : "100px",
               flexWrap: "wrap",
             }}
@@ -444,6 +451,48 @@ const PaymentMethod = () => {
                     01711160462 (personal)
                   </Typography>
 
+                  <Typography
+                    variant="body2"
+                    style={{ color: "#2196F3", fontWeight: "bold" }}
+                  >
+                    Please write your name in the reference section.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+
+            <Card
+              sx={{
+                maxWidth: 345,
+                marginTop: matchesMd ? "20px" : "20px",
+                width: matchesMd ? "300px" : "auto",
+              }}
+            >
+              <CardActionArea>
+                <Image
+                  width={250}
+                  height={250}
+                  src={Bkash2}
+                  alt="brackBank"
+                  style={{
+                    marginLeft: matchesMd ? "30px" : "60px",
+                    marginTop: "20px",
+                    width: matchesMd ? "200px" : "200px",
+                  }}
+                />
+                <CardContent>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginBottom: 2,
+                    }}
+                  >
+                    <Button variant="contained" onClick={handlePaymentBkash}>
+                      Payment Link
+                    </Button>
+                  </Box>
                   <Typography
                     variant="body2"
                     style={{ color: "#2196F3", fontWeight: "bold" }}

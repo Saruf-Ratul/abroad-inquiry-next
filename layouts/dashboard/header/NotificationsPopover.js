@@ -14,11 +14,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-// utils
 import { fToNow } from "@/utils/formatTime";
-// _mock_
-
-// components
 import Iconify from "@/components/Iconify";
 import MenuPopover from "@/components/MenuPopover";
 import Scrollbar from "@/components/Scrollbar";

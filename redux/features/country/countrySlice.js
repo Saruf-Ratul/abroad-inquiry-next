@@ -16,6 +16,7 @@ export const countryCode = {
   Hungary: "hu",
   "South Korea": "kr",
   Australia: "au",
+  Switzerland: "ch",
 };
 const { createAsyncThunk, createSlice } = require("@reduxjs/toolkit");
 
@@ -24,6 +25,7 @@ const initialState = {
   loading: false,
   isError: false,
   error: "",
+  totalCountry: 0,
   countries: [],
   countryDetails:{},
   countriesMentors:[]
@@ -62,25 +64,37 @@ const countriesSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      //all countries 
+      // Handle fetching all countries
       .addCase(fetchCountries.pending, (state, action) => {
         state.loading = true;
         state.isError = false;
       })
       .addCase(fetchCountries.fulfilled, (state, action) => {
         state.loading = false;
-        state.countries = action.payload.country.map((c) => ({
-          ...c,
-          countryCode: countryCode[c.countryName],
-        }));
+        state.totalCountry = action.payload?.totalCountry;
+        
+        // If it's the first page, replace the existing data
+        if (action.meta.arg === 1) {
+          state.countries = action.payload.country.map((c) => ({
+            ...c,
+            countryCode: countryCode[c.countryName],
+          }));
+        } else {
+          // If it's not the first page, append the new data
+          const newCountries = action.payload.country.map((c) => ({
+            ...c,
+            countryCode: countryCode[c.countryName],
+          }));
+          state.countries = [...state.countries, ...newCountries];
+        }
       })
       .addCase(fetchCountries.rejected, (state, action) => {
         state.loading = false;
         state.isError = true;
         state.countries = [];
-        state.error = action.error?.payload;
+        state.error = action.error?.message;
       })
-      //country details
+      // Handle fetching country details
       .addCase(fetchCountryDetails.pending, (state, action) => {
         state.loading = true;
         state.isError = false;
@@ -93,9 +107,9 @@ const countriesSlice = createSlice({
         state.loading = false;
         state.isError = true;
         state.countryDetails = {};
-        state.error = action.error?.payload;
+        state.error = action.error?.message;
       })
-      // fetch mentor according country
+      // Handle fetching mentors according to country
       .addCase(fetchCountriesAccordingToMentors.pending, (state, action) => {
         state.loading = true;
         state.isError = false;
@@ -108,9 +122,10 @@ const countriesSlice = createSlice({
         state.loading = false;
         state.isError = true;
         state.countriesMentors = [];
-        state.error = action.error?.payload;
+        state.error = action.error?.message;
       });
   },
 });
 
 export default countriesSlice.reducer;
+

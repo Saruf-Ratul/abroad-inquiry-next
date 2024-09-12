@@ -1,3 +1,5 @@
+import BackToTop from "@/components/BackToTop";
+import SocialMediaSidebar from "@/components/SocialMediaSidebar";
 import AuthHeader from "@/layouts/auth/MainHeader";
 
 export const metadata = {
@@ -10,6 +12,8 @@ export default function RootLayout({ children }) {
     <>
       {/* <AuthHeader /> */}
       {children}
+      <SocialMediaSidebar />
+      <BackToTop />
     </>
   );
 }

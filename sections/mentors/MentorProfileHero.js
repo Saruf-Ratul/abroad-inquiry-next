@@ -15,6 +15,8 @@ import { MotionContainer, TextAnimate, varFade } from "@/components/animate";
 import useResponsive from "@/hooks/useResponsive";
 import MentorsBanner from "@/public/assets/bannerImage/mentorProfile.jpg";
 import { BASE_URL } from "@/utils/axios";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const RootStyle = styled("div")(({ theme }) => ({
   backgroundSize: "cover",
@@ -43,8 +45,10 @@ const ContentStyle = styled(Stack)(({ theme }) => ({
 
 
 export default function MentorProfileHero({ profileDeatails }) {
+  const router = useRouter();
   const theme = useTheme();
   const matchesSm = useMediaQuery("(max-width:600px)");
+  const token = Cookies.get("token");
 
   function formatPhoneNumber(phone) {
     if (!phone) return "Phone number not available";
@@ -58,6 +62,22 @@ export default function MentorProfileHero({ profileDeatails }) {
     const { dialCode, phoneNumber } = parsedPhone;
     return `${dialCode} ${phoneNumber}`;
   }
+
+  const handleMessageClick = (mentorId) => {
+    if (token) {
+      router.push(`/dashboard/chat/${mentorId}`);
+    } else {
+      router.push("/auth/login");
+    }
+  };
+
+  const handleAppointmentClick = (mentorId) => {
+    if (token) {
+      router.push(`/dashboard/appointmentBooking/${mentorId}`);
+    } else {
+      router.push("/auth/login");
+    }
+  };
 
   return (
     <RootStyle>
@@ -129,6 +149,7 @@ export default function MentorProfileHero({ profileDeatails }) {
               </Box>
 
               <Button
+                onClick={() => handleAppointmentClick(profileDeatails.id)}
                 size={matchesSm ? "small" : "medium"}
                 style={{ marginTop: 10, marginRight: 10 }}
                 variant="contained"
@@ -138,6 +159,7 @@ export default function MentorProfileHero({ profileDeatails }) {
               </Button>
 
               <Button
+                onClick={()=> handleMessageClick(profileDeatails.id)}
                 size={matchesSm ? "small" : "medium"}
                 style={{ marginTop: 10 }}
                 variant="outlined"

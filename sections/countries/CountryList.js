@@ -2,9 +2,12 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
   Container,
   Grid,
+  Pagination,
+  Stack,
   Typography,
   styled,
   useMediaQuery,
@@ -31,11 +34,15 @@ const OverlayStyle = styled("div")(({ theme }) => ({
 
 export default function CountryList() {
   const dispatch = useDispatch();
-  const { countries, loading } = useSelector((state) => state.countries);
+  const [page,setPage] = useState(1);
+  const { countries, loading,totalCountry } = useSelector((state) => state.countries);
 
   useEffect(() => {
-    dispatch(fetchCountries(1));
-  }, [dispatch]);
+    if(page){
+      dispatch(fetchCountries(page));
+    }
+  }, [dispatch,page]);
+
 
   return (
     <>
@@ -56,6 +63,17 @@ export default function CountryList() {
             </Grid>
           )}
         </Box>
+        <Stack alignItems="center" mt={2}>
+          <Button
+            variant="contained"
+            color="secondary"
+            size="large"
+            disabled={totalCountry === countries?.length}
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            Load More
+          </Button>
+        </Stack>
       </Container>
     </>
   );
@@ -64,7 +82,7 @@ export default function CountryList() {
 function CountryCard({ country }) {
   const router = useRouter();
   const [showDescription, setShowDescription] = useState(false);
-  const matchesMd = useMediaQuery((theme) => theme.breakpoints.down('md')); 
+  const matchesMd = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
   const handleMouseEnter = () => {
     !matchesMd && setShowDescription(true);
@@ -108,16 +126,16 @@ function CountryCard({ country }) {
           <Box
             sx={{
               position: "absolute",
-              top: -200, 
+              top: -200,
               width: "100%",
-              height: "30vh",
+              height: "35vh",
               backgroundColor: "rgba(0, 0, 0, 0.8)",
               color: "white",
               zIndex: 10,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
               padding: 2,
             }}
           >
@@ -130,9 +148,9 @@ function CountryCard({ country }) {
               Study in {country.countryName}
             </Typography>
             <Typography variant="caption" fontWeight={200} textAlign="justify">
-              {country.countryName} is a popular place for study.
-              International students can apply for bachelor, master’s,
-              doctoral and postdoctoral programs...
+              {country.countryName} is a popular place for study. International
+              students can apply for bachelor, master’s, doctoral and
+              postdoctoral programs...
               <Typography color="secondary" variant="h6" display="inline">
                 Read More
               </Typography>
@@ -147,4 +165,3 @@ function CountryCard({ country }) {
     </Card>
   );
 }
-

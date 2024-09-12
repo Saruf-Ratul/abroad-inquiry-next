@@ -1,7 +1,7 @@
 "use client";
 import { MotionViewport, varFade } from "@/components/animate";
 import Iconify from "@/components/Iconify";
-import img from "@/public/assets/bannerImage/mentors.webp";
+import img from "@/public/assets/bannerImage/support.png";
 import {
   Box,
   Container,

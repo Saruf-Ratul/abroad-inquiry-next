@@ -3,12 +3,13 @@
 import { createContext, useEffect, useState } from "react";
 // config
 import { onChangeSetting } from "@/utils/chageSetting";
-import { defaultSettings } from "../config";
+import { defaultSettings as appDefaultSettings } from "../config";
 
 // ----------------------------------------------------------------------
 
 const initialState = {
-  ...defaultSettings,
+  ...appDefaultSettings,
+  themeMode: "light",  // Ensure initial mode is light
   onChangeMode: () => {},
   onToggleMode: () => {},
   onResetSetting: () => {},
@@ -19,7 +20,10 @@ const SettingsContext = createContext(initialState);
 // ----------------------------------------------------------------------
 
 function SettingsProvider({ children, defaultSettings = {} }) {
-  const [settings, setSettings] = useSettingCookies(defaultSettings);
+  const [settings, setSettings] = useSettingCookies({
+    ...defaultSettings,
+    themeMode: "light", // Default to light mode if not set
+  });
 
   const onChangeMode = (event) => {
     setSettings({

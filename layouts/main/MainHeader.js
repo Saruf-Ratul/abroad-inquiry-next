@@ -12,6 +12,7 @@ import {
   ButtonBase,
   Container,
   Divider,
+  Link,
   List,
   ListItem,
   ListItemAvatar,
@@ -31,7 +32,6 @@ import SettingMode from "@/components/SettingMode";
 import { fetchUserInfo, logout } from "@/redux/features/auth/authSlice";
 import { PATH_AUTH, PATH_DASHBOARD } from "@/routes/paths";
 import { BASE_URL } from "@/utils/axios";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -172,7 +172,7 @@ export default function MainHeader() {
                         href={PATH_DASHBOARD.root}
                         style={{
                           textDecoration: "none",
-                          color: "orange",
+                          color: theme.palette.mode === "dark" ? "white" : "black",
                           fontWeight: "bold",
                         }}
                       >
@@ -219,7 +219,7 @@ export default function MainHeader() {
                           href={PATH_DASHBOARD.chat.root}
                           style={{
                             textDecoration: "none",
-                            color: "orange",
+                            color: theme.palette.mode === "dark" ? "white" : "black",
                             fontWeight: "bold",
                           }}
                         >
@@ -237,7 +237,16 @@ export default function MainHeader() {
                             />
                           </Badge>
                         </ListItemIcon>
+                        <Link
+                          href="/dashboard/notifications"
+                          style={{
+                            textDecoration: "none",
+                            color: theme.palette.mode === "dark" ? "white" : "black",
+                            fontWeight: "bold",
+                          }}
+                        >
                         <ListItemText primary="Notifications" />
+                        </Link>
                       </ListItemButton>
 
                       <ListItem>

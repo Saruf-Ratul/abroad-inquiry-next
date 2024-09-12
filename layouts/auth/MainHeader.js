@@ -46,8 +46,8 @@ export default function AuthHeader() {
               </Button>
             </Link>
 
-            <Link href="/auth/mentor/mentorSignup" style={{marginLeft:"5px"}}>
-              <Button variant="outlined" color="error">
+            <Link href="/auth/mentor/mentorApplication" style={{marginLeft:"5px"}}>
+              <Button variant="outlined" color="error" >
                  Become a mentor
               </Button>
             </Link>

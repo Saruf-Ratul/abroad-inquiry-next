@@ -40,7 +40,8 @@ export default function LoginForm() {
   const [checked, setChecked] = useState(false);
   const isMountedRef = useIsMountedRef();
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null); // Error state
+  const [error, setError] = useState(null); 
+  const [message,setMessage] = useState("");
 
   const token = Cookies.get("token");
 
@@ -81,6 +82,7 @@ export default function LoginForm() {
       router.push("/");
     } catch (err) {
       reset();
+      setMessage("Email and Password didn't match!")
       setError(err.message || "An error occurred during login.");
       if (isMountedRef.current) {
         setFormError("afterSubmit", { type: "manual", message: err.message });
@@ -141,213 +143,228 @@ export default function LoginForm() {
   };
 
   return (
-       <>
-          {error && (
-            <Box mb={2} mt={2}>
-              <Alert style={{ textAlign: "center" }} severity="error">
-                Email and Password didn't match!
-              </Alert>
-            </Box>
+    <>
+      {error && (
+        <Box mb={2} mt={2}>
+          <Alert style={{ textAlign: "center" }} severity="error">
+            Email and Password didn't match!
+          </Alert>
+        </Box>
+      )}
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={3}>
+          {!!errors.afterSubmit && (
+            <Alert severity="error">{errors.afterSubmit.message}</Alert>
           )}
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={3}>
-              {!!errors.afterSubmit && (
-                <Alert severity="error">{errors.afterSubmit.message}</Alert>
-              )}
 
-              <RHFTextField
-                name="email"
-                label="Email address"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Iconify icon={"tabler:mail"} width={24} height={24} />
-                    </InputAdornment>
-                  ),
-                  style: {
-                    width: "100%",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? theme.palette.background.paper
-                        : theme.palette.background.default,
-                    color:
-                      theme.palette.mode === "dark"
-                        ? theme.palette.text.primary
-                        : theme.palette.text.secondary,
-                  },
-                }}
-                FormHelperTextProps={{
-                  style: {
-                    color: theme.palette.mode === "dark" ? "white" : "black",
-                  },
-                }}
-                sx={{
-                  "& .MuiInputLabel-root": {
-                    "&.Mui-focused": {
-                      color:
-                        theme.palette.mode === "dark"
-                          ? "white"
-                          : theme.palette.primary.dark,
-                    },
-                  },
-                }}
-              />
+          <RHFTextField
+            name="email"
+            label="Email address"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Iconify icon={"tabler:mail"} width={24} height={24} />
+                </InputAdornment>
+              ),
+              style: {
+                width: "100%",
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.background.paper
+                    : theme.palette.background.default,
+                color:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.text.primary
+                    : theme.palette.text.secondary,
+              },
+            }}
+            FormHelperTextProps={{
+              style: {
+                color: theme.palette.mode === "dark" ? "white" : "black",
+              },
+            }}
+            sx={{
+              "& .MuiInputLabel-root": {
+                "&.Mui-focused": {
+                  color:
+                    theme.palette.mode === "dark"
+                      ? "white"
+                      : theme.palette.primary.dark,
+                },
+              },
+            }}
+          />
 
-              <RHFTextField
-                name="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Iconify
-                        icon={"mdi:lock-outline"}
-                        width={24}
-                        height={24}
-                      />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        <Iconify
-                          icon={
-                            showPassword ? "eva:eye-fill" : "eva:eye-off-fill"
-                          }
-                        />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                  style: {
-                    width: "100%",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? theme.palette.background.paper
-                        : theme.palette.background.default,
-                    color:
-                      theme.palette.mode === "dark"
-                        ? theme.palette.text.primary
-                        : theme.palette.text.secondary,
-                  },
-                }}
-                FormHelperTextProps={{
-                  style: {
-                    color: theme.palette.mode === "dark" ? "white" : "black",
-                  },
-                }}
-                sx={{
-                  "& .MuiInputLabel-root": {
-                    "&.Mui-focused": {
-                      color:
-                        theme.palette.mode === "dark"
-                          ? "white"
-                          : theme.palette.primary.dark,
-                    },
-                  },
-                }}
-              />
-            </Stack>
+          <RHFTextField
+            name="password"
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Iconify icon={"mdi:lock-outline"} width={24} height={24} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    <Iconify
+                      icon={showPassword ? "eva:eye-fill" : "eva:eye-off-fill"}
+                    />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: {
+                width: "100%",
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.background.paper
+                    : theme.palette.background.default,
+                color:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.text.primary
+                    : theme.palette.text.secondary,
+              },
+            }}
+            FormHelperTextProps={{
+              style: {
+                color: theme.palette.mode === "dark" ? "white" : "black",
+              },
+            }}
+            sx={{
+              "& .MuiInputLabel-root": {
+                "&.Mui-focused": {
+                  color:
+                    theme.palette.mode === "dark"
+                      ? "white"
+                      : theme.palette.primary.dark,
+                },
+              },
+            }}
+          />
+        </Stack>
 
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{ my: 2 }}
-            >
-              <FormControlLabel
-                name="checked"
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onClick={() => setChecked(!checked)}
-                    size="small"
-                    style={{ color: theme.palette.success.main }}
-                  />
-                }
-                label={<>Remember me</>}
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ my: 2 }}
+        >
+          <FormControlLabel
+            name="checked"
+            control={
+              <Checkbox
+                checked={checked}
+                onClick={() => setChecked(!checked)}
+                size="small"
+                style={{ color: theme.palette.success.main }}
               />
-              <Link
-                component={NextLink}
-                variant="subtitle2"
-                style={{
-                  color: theme.palette.mode === "dark" ? "white" : "black",
-                }}
-                href={PATH_AUTH.forgetPassword}
-                passHref
-              >
-                Forgot password?
-              </Link>
-            </Stack>
+            }
+            label={<>Remember me</>}
+          />
+          <Link
+            component={NextLink}
+            variant="subtitle2"
+            style={{
+              color: theme.palette.mode === "dark" ? "white" : "black",
+            }}
+            href={PATH_AUTH.forgetPassword}
+            passHref
+          >
+            Forgot password?
+          </Link>
+        </Stack>
 
-            <LoadingButton
-              fullWidth
-              size="large"
-              type="submit"
-              variant="outlined"
-              color="success"
-              loading={isSubmitting}
-            >
-              Login
-            </LoadingButton>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              my={2}
-              color="#04223F"
-            >
-              <Divider
-                sx={{
-                  width: "5%",
-                  backgroundColor:
-                    theme.palette.mode === "dark" ? "white" : "#04223F",
-                  height: 2,
-                  marginRight: "10px",
-                }}
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="outlined"
+          color="success"
+          loading={isSubmitting}
+        >
+          Login
+        </LoadingButton>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          my={2}
+          color="#04223F"
+        >
+          <Divider
+            sx={{
+              width: "5%",
+              backgroundColor:
+                theme.palette.mode === "dark" ? "white" : "#04223F",
+              height: 2,
+              marginRight: "10px",
+            }}
+          />
+          <Typography
+            variant="body2"
+            style={{
+              color: theme.palette.mode === "dark" ? "white" : "black",
+            }}
+          >
+            OR
+          </Typography>
+          <Divider
+            sx={{
+              width: "5%",
+              backgroundColor:
+                theme.palette.mode === "dark" ? "white" : "#04223F",
+              height: 2,
+              marginLeft: "10px",
+            }}
+          />
+        </Box>
+        <LoadingButton
+          loading={loading}
+          onClick={SignUpUsingGoogle}
+          variant="contained"
+          startIcon={
+            loading ? null : (
+              <Iconify
+                icon={"flat-color-icons:google"}
+                width={24}
+                height={24}
               />
-              <Typography
-                variant="body2"
-                style={{
-                  color: theme.palette.mode === "dark" ? "white" : "black",
-                }}
-              >
-                OR
-              </Typography>
-              <Divider
-                sx={{
-                  width: "5%",
-                  backgroundColor:
-                    theme.palette.mode === "dark" ? "white" : "#04223F",
-                  height: 2,
-                  marginLeft: "10px",
-                }}
-              />
-            </Box>
-            <LoadingButton
-              loading={loading}
-              onClick={SignUpUsingGoogle}
-              variant="contained"
-              startIcon={
-              loading ? null:<Iconify
-              icon={"flat-color-icons:google"}
-              width={24}
-              height={24}
-            /> 
-              }
-              size="large"
-              fullWidth
-              style={{
-                textAlign: "left",
-                backgroundColor: "#022552",
-                color: "white",
-              }}
-            >
-              {loading ? null:"Google"}
-            </LoadingButton>
-          </FormProvider>
-        </>
+            )
+          }
+          size="large"
+          fullWidth
+          style={{
+            textAlign: "left",
+            backgroundColor: "#022552",
+            color: "white",
+          }}
+        >
+          {loading ? null : "Google"}
+        </LoadingButton>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            mt: 1,
+          }}
+        >
+          <Alert
+            severity="info"
+            sx={{
+              fontSize: 10,
+              backgroundColor: "#FFFF",
+            }}
+          >
+            Google login is only available for students.
+          </Alert>
+        </Box>
+      </FormProvider>
+    </>
   );
 }

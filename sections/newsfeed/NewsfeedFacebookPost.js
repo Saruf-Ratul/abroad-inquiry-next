@@ -26,18 +26,15 @@ function NewsfeedFacebookPost() {
                 Facebook Posts
               </Typography>
               <Button
-                variant="outlined"
+                variant="contained"
                 startIcon={
                   <Iconify icon="mdi:facebook" width={20} height={20} />
                 }
                 href="https://www.facebook.com/Abroadinquiry"
                 target="_blank"
                 rel="noopener noreferrer"
-                sx={{
-                  textTransform: "none",
-                  color: "primary.main",
-                  borderColor: "primary.main",
-                }}
+               
+              
               >
                 Visit Page
               </Button>

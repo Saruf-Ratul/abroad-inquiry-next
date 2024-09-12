@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { MotionContainer, TextAnimate, varFade } from "@/components/animate";
-import MentorsBanner from "@/public/assets/bannerImage/mentors.webp"
+import MentorsBanner from "@/public/assets/bannerImage/mentors.png"
 
 
 const RootStyle = styled("div")(({ theme }) => ({

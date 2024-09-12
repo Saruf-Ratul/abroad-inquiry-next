@@ -26,7 +26,7 @@ export default function AuthHeaderSignUp() {
     <HeaderStyle>
       <Logo />
       <Box>
-        <Button variant="contained" color="success">
+        <Button variant="contained" color="success" >
           Get Started
         </Button>
       </Box>

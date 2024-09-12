@@ -140,9 +140,9 @@ export default function OfficeVisitStudentForm() {
   const matchesSm = useMediaQuery("(max-width:600px)");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState();
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { mentors } = useSelector((state) => state.mentors);
+
+  const {success,loading} = useSelector((state)=>state.offcieVisitStudent)
 
   useEffect(() => {
     dispatch(fetchMentors(1));
@@ -162,6 +162,7 @@ export default function OfficeVisitStudentForm() {
       working_experience: "",
       extracurricular_activities: "",
       publications: "",
+      comment:"pending"
     },
     validationSchema: signupValidationschema,
     onSubmit: (values, { resetForm }) => {
@@ -174,8 +175,6 @@ export default function OfficeVisitStudentForm() {
       ...formData,
       phone: phoneNumber,
     };
-    console.log("data:", data);
-    setSuccess(true);
     dispatch(addOfficeVisitedStudent(data));
   };
 

@@ -1,23 +1,10 @@
 "use client";
-import match from "autosuggest-highlight/match";
-import parse from "autosuggest-highlight/parse";
-import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
-// @mui
+import {  useState } from "react";
 import {
-  Autocomplete,
-  Avatar,
-  Box,
-  Chip,
-  TextField,
   Typography,
 } from "@mui/material";
-import { alpha, styled } from "@mui/material/styles";
-// components
-import Iconify from "../../../components/Iconify";
-import SearchNotFound from "../../../components/SearchNotFound";
+import {  styled } from "@mui/material/styles";
 
-// ----------------------------------------------------------------------
 
 const RootStyle = styled("div")(({ theme }) => ({
   display: "flex",

@@ -1,5 +1,6 @@
 import axiosInstance from "@/utils/axios";
 
+
 const configParams = {
   "Content-Type": "application/json",
 };
@@ -7,7 +8,7 @@ const configParams = {
 
 export const createOfficeVisitStudent = async (data) => {
   try {
-    const response = await axiosInstance.get(
+    const response = await axiosInstance.post(
       `/office-visited-student/create`, data,
       {
         headers: configParams,

@@ -16,6 +16,7 @@ import {
   Paper,
   InputLabel,
   TextField,
+  Alert,
 } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import { styled } from "@mui/material/styles";
@@ -175,6 +176,12 @@ function ProfileView() {
       <Container sx={{ py: matchesSm ? 0 : 8 }}>
         <Box sx={{ width: "100%", typography: "body1" }}>
           <MentorProfileHero profileDeatails={profileDeatails} />
+          {!userInfo.id && (
+          <Alert severity="info" sx={{ marginBottom: "30px",mt:4 }}>
+            Login or Sign Up is required to message or schedule an appointment
+            with {profileDeatails?.mentorName}
+          </Alert>
+        )}
           <TabContext value={value}>
             <Box sx={{ borderBottom: 1, borderColor: "divider", m: 2 }}>
               <TabList

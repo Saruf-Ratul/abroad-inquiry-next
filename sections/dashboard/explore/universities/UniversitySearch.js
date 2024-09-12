@@ -9,7 +9,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import { Card, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-//import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
@@ -83,7 +82,6 @@ export default function UniversitySearch({ isEdit, currentFilters }) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(!isEdit ? "Search initiated!" : "Filters updated!");
-      // Push to results page or handle search logic
     } catch (error) {
       console.error(error);
     }
