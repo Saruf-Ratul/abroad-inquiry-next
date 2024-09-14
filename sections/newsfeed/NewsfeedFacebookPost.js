@@ -33,8 +33,6 @@ function NewsfeedFacebookPost() {
                 href="https://www.facebook.com/Abroadinquiry"
                 target="_blank"
                 rel="noopener noreferrer"
-               
-              
               >
                 Visit Page
               </Button>
@@ -42,11 +40,28 @@ function NewsfeedFacebookPost() {
             <Divider sx={{ marginY: 2 }} />
 
             <Box>
-              <iframe
+              {/* <iframe
                 src={`https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAbroadinquiry&tabs=timeline&width=${
                   matchesMd ? "100%" : "100%"
                 }&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId`}
                 width="100%"
+                height="700"
+                style={{
+                  border: "none",
+                  overflow: "hidden",
+                  borderRadius: "12px",
+                }}
+                scrolling="no"
+                frameBorder="0"
+                allowFullScreen={true}
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              /> */}
+
+              <iframe
+                src={`https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAbroadinquiry&tabs=timeline&width=${
+                  matchesMd ? "100%" : "500"
+                }&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId`}
+                width={matchesMd ? "100%" : "100%"}
                 height="700"
                 style={{
                   border: "none",

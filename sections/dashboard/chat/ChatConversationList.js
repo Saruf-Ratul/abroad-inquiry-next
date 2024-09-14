@@ -6,6 +6,8 @@ import { PATH_DASHBOARD } from "@/routes/paths";
 import ChatConversationItem from "./ChatConversationItem";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateConversationRead } from "@/redux/features/chat/chatSlice";
 
 export default function ChatConversationList({
   conversationKey,
@@ -17,8 +19,10 @@ export default function ChatConversationList({
   sx,
   ...other
 }) {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [updatedConversations, setUpdatedConversations] = useState([]);
+  const { userInfo } = useSelector((state)=>state.user)
 
   useEffect(() => {
     if (conversationKey && lastMessage) {
@@ -40,11 +44,32 @@ export default function ChatConversationList({
     }
   }, [conversationKey, lastMessage, conversations]);
 
-  const handleSelectConversation = (id, conversationId, fcmToken) => {
+  const handleSelectConversation = (id, conversationId, fcmToken, isUnread) => {
+    const index = updatedConversations.findIndex((x) => x.id === id);
+    if (index !== -1) {
+      const updatedConversation = [...updatedConversations];
+      updatedConversation[index] = {
+        ...updatedConversation[index],
+        isUnread: false, 
+      };
+      setUpdatedConversations(updatedConversation); 
+    }
+
+    try {
+      const data ={
+        conversation: conversationId,
+        user: userInfo.id,
+      }
+      dispatch(updateConversationRead(data));
+    } catch (error) {
+      console.error(error);
+    }
+  
     Cookies.set("fcmToken", fcmToken);
     Cookies.set("conversationId", conversationId);
     router.push(PATH_DASHBOARD.chat.view(id));
   };
+  
 
   const sortedConversations = updatedConversations
     .filter((conversation) => conversation.lastText !== null)
@@ -69,7 +94,8 @@ export default function ChatConversationList({
                   handleSelectConversation(
                     conversation.id,
                     conversation.chatDetails,
-                    conversation.fcmToken
+                    conversation.fcmToken,
+                    conversation.isUnread
                   )
                 }
               />

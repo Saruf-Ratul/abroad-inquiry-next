@@ -18,20 +18,16 @@ const RootStyle = styled(ListItemButton)(({ theme }) => ({
   transition: theme.transitions.create("all"),
 }));
 
-const AvatarWrapperStyle = styled("div")(() => ({
-  position: "relative",
-  width: AVATAR_SIZE,
-  height: AVATAR_SIZE,
-  "& .MuiAvatar-img": { borderRadius: "50%" },
-  "& .MuiAvatar-root": { width: "100%", height: "100%" },
-}));
+
 
 export default function ChatConversationItem({
   isSelected,
   conversation,
   onSelectConversation,
   isOpenSidebar,
-}) {
+}){
+
+
   return (
     <RootStyle
       disableGutters
@@ -77,8 +73,9 @@ export default function ChatConversationItem({
             }
             secondaryTypographyProps={{
               noWrap: true,
-              variant: conversation?.isUnread ? "subtitle2" : "body2",
-              color: conversation?.isUnread ? "textPrimary" : "textSecondary",
+              variant: conversation?.isUnread ? "subtitle2" : "caption",
+              color: conversation?.isUnread ? "textPraimary" : "textSecondary",
+              fontWeight: conversation?.isUnread ? "bold" : "300"
             }}
           />
 

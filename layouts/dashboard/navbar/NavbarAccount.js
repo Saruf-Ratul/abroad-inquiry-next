@@ -30,12 +30,12 @@ export default function NavbarAccount({ isCollapse, userInfo }) {
   const { name, email, profilePic } = userInfo;
   return (
     <>
-      <Link
+      {/* <Link
         component={NextLink}
         href={PATH_DASHBOARD.profile.account}
         underline="none"
         color="inherit"
-      >
+      > */}
         <RootStyle
           sx={{
             ...(isCollapse && {
@@ -61,12 +61,15 @@ export default function NavbarAccount({ isCollapse, userInfo }) {
             <Typography variant="subtitle2" noWrap>
               {name}
             </Typography>
-            <Typography variant="body2" noWrap sx={{ color: "text.secondary",width:"120px" }}>
-              {email}
-            </Typography>
+            {
+              !isCollapse && (<Typography variant="body2" noWrap sx={{ color: "text.secondary",width:"120px" }}>
+                {email}
+              </Typography>)
+            }
+            
           </Box>
         </RootStyle>
-      </Link>
+      {/* </Link> */}
     </>
   );
 }

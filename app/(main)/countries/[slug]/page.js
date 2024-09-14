@@ -137,7 +137,7 @@ const CountryDetail = () => {
       ) : (
         <Container>
           <Typography variant="h3" sx={{ mt: 2, mb: 2 }}>
-            Available Mentros for {countryDetails.countryName}
+            Available Mentors for {countryDetails.countryName}
           </Typography>
           <Grid container spacing={3}>
             {countriesMentors.map((mentor) => (

@@ -158,8 +158,9 @@ export default function ChatMessageInput({
   }, [cloudinaryMessage]);
 
   const handleKeyUp = (event) => {
-    if (event.key === "Enter") {
-      handleSend();
+    // Prevent form submission when Enter is pressed without Shift
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
     }
   };
 
@@ -208,20 +209,15 @@ export default function ChatMessageInput({
       <Input
         disabled={disabled}
         fullWidth
+        multiline
+        rows={2} 
+        maxRows={8} 
         value={message}
         disableUnderline
         onKeyUp={handleKeyUp}
         onChange={(event) => setMessage(event.target.value)}
         placeholder="Type a message"
-        startAdornment={
-          <InputAdornment position="start">
-            <EmojiPicker
-              disabled={disabled}
-              value={message}
-              setValue={setMessage}
-            />
-          </InputAdornment>
-        }
+        sx={{mt:2,mb:1}}
         endAdornment={
           <Stack direction="row" spacing={1} sx={{ flexShrink: 0, mr: 1.5 }}>
             <input

@@ -1,18 +1,11 @@
 "use client";
-import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-// @mui
 import { Box, Divider, Drawer, IconButton } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
-// hooks
 import useResponsive from "../../../hooks/useResponsive";
-// components
 import Iconify from "../../../components/Iconify";
-//
-import ChatRoomAttachment from "./ChatRoomAttachment";
 import ChatRoomOneParticipant from "./ChatRoomOneParticipant";
 
-// ----------------------------------------------------------------------
 
 const ToggleButtonStyle = styled((props) => (
   <IconButton disableRipple {...props} />
@@ -34,23 +27,16 @@ const ToggleButtonStyle = styled((props) => (
   },
 }));
 
-// ----------------------------------------------------------------------
 
 const SIDEBAR_WIDTH = 240;
 
 export default function ChatRoom({
-  chatmessages,
-  conversations,
   conversationKey,
 }) {
   const theme = useTheme();
   const [openSidebar, setOpenSidebar] = useState(true);
   const [showInfo, setShowInfo] = useState(true);
-  const [selectUser, setSelectUser] = useState(null);
-  const [showAttachment, setShowAttachment] = useState(true);
-  const [showParticipants, setShowParticipants] = useState(true);
   const isDesktop = useResponsive("up", "lg");
-  const isGroup = false;
 
   useEffect(() => {
     if (!isDesktop) {
@@ -82,11 +68,6 @@ export default function ChatRoom({
       </div>
 
       <Divider />
-      {/* <ChatRoomAttachment
-        // conversation={conversation}
-        isCollapse={showAttachment}
-        onCollapse={() => setShowAttachment((prev) => !prev)}
-      /> */}
     </>
   );
 

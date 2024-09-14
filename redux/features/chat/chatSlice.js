@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { createNewConversation, getMessage, getOldConversation, searchMessage } from "./chatAPI.js"
+import { createNewConversation, getMessage, getOldConversation, searchMessage, updateConversation } from "./chatAPI.js"
 
 const initialState = {
   loading : false,
@@ -33,6 +33,11 @@ export const fetchMessage = createAsyncThunk(
 
 export const createConversation = createAsyncThunk("coversation/createConversation", async()=>{
   const response = createNewConversation();
+  return response;
+});
+
+export const updateConversationRead = createAsyncThunk("coversation/updateConversationRead", async(data)=>{
+  const response = updateConversation(data);
   return response;
 });
 
@@ -103,6 +108,19 @@ const chatSlice = createSlice({
             state.loading = false;
             state.isError = true;
             state.searchedMessages = [];
+            state.error = action.error?.message;
+          })
+          // update conversation
+          .addCase(updateConversationRead.pending, (state)=>{
+            state.loading = true ;
+            state.isError = false ;
+          })
+          .addCase(updateConversationRead.fulfilled, (state,action)=>{
+            state.loading = false;
+          })
+          .addCase(updateConversationRead.rejected, (state,action)=>{
+            state.loading = false;
+            state.isError = true ;
             state.error = action.error?.message;
           })
   }

@@ -32,7 +32,6 @@ import MentorRegistrationForm4 from "./MentorRegistrationForm4";
 import { MENTOR_SIGNUP_1 } from "@/services/mentorRequests";
 import { useRouter } from "next/navigation.js";
 
-
 const steps = [
   "Basic Information",
   "Personal Information",
@@ -215,10 +214,13 @@ function MentorRegistrationForm1() {
           setChecked(false);
         }
       })
-      .catch((err) => {
+      .catch((error) => {
+        if (error.response && error.response.status === 422) {
+          setError("This email is already registered!");
+        } else {
+          setError("Something Wrong. Please try again later.");
+        }
         setLoading(false);
-        // console.log(err);
-        setError(err.response.data.message);
       });
   };
 
@@ -370,6 +372,12 @@ function MentorRegistrationForm1() {
                         )}
                       </div>
                     ))}
+
+                    <br/>
+
+                    <Box>
+                      <Typography sx={{color:"red"}}>{error}</Typography>
+                    </Box>
                     <br />
                     <FormControlLabel
                       onChange={formik.handleChange}
@@ -396,7 +404,7 @@ function MentorRegistrationForm1() {
                             style={{ fontWeight: "bold" }}
                             onClick={() => router.push("/terms-and-conditions")}
                           >
-                           Terms & Conditions
+                            Terms & Conditions
                           </u>
                           ,{" "}
                           <u

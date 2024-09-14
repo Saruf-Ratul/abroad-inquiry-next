@@ -69,6 +69,22 @@ const configParamsWithToken = () => {
       throw new Error(error.response?.data?.message || error.message);
     }
   };
+
+
+  export const updateConversation = async (data) => {
+    try {
+      const response = await axiosInstance.put(
+        `/conversation/read-conversations`,data,
+        {
+          headers: configParamsWithToken(),
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+  };
+
   
 
 
