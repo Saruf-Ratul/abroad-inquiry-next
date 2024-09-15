@@ -5,7 +5,7 @@ import NextLink from "next/link";
 import Logo from "@/components/Logo";
 import useResponsive from "@/hooks/useResponsive";
 import { PATH_AUTH } from "@/routes/paths";
-import { Box, Button, Link, Typography } from "@mui/material";
+import { Box, Button, Link, Typography, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const HeaderStyle = styled("header")(({ theme }) => ({
@@ -27,6 +27,7 @@ const HeaderStyle = styled("header")(({ theme }) => ({
 }));
 
 export default function AuthHeader() {
+  const matchesSm = useMediaQuery("(max-width:600px)");
   const smUp = useResponsive("up", "sm");
 
   const mdUp = useResponsive("up", "md");
@@ -39,15 +40,15 @@ export default function AuthHeader() {
          <Typography sx={{mr:2,mt:1}}>
               Don&apos;t have an account?
             </Typography>   
-          <Box>
+          <Box >
           <Link href={PATH_AUTH.register}>
-              <Button  variant="contained" color="secondary">
+              <Button size="small" variant="contained" color="secondary">
               Become a student
               </Button>
             </Link>
 
-            <Link href="/auth/mentor/mentorApplication" style={{marginLeft:"5px"}}>
-              <Button variant="outlined" color="error" >
+            <Link href="/auth/mentor/mentorApplication" style={{marginLeft: matchesSm ? "0px":"5px"}}>
+              <Button size="small" variant="outlined" color="error" >
                  Become a mentor
               </Button>
             </Link>

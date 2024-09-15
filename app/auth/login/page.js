@@ -9,6 +9,7 @@ import {
   Link,
   Stack,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { PATH_AUTH } from "@/routes/paths";
@@ -62,6 +63,7 @@ export default function LoginPage() {
   const router = useRouter();
   const smUp = useResponsive("up", "sm");
   const mdUp = useResponsive("up", "md");
+  const matchesSm = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -163,17 +165,19 @@ export default function LoginPage() {
                 <Typography variant="body2" textAlign="center" sx={{ mb: 3 }}>
                   Don’t have an account?{" "}
                 </Typography>
+                <Box sx={{display: matchesSm ? "flex" :"none"}}>
                 <Link href={PATH_AUTH.register}>
-                  <Button variant="contained" color="secondary">
+                  <Button size="small" variant="contained" color="secondary">
                     Become a student
                   </Button>
                 </Link>
 
-                <Link href={PATH_AUTH.register} style={{ marginLeft: "15px" }}>
-                  <Button variant="outlined" color="error">
+                <Link href="/auth/mentor/mentorApplication" style={{ marginLeft: "15px" }}>
+                  <Button size="small" variant="outlined" color="error">
                     Become a mentor
                   </Button>
                 </Link>
+                </Box>
               </Box>
             )}
           </ContentStyle>

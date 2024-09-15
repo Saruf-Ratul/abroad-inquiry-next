@@ -27,6 +27,7 @@ import StepConnector, {
 } from "@mui/material/StepConnector";
 import { STUDENT_SIGNUP_CALL } from "@/services/studentRequests";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const steps = ["Basic Information", "Personal Information"];
 
@@ -174,7 +175,6 @@ export default function RegisterForm() {
     validationSchema: signupValidationschema,
     onSubmit: (values, { resetForm }) => {
       handleFormSubmit(values, resetForm);
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
     },
   });
 
@@ -188,35 +188,37 @@ export default function RegisterForm() {
     setSignupUserId();
     setLoading(true);
     setError("");
-
+  
     STUDENT_SIGNUP_CALL(data)
       .then((res) => {
-        setLoading(false);
         let token = res.data.token;
         let userId = res.data.userId;
         Cookies.set("token", token, { expires: 7, secure: true });
         Cookies.set("userId", userId, { expires: 7, secure: true });
         Cookies.set("userStatus", "student", { expires: 7, secure: true });
+  
         setSignupUserId(userId);
-        // alert.success("Account Created Successfully!");
         setError("");
         resetForm();
-        setNextPage(true);
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
         window.scrollTo(0, 0);
       })
-      .catch((err) => {
+      .catch((error) => {
+        if (error.response && error.response.status === 422) {
+          setError("This email is already registered!");
+        }
         setLoading(false);
-        setError(err.response?.data.message);
       });
   };
+  
 
   return (
     <>
       <Container
         maxWidth="md"
-        sx={{ 
-          marginTop: "150px", 
-          marginBottom: "100px" 
+        sx={{
+          marginTop: "150px",
+          marginBottom: "100px",
         }}
       >
         <Box>
@@ -349,6 +351,16 @@ export default function RegisterForm() {
                       </div>
                     ))}
                     <br />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Typography sx={{ color: "red" }}>{error}</Typography>
+                    </Box>
+
                     <FormControlLabel
                       onChange={formik.handleChange}
                       name="checked"
@@ -365,16 +377,27 @@ export default function RegisterForm() {
                       label={
                         <small>
                           I agree with the{" "}
-                          <u style={{ fontWeight: "bold" }} onClick={() => router.push("/terms-and-conditions")}>
-                           Terms & Conditions
+                          <u
+                            style={{ fontWeight: "bold" }}
+                            onClick={() => router.push("/terms-and-conditions")}
+                          >
+                            Terms & Conditions
                           </u>
                           ,{" "}
-                          <u style={{ fontWeight: "bold" }} onClick={() => router.push("/privacy-policy")}>
+                          <u
+                            style={{ fontWeight: "bold" }}
+                            onClick={() => router.push("/privacy-policy")}
+                          >
                             {" "}
                             Privacy Policy
                           </u>{" "}
                           and{" "}
-                          <u style={{ fontWeight: "bold" }} onClick={() => router.push("/refund-policy")}>Refund Policy</u>
+                          <u
+                            style={{ fontWeight: "bold" }}
+                            onClick={() => router.push("/refund-policy")}
+                          >
+                            Refund Policy
+                          </u>
                         </small>
                       }
                     />

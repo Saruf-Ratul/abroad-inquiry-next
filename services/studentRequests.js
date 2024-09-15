@@ -3,7 +3,7 @@ import { api } from "./apis";
 import Cookies from "js-cookie";
 
 /**
- * header configure for api request 
+ * header configure for api request
  * @memberof module:api/request
  * @type {Object}
  */
@@ -11,18 +11,17 @@ const configParams = {
   "Content-Type": "application/json",
 };
 
-
 /**
  * header configure for api request with token
  * @memberof module:api/request
  * @type {Object}
  */
+
 const configParamsWithToken = () => {
+  const token = Cookies.get("token");
   return {
     "Content-Type": "application/json",
-    authentication_token: Cookies.get("token")
-      ? `Bearer ${JSON.parse(Cookies.get("token"))}`
-      : null,
+    authentication_token: token ? `Bearer ${token}` : null,
   };
 };
 
@@ -39,7 +38,7 @@ const formDataConfig = {
 /**
  * student sign up request
  * @memberof module:api/request
- * @param {Object} data 
+ * @param {Object} data
  * @returns {Object}
  */
 // Signup Requests
@@ -55,7 +54,7 @@ export const STUDENT_SIGNUP_CALL_SOCIAL = (data) => {
 /**
  * update student data request
  * @memberof module:api/request
- * @param {Object} data 
+ * @param {Object} data
  * @returns {Object}
  */
 //Update student data
@@ -68,7 +67,7 @@ export const UPDATE_ALL_STUDENT_DATA_CALL = (data) => {
 /**
  * update student password request
  * @memberof module:api/request
- * @param {Object} data 
+ * @param {Object} data
  * @returns {Object}
  */
 //Update Password
@@ -81,7 +80,7 @@ export const UPDATE_STUDENT_PASSWORD = (studentId, data) => {
 /**
  * api request to retrive data of a student
  * @memberof module:api/request
- * @param {Object} data 
+ * @param {Object} data
  * @returns {Object}
  */
 // Get Info Requests
@@ -94,7 +93,7 @@ export const GET_STUDENT_INFO_CALL = () => {
 /**
  * update student information request
  * @memberof module:api/request
- * @param {Object} data 
+ * @param {Object} data
  * @returns {Object}
  */
 export const UPDATE_STUDENT_INFO = (data) => {
@@ -106,7 +105,7 @@ export const UPDATE_STUDENT_INFO = (data) => {
 /**
  * update student profile request
  * @memberof module:api/request
- * @param {Object} data 
+ * @param {Object} data
  * @param {Number} studentId
  * @returns {Object}
  */
@@ -158,7 +157,6 @@ export const GET_UNREAD_NOTIFICATIONS = () => {
     headers: configParamsWithToken(),
   });
 };
-
 
 //=========================== REGISTERED STUDENT =====================================//
 export const GET_STUDENT_UPDATE = (studentId) => {

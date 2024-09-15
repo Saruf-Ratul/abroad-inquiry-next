@@ -19,13 +19,14 @@ import {
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import * as yup from "yup";
 import { countries } from "@/data/countryData";
 import {
   UPDATE_ALL_STUDENT_DATA_CALL,
   UPDATE_STUDENT_PROFILE_PIC,
 } from "@/services/studentRequests";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const additionalInfoInputData = [
   {
@@ -136,6 +137,7 @@ const ImageUpload = styled("input")({
 });
 
 function RegistrationFrom2({ userId }) {
+  const router = useRouter();
   const matchesSm = useMediaQuery("(max-width:600px)");
   const [upLoading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -165,6 +167,7 @@ function RegistrationFrom2({ userId }) {
       handleFormSubmit(values, resetForm);
     },
   });
+
 
   const handleFormSubmit = (userData, resetForm) => {
     setLoading(true);
@@ -196,6 +199,7 @@ function RegistrationFrom2({ userId }) {
           id: res.data.studentId,
         };
         setLoading(false);
+        router.push("/")
       })
       .catch((err) => {
         setLoading(false);

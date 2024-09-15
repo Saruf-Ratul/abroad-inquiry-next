@@ -105,7 +105,7 @@ const Appointments = () => {
         ...snackbarOpen,
         status: true,
         severity: "error",
-        text: "Appointment Denied Successfully",
+        text: "Appointment Accept Successfully",
       });
     }
   };
