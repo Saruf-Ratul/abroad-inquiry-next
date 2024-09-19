@@ -11,7 +11,7 @@ import {
   Link,
   Stack,
   Typography,
-  ButtonBase
+  ButtonBase,
 } from "@mui/material";
 import { alpha, styled, useTheme } from "@mui/material/styles";
 
@@ -26,18 +26,18 @@ import {
 import { CarouselArrows, CarouselDots } from "@/components/carousel";
 import zIndex from "@mui/material/styles/zIndex";
 import Image from "next/image";
-import slide1 from "@/public/assets/banner-slide-imgs/slide-1.webp"
-import slide2 from "@/public/assets/banner-slide-imgs/slide-2.webp"
-import slide3 from "@/public/assets/banner-slide-imgs/slide-3.webp"
-import slide4 from "@/public/assets/banner-slide-imgs/slide-4.webp"
-import slide5 from "@/public/assets/banner-slide-imgs/slide-8.webp"
-import slide6 from "@/public/assets/banner-slide-imgs/slide-6.webp"
-import slide7 from "@/public/assets/banner-slide-imgs/slide-7.webp"
-import testimonial from "@/public/assets/images/img/testimonial-bg.webp"
-import googlePlay from "@/public/assets/banner-slide-imgs/google-play-store.webp"
-import appleStore from "@/public/assets/banner-slide-imgs/apple-app-store.webp"
-import shape from "@/public/assets/images/img/shape-7.webp"
-
+import slide1 from "@/public/assets/banner-slide-imgs/slide-1.webp";
+import slide2 from "@/public/assets/banner-slide-imgs/slide-2.webp";
+import slide3 from "@/public/assets/banner-slide-imgs/slide-3.webp";
+import slide4 from "@/public/assets/banner-slide-imgs/slide-4.webp";
+import slide5 from "@/public/assets/banner-slide-imgs/slide-8.webp";
+import slide6 from "@/public/assets/banner-slide-imgs/slide-6.webp";
+import slide7 from "@/public/assets/banner-slide-imgs/slide-7.webp";
+import testimonial from "@/public/assets/images/img/testimonial-bg.webp";
+import backgroundVideo from "@/public/assets/images/img/backgroundVideo.mp4";
+import googlePlay from "@/public/assets/banner-slide-imgs/google-play-store.webp";
+import appleStore from "@/public/assets/banner-slide-imgs/apple-app-store.webp";
+import shape from "@/public/assets/images/img/shape-7.webp";
 
 // ----------------------------------------------------------------------
 
@@ -55,14 +55,29 @@ const RootStyle = styled(m.div)(({ theme }) => ({
   },
 }));
 
+// OverlayStyle with video background
 const OverlayStyle = styled("div")(({ theme }) => ({
   top: 0,
   left: 0,
   right: 0,
   bottom: 0,
-  // zIndex: 8,
   position: "absolute",
-  backgroundColor: alpha(theme.palette.grey[900], 0.85),
+  zIndex: 1,
+  overflow: "hidden",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor:"black",
+  "& video": {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    zIndex: -1,
+    opacity:0.4
+  },
 }));
 
 const HeroImgStyle = styled(Image)(({ theme }) => ({
@@ -73,43 +88,43 @@ const HeroImgStyle = styled(Image)(({ theme }) => ({
 
 const _appFeatured = [
   {
-    image:slide1,
+    image: slide1,
     title: "A Whole World of Opportunities Awaits you",
     description: "Sign up for expore the opportuniteis",
     id: 1,
   },
   {
-    image:slide2,
+    image: slide2,
     title: "Explore Global Education Opportunities",
     description: "fua sd asd ck",
     id: 2,
   },
   {
-    image:slide3,
+    image: slide3,
     title: "Navigate Your Path to Overseas Study",
     description: "fua sd asd ck",
     id: 3,
   },
   {
-    image:slide4,
+    image: slide4,
     title: "Empowering Dreams, One Destination at a Time",
     description: "fua sd asd ck",
     id: 4,
   },
   {
-    image:slide5,
+    image: slide5,
     title: "Shape Your Future with International Education",
     description: "fua sd asd ck",
     id: 5,
   },
   {
-    image:slide6,
+    image: slide6,
     title: "Discover Your Dream Education Destination",
     description: "fua sd asd ck",
     id: 6,
   },
   {
-    image:slide7,
+    image: slide7,
     title: "Shape Your Future with World-Class Education",
     description: "fua sd asd ck",
     id: 7,
@@ -156,34 +171,38 @@ export default function HomeHero() {
     }),
   };
 
-
   return (
     <MotionContainer>
       <RootStyle>
-        <HeroOverlayStyle
-          alt="overlay"
-          src={testimonial}
-          variants={varFade().in}
-          width={1920}
-          height={1080}
-        />
-        <OverlayStyle />
-        <Container sx={{ position: "relative" }} component={MotionViewport}>
+        <OverlayStyle>
+          <video autoPlay muted loop>
+            <source src={backgroundVideo} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </OverlayStyle>
+        <Container
+          sx={{
+            position: "relative",
+            zIndex: 2, // Ensure the content is above the video
+            py: theme.spacing(10),
+          }}
+          component={MotionViewport}
+        >
           <Grid
             container
             spacing={{ sm: 0, md: 3 }}
             alignItems="center"
             justifyContent="center"
-            sx={{ height: "100%", py: theme.spacing(10) }}
+            sx={{ height: "100%" }}
           >
-            <Grid item xs={12} md={7}>
+            <Grid item xs={8} md={7}>
               <Box component={m.div} pb={2} variants={varFade().inRight}>
                 <Typography variant="h3" sx={{ color: "common.white" }}>
                   A Whole World of
                   <Typography
                     component="span"
                     variant="h3"
-                    sx={{ color: "secondary.main",ml:1 }}
+                    sx={{ color: "secondary.main", ml: 1 }}
                   >
                     Opportunities
                   </Typography>
@@ -240,6 +259,7 @@ export default function HomeHero() {
                     </m.div>
                   ))}
                 </Stack>
+
                 <m.div variants={varFade().inRight}>
                   <Typography
                     variant="overline"
@@ -262,10 +282,7 @@ export default function HomeHero() {
                       )
                     }
                   >
-                    <m.img
-                      variants={varFade().inRight}
-                      src={googlePlay.src}
-                    />
+                    <m.img variants={varFade().inRight} src={googlePlay.src} />
                   </ButtonBase>
 
                   <ButtonBase
@@ -276,16 +293,13 @@ export default function HomeHero() {
                       )
                     }
                   >
-                    <m.img
-                      variants={varFade().inRight}
-                      src={appleStore.src}
-                    />
+                    <m.img variants={varFade().inRight} src={appleStore.src} />
                   </ButtonBase>
-               </Stack>
-
+                </Stack>
               </Stack>
             </Grid>
-            <Grid item xs={12} md={5} sx={{marginTop:"100px"}}>
+
+            <Grid item xs={12} md={5} sx={{ marginTop: "100px" }}>
               <Box component={m.div} variants={varFade().inLeft}>
                 <Slider ref={carouselRef} {...settings}>
                   {_appFeatured.map((app, index) => (
@@ -301,12 +315,7 @@ export default function HomeHero() {
           </Grid>
         </Container>
 
-        <FlyImg
-          src={shape}
-          alt=""
-          width={300}
-          height={250}
-        />
+        <FlyImg src={shape} alt="" width={300} height={250} style={{zIndex:"2"}}/>
       </RootStyle>
     </MotionContainer>
   );
