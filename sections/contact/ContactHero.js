@@ -1,7 +1,7 @@
 "use client";
 import { m } from "framer-motion";
 // @mui
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 //
 import { MotionContainer, TextAnimate, varFade } from "@/components/animate";
@@ -26,15 +26,15 @@ const RootStyle = styled("div")(({ theme }) => ({
   },
 }));
 
-const ContentStyle = styled("div")(({ theme }) => ({
-  textAlign: "center",
+const ContentStyle = styled(Stack)(({ theme }) => ({
+  //textAlign: "center",
   [theme.breakpoints.up("md")]: {
-    textAlign: "center",
+    maxWidth: 700,
+    textAlign: "left",
     position: "absolute",
     bottom: theme.spacing(15),
   },
 }));
-
 
 export default function ContactHero() {
   return (
@@ -43,24 +43,33 @@ export default function ContactHero() {
         component={MotionContainer}
         sx={{ position: "relative", height: "100%" }}
       >
-        <ContentStyle>
-          <TextAnimate
-            text="Where"
-            sx={{ color: "secondary.main", paddingRight: 2 }}
-            variants={varFade().inRight}
-          />
-          <Box sx={{ display: "inline-flex", color: "common.white",textAlign:"center", }}>
+        
+        <ContentStyle spacing={2}>
+          <Box sx={{ display: "inline-flex", color: "common.white" }}>
+            <TextAnimate
+              text="Where"
+              sx={{ color: "secondary.main", paddingRight: 2 }}
+              variants={varFade().inRight}
+            />
             <TextAnimate text="to" sx={{ mr: 2 }} />
             <TextAnimate text="find" sx={{ mr: 2 }} />
             <TextAnimate text="us?" />
           </Box>
 
-
-          <Grid container spacing={5} sx={{ mt: 5, color: "common.white" }}>
-            <Typography>
-            Students can contact us via our phone, by visiting our office, and via the contact message. In addition, prospective students can message, make an appointment with the mentors if they have study abroad questions. Together we strive to provide more factual information to our students.
+          <m.div variants={varFade().inRight}>
+            <Typography
+              sx={{
+                mt: 1,
+                mb: 1,
+                color: "common.white",
+              }}
+            >
+              Students can contact us via our phone, by visiting our office, and 
+              via the contact message. In addition, prospective students can message,
+               make an appointment with the mentors if they have study abroad questions. 
+               Together we strive to provide more factual information to our students.
             </Typography>
-          </Grid>
+          </m.div>
         </ContentStyle>
       </Container>
     </RootStyle>

@@ -7,6 +7,7 @@ import useResponsive from "@/hooks/useResponsive";
 import { PATH_AUTH } from "@/routes/paths";
 import { Box, Button, Link, Typography, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import SettingMode from "@/components/SettingMode";
 
 const HeaderStyle = styled("header")(({ theme }) => ({
   top: 0,
@@ -52,7 +53,9 @@ export default function AuthHeader() {
                  Become a mentor
               </Button>
             </Link>
+            <SettingMode />
           </Box>
+          
           </Box>
        </>
         

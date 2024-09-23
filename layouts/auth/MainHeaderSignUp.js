@@ -1,5 +1,6 @@
 "use client";
 import Logo from "@/components/Logo";
+import SettingMode from "@/components/SettingMode";
 import { Box, Button, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -26,9 +27,7 @@ export default function AuthHeaderSignUp() {
     <HeaderStyle>
       <Logo />
       <Box>
-        <Button variant="contained" color="success" >
-          Get Started
-        </Button>
+      <SettingMode />
       </Box>
     </HeaderStyle>
   );

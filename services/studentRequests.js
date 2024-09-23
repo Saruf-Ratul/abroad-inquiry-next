@@ -173,3 +173,13 @@ export const STUDENT_APPLY_ABROAD = (data) => {
   });
 };
 //=====================================================================//
+
+
+//=========================== APPLY ABROAD STUDENT =====================================//
+
+export const OFFICE_VISITED_STUDENT = (data) => {
+  return axios.post(`${api.student.officeVisitedStudent}`, data, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+

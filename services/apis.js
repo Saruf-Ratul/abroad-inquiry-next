@@ -47,6 +47,8 @@ export const api = {
     profileView: `${BASE_URL}/student/profile_view`,
     studentUpdate: `${BASE_URL}/student-application/get-single-student-application`,
     studentApplyAbroad: `${BASE_URL}/apply-abroad/create`,
+
+    officeVisitedStudent:`${BASE_URL}/office-visited-student/create`
   },
   blogs: {
     getBlogs: `${BASE_URL}/blog/get-blogs?page=`,

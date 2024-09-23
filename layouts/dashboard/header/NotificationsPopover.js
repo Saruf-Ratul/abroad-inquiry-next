@@ -24,9 +24,10 @@ import {
   fetchAllMentorNotifications,
   fetchAllStudentNotifications,
 } from "@/redux/features/notification/notificationSlice";
+import { useRouter } from "next/navigation";
 
 export default function NotificationsPopover() {
-  // const [notifications, setNotifications] = useState(_notifications);
+  const router = useRouter();
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const { userInfo } = useSelector((state) => state.user);
@@ -54,15 +55,6 @@ export default function NotificationsPopover() {
   const handleClose = () => {
     setOpen(null);
   };
-
-  // const handleMarkAllAsRead = () => {
-  //   setNotifications(
-  //     notifications.map((notification) => ({
-  //       ...notification,
-  //       isUnRead: false,
-  //     }))
-  //   );
-  // };
 
   return (
     <>
@@ -132,7 +124,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.map((notification) => (
+            {notifications.slice(2, 5).map((notification) => (
               <NotificationItem
                 key={notification.id}
                 notification={notification}
@@ -144,7 +136,14 @@ export default function NotificationsPopover() {
         <Divider sx={{ borderStyle: "dashed" }} />
 
         <Box sx={{ p: 1 }}>
-          <Button fullWidth disableRipple>
+          <Button
+            fullWidth
+            disableRipple
+            onClick={() => {
+              handleClose();
+              router.push("/dashboard/notifications");
+            }}
+          >
             View All
           </Button>
         </Box>

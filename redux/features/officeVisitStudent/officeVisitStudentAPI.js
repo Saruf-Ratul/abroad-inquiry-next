@@ -1,4 +1,5 @@
 import axiosInstance from "@/utils/axios";
+import axios from "axios";
 
 
 const configParams = {
@@ -8,8 +9,8 @@ const configParams = {
 
 export const createOfficeVisitStudent = async (data) => {
   try {
-    const response = await axiosInstance.post(
-      `/office-visited-student/create`, data,
+    const response = await axios.post(
+      `https://localhost:8443/office-visited-student/create`, data,
       {
         headers: configParams,
       }
