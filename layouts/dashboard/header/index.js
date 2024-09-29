@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchUserInfo } from "@/redux/features/auth/authSlice";
 import Cookies from "js-cookie";
+import SettingMode from "@/components/SettingMode";
 
 // ----------------------------------------------------------------------
 
@@ -107,6 +108,7 @@ export default function DashboardHeader({
 
           <AccountPopover userInfo={userInfo} />
         </Stack>
+        <SettingMode />
       </Toolbar>
     </RootStyle>
   );

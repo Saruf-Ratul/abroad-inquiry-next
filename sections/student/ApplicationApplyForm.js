@@ -23,19 +23,14 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import img from "@/public/assets/images/others/study-abroad.webp";
-// import { RiArrowGoBackFill } from "react-icons/ri";
-// import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/system";
-// import img from "../../assets/images/study-abroad.webp";
+import { useRouter } from "next/navigation";
 
 const ApplySuccessContainer = styled(Container)({
   position: "relative",
   overflow: "hidden",
   marginTop: "40px",
-  height: "600px",
-  width: "100%",
   "&::before": {
     content: '""',
     backgroundColor: "#071213",
@@ -54,6 +49,7 @@ const ApplySuccessContainer = styled(Container)({
 
 function ApplicationApplyForm() {
   const theme = useTheme();
+  const router = useRouter();
   const dispatch = useDispatch();
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -99,7 +95,6 @@ function ApplicationApplyForm() {
   useEffect(() => {
     dispatch(fetchCountries(1));
   }, [dispatch]);
-
 
   const handleApply = async (e) => {
     e.preventDefault();
@@ -250,7 +245,8 @@ function ApplicationApplyForm() {
           <CircularProgress sx={{ color: "black" }} />
         </Box>
       ) : success ? (
-        <ApplySuccessContainer
+        <Container maxWidth="md">
+          <ApplySuccessContainer
           style={{
             position: "relative",
             overflow: "hidden",
@@ -260,7 +256,6 @@ function ApplicationApplyForm() {
           }}
         >
           <Box margin="auto" textAlign="center" py={5}>
-            {/* <img src={Img} alt="" width="20%" height="10%" /> */}
             <Typography variant="h2" marginY={3} textAlign="center">
               Apply Abroad Successful
             </Typography>
@@ -285,6 +280,7 @@ function ApplicationApplyForm() {
             <Button
               variant="contained"
               color="success"
+              onClick={() => router.push("/dashboard")}
               endIcon={
                 <Iconify
                   icon={"icon-park-outline:back"}
@@ -297,13 +293,22 @@ function ApplicationApplyForm() {
             </Button>
           </Box>
         </ApplySuccessContainer>
+        </Container>
       ) : (
         <div style={{ marginTop: matchesSm ? "40px" : "0px" }}>
-          <Card>
+          <Container
+            maxWidth="md"
+            style={{
+              boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+              borderRadius: "10px",
+            }}
+          >
             <Box
               sx={{
                 textAlign: "center",
-                paddingY: "30px",
+                paddingY: "20px",
+                color: theme.palette.mode === "dark" ? "white" : "#125533",
+                fontFamily: "sans-serif",
               }}
             >
               <Typography variant="h3">Application Abroad</Typography>
@@ -342,8 +347,13 @@ function ApplicationApplyForm() {
                             required
                             id="program"
                             value={program}
+                            displayEmpty
+                            placeholder="Select Program"
                             onChange={(e) => setProgram(e.target.value)}
                           >
+                            <MenuItem disabled value="">
+                              Select Program{" "}
+                            </MenuItem>
                             <MenuItem value="Bachelor">Bachelor</MenuItem>
                             <MenuItem value="Masters">Masters</MenuItem>
                             <MenuItem value="Other">Other</MenuItem>
@@ -393,6 +403,7 @@ function ApplicationApplyForm() {
                             fullWidth
                             value={subject}
                             name="subject"
+                            placeholder="Interested Subject"
                           />
                         </Stack>
                       </Stack>
@@ -430,8 +441,13 @@ function ApplicationApplyForm() {
                             required
                             id="moi"
                             value={moi}
+                            displayEmpty
+                            placeholder="Do you have an MOI Certificate?"
                             onChange={(e) => setMoi(e.target.value)}
                           >
+                            <MenuItem disabled value="">
+                              Do you have an MOI Certificate?
+                            </MenuItem>
                             <MenuItem value="YES">YES</MenuItem>
                             <MenuItem value="NO">No</MenuItem>
                           </Select>
@@ -465,7 +481,12 @@ function ApplicationApplyForm() {
                             id="publication"
                             value={publication}
                             onChange={(e) => setPublication(e.target.value)}
+                            displayEmpty
+                            placeholder="Any Publications?"
                           >
+                            <MenuItem disabled value="">
+                              Any Publications?
+                            </MenuItem>
                             <MenuItem value="YES">YES</MenuItem>
                             <MenuItem value="NO">No</MenuItem>
                           </Select>
@@ -506,7 +527,12 @@ function ApplicationApplyForm() {
                             id="job"
                             value={job}
                             onChange={(e) => setJob(e.target.value)}
+                            displayEmpty
+                            placeholder="Any Job Experience?"
                           >
+                            <MenuItem disabled value="">
+                              Any Job Experience
+                            </MenuItem>
                             <MenuItem value="YES">YES</MenuItem>
                             <MenuItem value="NO">No</MenuItem>
                           </Select>
@@ -555,6 +581,7 @@ function ApplicationApplyForm() {
                             fullWidth
                             value={whatsapp}
                             name="whatsApp"
+                            placeholder="WhatsApp number?"
                           />
                         </Stack>
                       </Stack>
@@ -592,34 +619,47 @@ function ApplicationApplyForm() {
                             required
                             multiple
                             value={countryName}
+                            displayEmpty
                             onChange={(e) => setCountryName(e.target.value)}
-                            renderValue={(selected) => (
-                              <Stack gap={1} direction="row" flexWrap="wrap">
-                                {selected.map((value) => (
-                                  <Chip
-                                    key={value}
-                                    label={value}
-                                    onDelete={() =>
-                                      setCountryName(
-                                        countryName.filter(
-                                          (item) => item !== value
+                            renderValue={(selected) => {
+                              if (selected.length === 0) {
+                                return (
+                                  <span style={{ color: "gray" }}>
+                                    Interested Country?*
+                                  </span>
+                                ); // Placeholder text
+                              }
+                              return (
+                                <Stack gap={1} direction="row" flexWrap="wrap">
+                                  {selected.map((value) => (
+                                    <Chip
+                                      key={value}
+                                      label={value}
+                                      onDelete={() =>
+                                        setCountryName(
+                                          countryName.filter(
+                                            (item) => item !== value
+                                          )
                                         )
-                                      )
-                                    }
-                                    deleteIcon={
-                                      <Iconify
-                                        icon={
-                                          "material-symbols-light:cancel-rounded"
-                                        }
-                                        width={24}
-                                        height={24}
-                                      />
-                                    }
-                                  />
-                                ))}
-                              </Stack>
-                            )}
+                                      }
+                                      deleteIcon={
+                                        <Iconify
+                                          icon={
+                                            "material-symbols-light:cancel-rounded"
+                                          }
+                                          width={24}
+                                          height={24}
+                                        />
+                                      }
+                                    />
+                                  ))}
+                                </Stack>
+                              );
+                            }}
                           >
+                            <MenuItem disabled value="">
+                              Interested Country?*
+                            </MenuItem>
                             {countries?.map((item) => (
                               <MenuItem
                                 key={item.countryId}
@@ -682,6 +722,7 @@ function ApplicationApplyForm() {
                             fullWidth
                             value={address}
                             name="address"
+                            placeholder="Your Address?*"
                           />
                         </Stack>
                       </Stack>
@@ -802,6 +843,7 @@ function ApplicationApplyForm() {
                           <TextField
                             sx={{
                               marginTop: "10px",
+                              ml: 1,
                               backgroundColor:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.background.paper
@@ -848,6 +890,7 @@ function ApplicationApplyForm() {
                           <TextField
                             sx={{
                               marginTop: "10px",
+                              ml: 1,
                               backgroundColor:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.background.paper
@@ -1009,6 +1052,7 @@ function ApplicationApplyForm() {
                           <TextField
                             sx={{
                               marginTop: "10px",
+                              ml: 1,
                               backgroundColor:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.background.paper
@@ -1055,6 +1099,7 @@ function ApplicationApplyForm() {
                           <TextField
                             sx={{
                               marginTop: "10px",
+                              ml: 1,
                               backgroundColor:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.background.paper
@@ -1218,6 +1263,7 @@ function ApplicationApplyForm() {
                           <TextField
                             sx={{
                               marginTop: "10px",
+                              ml: 1,
                               backgroundColor:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.background.paper
@@ -1265,6 +1311,7 @@ function ApplicationApplyForm() {
                           <TextField
                             sx={{
                               marginTop: "10px",
+                              ml: 1,
                               backgroundColor:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.background.paper
@@ -1429,6 +1476,7 @@ function ApplicationApplyForm() {
                           <TextField
                             sx={{
                               marginTop: "10px",
+                              ml: 1,
                               backgroundColor:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.background.paper
@@ -1476,6 +1524,7 @@ function ApplicationApplyForm() {
                           <TextField
                             sx={{
                               marginTop: "10px",
+                              ml: 1,
                               backgroundColor:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.background.paper
@@ -1526,9 +1575,16 @@ function ApplicationApplyForm() {
                 </Stack>
 
                 {error && (
-                  <Typography variant="body1" color="error" gutterBottom>
-                    {error}
-                  </Typography>
+                  <Box display="flex" justifyContent="center" sx={{ mt: 2 }}>
+                    <Typography
+                      variant="body1"
+                      color="error"
+                      gutterBottom
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      {error}
+                    </Typography>
+                  </Box>
                 )}
 
                 <Box
@@ -1541,11 +1597,11 @@ function ApplicationApplyForm() {
                     type="submit"
                     color="secondary"
                     variant="contained"
-                    size={matchesSm ? "medium" : "large"}
+                    size={matchesSm ? "small" : "large"}
                     style={{
                       color: "#FFFF",
                       marginTop: "20px",
-                      width: "400px",
+                      width: matchesSm ? "200px" : "400px",
                     }}
                   >
                     Submit
@@ -1553,7 +1609,7 @@ function ApplicationApplyForm() {
                 </Box>
               </form>
             </Box>
-          </Card>
+          </Container>
         </div>
       )}
     </>

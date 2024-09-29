@@ -167,7 +167,7 @@ export default function OfficeVisitStudentForm() {
         justifyContent: "space-between",
         paddingTop: "80px",
         paddingBottom: "60px",
-        backgroundColor: "#FFFFFF",
+        // backgroundColor: "#FFFFFF",
         flexDirection: matchesSm ? "column" : "row",
       }}
     >
@@ -1473,16 +1473,16 @@ export default function OfficeVisitStudentForm() {
                                   <RadioGroup
                                     row
                                     aria-labelledby="demo-row-radio-buttons-group-label"
-                                    name="english_proficiency" // Match Formik's field name
+                                    name="english_proficiency"
                                     value={ielts}
                                     onChange={(e) => {
-                                      setIelts(e.target.value); // Update local state
+                                      setIelts(e.target.value);
                                       formik.setFieldValue(
                                         "english_proficiency",
                                         e.target.value
                                       ); // Update Formik value
                                     }}
-                                    onBlur={formik.handleBlur} // Handle blur event for Formik
+                                    onBlur={formik.handleBlur}
                                   >
                                     {["IELTS", "TOEFL", "OTHERS"].map(
                                       (value) => (
@@ -1871,10 +1871,10 @@ export default function OfficeVisitStudentForm() {
                             />
                           }
                           label={
-                            <small>
+                            <small style={{ color: "black" }}>
                               I agree with the{" "}
                               <u
-                                style={{ fontWeight: "bold" }}
+                                style={{ fontWeight: "bold", color: "black" }}
                                 onClick={() =>
                                   router.push("/terms-and-conditions")
                                 }
@@ -1883,7 +1883,7 @@ export default function OfficeVisitStudentForm() {
                               </u>
                               ,{" "}
                               <u
-                                style={{ fontWeight: "bold" }}
+                                style={{ fontWeight: "bold", color: "black" }}
                                 onClick={() => router.push("/privacy-policy")}
                               >
                                 {" "}

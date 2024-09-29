@@ -55,8 +55,8 @@ const LINKS = [
       {
         href: "https://forms.swisscare.com/#/isie?icd=3049",
         name: "Swisscare",
-        target: "_blank",  // Ensures the link opens in a new tab
-        rel: "noreferrer",  // Adds security for opening a new tab
+        target: "_blank", // Ensures the link opens in a new tab
+        rel: "noreferrer", // Adds security for opening a new tab
       },
       { href: "/office-visit-student", name: "Office Visit Form" },
     ],
@@ -190,10 +190,9 @@ export default function MainFooter() {
               </Stack>
 
               <Stack direction="row" mt={2} alignItems={"center"}>
-                
-                  <Typography component="p" variant="overline" mt={2}>
-                    Our Sister <br /> Concern
-                  </Typography>
+                <Typography component="p" variant="overline" mt={2}>
+                  Our Sister <br /> Concern
+                </Typography>
 
                 <Link
                   href="https://abroadtickets.com/"
@@ -202,15 +201,30 @@ export default function MainFooter() {
                   component={NextLink}
                   sx={{ display: "flex", alignItems: "center" }}
                 >
-                  <Image
-                    src={logo}
-                    alt="abroad ticket"
-                    width={80}
-                    height={80}
-                    style={{
-                      marginTop: 15,
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      marginTop: 2,
+                      backgroundColor: "white",
+                      borderRadius: "50%",
+                      padding: "12px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginLeft: "15px",
                     }}
-                  />
+                  >
+                    <Image
+                      src={logo}
+                      alt="abroad ticket"
+                      width={70}
+                      height={70}
+                      style={{
+                        objectFit: "contain",
+                      }}
+                    />
+                  </Box>
                 </Link>
               </Stack>
             </Stack>

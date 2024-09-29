@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import banner from "@/public/assets/images/others/dashboard.webp"
+import { useRouter } from "next/navigation";
 
 // ----------------------------------------------------------------------
 
@@ -21,9 +22,10 @@ const RootStyle = styled(Card)(({ theme }) => ({
   },
 }));
 
-// ----------------------------------------------------------------------
+
 
 export default function AppWelcome({ displayName }) {
+  const router = useRouter();
   const {userInfo } = useSelector((state)=> state.user)
 
   return (
@@ -49,7 +51,12 @@ export default function AppWelcome({ displayName }) {
           updated on application statuses and deadlines
         </Typography>
 
-        <Button variant="contained">Apply Abroad</Button>
+        <Button 
+        variant="contained"
+        onClick={()=>router.push("/dashboard/application-abroad")}
+        >
+        Apply Abroad
+        </Button>
       </CardContent>
       <Image
         src={banner}

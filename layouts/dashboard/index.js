@@ -63,6 +63,7 @@ export default function DashboardLayout({ children }) {
       />
 
       <MainStyle collapseClick={collapseClick}>{children}</MainStyle>
+      
     </Box>
   );
 }
