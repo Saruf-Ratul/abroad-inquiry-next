@@ -40,6 +40,7 @@ function ResetPassword() {
   const dispatch = useDispatch();
   const matchSm = useMediaQuery("(min-width:600px)");
   const [loading,setLoading] = useState(false);
+  const [error,setError] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [resetSuccess, setResetSuccess] = useState(false);
@@ -72,6 +73,7 @@ function ResetPassword() {
         setLoading(false);
       })
       .catch((error) => {
+        setError("Something went wrong, please try again!");
         setLoading(false);
       });
 
