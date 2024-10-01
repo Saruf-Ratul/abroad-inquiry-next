@@ -627,7 +627,7 @@ function ApplicationApplyForm() {
                                   <span style={{ color: "gray" }}>
                                     Interested Country?*
                                   </span>
-                                ); // Placeholder text
+                                ); 
                               }
                               return (
                                 <Stack gap={1} direction="row" flexWrap="wrap">

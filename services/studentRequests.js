@@ -183,3 +183,8 @@ export const OFFICE_VISITED_STUDENT = (data) => {
   });
 };
 
+export const RESET_PASSWORD_CALL = (data) => {
+  return axios.post(api.auth.resetPassword, data, { headers: configParams });
+};
+
+

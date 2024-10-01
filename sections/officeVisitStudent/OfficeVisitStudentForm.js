@@ -18,6 +18,7 @@ import {
   FormControl,
   FormHelperText,
   Checkbox,
+  CircularProgress,
 } from "@mui/material";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -69,7 +70,7 @@ export default function OfficeVisitStudentForm() {
   const [listen, setListen] = useState("");
   const [speak, setSpeak] = useState("");
   const [otherTxt, setOtherTxt] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const { mentors } = useSelector((state) => state.mentors);
   const [success, setSuccess] = useState(false);
@@ -114,6 +115,7 @@ export default function OfficeVisitStudentForm() {
   });
 
   const handleFormSubmit = (formData, resetForm) => {
+    setLoading(true);
     let data = {
       ...formData,
       english_proficiency:
@@ -124,15 +126,18 @@ export default function OfficeVisitStudentForm() {
 
     if (!ielts) {
       setError("Please select IELTS/TOEFL/OTHERS");
+      setLoading(false);
     } else if (ielts === "IELTS" || ielts === "TOEFL") {
       if (!overall || !read || !write || !listen || !speak) {
         setError("Please provide overall score and all section scores.");
+        setLoading(false);
       } else {
         setError("");
         submitData(data, resetForm);
       }
     } else if (otherTxt.trim() === "") {
       setError("Please provide a value for others.");
+      setLoading(false);
     } else {
       setError("");
       submitData(data, resetForm);
@@ -144,14 +149,18 @@ export default function OfficeVisitStudentForm() {
       .then((res) => {
         setSuccess(true);
         resetForm();
+        setLoading(false);
       })
       .catch((error) => {
         if (error.response && error.response.status === 422) {
           setError("This email is already submitted!");
+          setLoading(false);
         } else if (error.response && error.response.status === 403) {
           setError("This email is already submitted!");
+          setLoading(false);
         } else {
           setError("Something went wrong. Please try again later.");
+          setLoading(false);
         }
       });
   };
@@ -1907,6 +1916,8 @@ export default function OfficeVisitStudentForm() {
                           variant="contained"
                           size={matchesSm ? "medium" : "large"}
                           fullWidth
+                          disabled={loading}
+                          startIcon={loading && <CircularProgress size={20} />}
                         >
                           Submit
                         </Button>

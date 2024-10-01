@@ -19,6 +19,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { userResetPassword } from "@/redux/features/auth/authSlice";
+import { RESET_PASSWORD_CALL } from "@/services/studentRequests";
 
 // Validation schema using Yup
 const passwordValidationschema = yup.object().shape({
@@ -38,6 +39,7 @@ const passwordValidationschema = yup.object().shape({
 function ResetPassword() {
   const dispatch = useDispatch();
   const matchSm = useMediaQuery("(min-width:600px)");
+  const [loading,setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [resetSuccess, setResetSuccess] = useState(false);
@@ -46,7 +48,7 @@ function ResetPassword() {
     confirmPassword: false,
   });
 
-  const { loading, resetPass, error } = useSelector((state) => state.user);
+  // const { loading, resetPass, error } = useSelector((state) => state.user);
   const uid = searchParams.get("uid");
 
   const formik = useFormik({
@@ -56,14 +58,24 @@ function ResetPassword() {
     },
     validationSchema: passwordValidationschema,
     onSubmit: (values, { resetForm }) => {
+      setLoading(true);
       const data = {
         password: values.password,
         confirmPassword: values.confirmPassword,
         uid: uid,
       };
-      dispatch(userResetPassword(data));
-      resetForm(); // Reset the form fields after submission
-      setResetSuccess(true); // Set reset success state to true
+      // dispatch(userResetPassword(data));
+
+      RESET_PASSWORD_CALL(data)
+      .then((res) => {
+        setResetSuccess(true); 
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+
+      resetForm(); 
     },
   });
 
@@ -80,10 +92,10 @@ function ResetPassword() {
           }}
         >
           <Typography variant="h2" textAlign={"center"}>
-            {resetSuccess ? "Password Updated" : "Reset Password"}
+           Reset Password
           </Typography>
 
-          {!resetPass ? (
+          {!resetSuccess ? (
             <form
               onSubmit={formik.handleSubmit}
               method="post"
