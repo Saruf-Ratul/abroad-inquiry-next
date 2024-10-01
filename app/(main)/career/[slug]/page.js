@@ -127,12 +127,12 @@ function CareerDetail({ params }) {
               </Box>
               <Box m={3}>
                 <Typography component="div" variant="p" mt={2} mb={2}>
-                  <strong>Salary:</strong> {career.salary}
+                  <strong>Salary:</strong> Negotiable
                 </Typography>
               </Box>
               <Box m={3}>
                 <Typography component="div" variant="p" mt={2} mb={2}>
-                  <strong>Salary Review:</strong> Negotiable
+                  <strong>Salary Review:</strong> Yearly
                 </Typography>
               </Box>
               <Box m={3}>

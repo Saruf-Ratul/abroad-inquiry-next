@@ -3,7 +3,7 @@ import Iconify from "@/components/Iconify";
 import { fetchCareers } from "@/redux/features/career/careerSlice";
 import { BASE_URL } from "@/utils/axios";
 import {
-  Box,
+  Grid,
   Button,
   Card,
   CardContent,
@@ -12,13 +12,13 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import DataLoading from "@/components/DataLoading";
 
-function CareerCard({ job }) {
-  const matcheSm = useMediaQuery('(min-width:600px)');
+function CareerCard() {
+  const matcheSm = useMediaQuery("(min-width:600px)");
   const router = useRouter();
   const dispatch = useDispatch();
   const { careers, loading } = useSelector((state) => state.careers);
@@ -43,57 +43,56 @@ function CareerCard({ job }) {
       <Typography variant="h3" fontWeight="bold" paddingBottom={3}>
         Open Job Positions
       </Typography>
-      {
-        loading ? (
-          <DataLoading />
-        ) : (
-          <Box
-            sx={{
-              marginTop: "20px",
-              marginBottom: "50px",
-              display: "flex",
-              flexDirection: matcheSm ? "row" : "column",
-              justifyContent: "space-between",
-            }}
-          >
-            {careers.map((career) => {
-              return (
-                <Card sx={{ maxWidth: 345, mt: matcheSm ? 0 : 4 }} key={career.careerPostId}>
-                  <Image
-                    src={`${BASE_URL}/${career.image}`}
-                    width={400}
-                    height={200}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {career.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Deadline: {career.deadline}
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      color="inherit"
-                      size="medium"
-                      endIcon={
-                        <Iconify
-                          icon={"ic:round-arrow-right-alt"}
-                          width={24}
-                          height={24}
-                        />
-                      }
-                      sx={{ mx: "auto", mt: 2 }}
-                      onClick={() => handleClick(career.careerPostId)}
-                    >
-                      See Details
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </Box>
-        )
-      }
+      {loading ? (
+        <DataLoading />
+      ) : (
+        <Grid container spacing={4} marginTop="20px" marginBottom="50px">
+          {careers.map((career) => (
+            <Grid item xs={12} sm={6} md={4} key={career.careerPostId}>
+              <Card
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  height: "100%",
+                  maxWidth: 345,
+                }}
+              >
+                <Image
+                  src={`${BASE_URL}/${career.image}`}
+                  width={400}
+                  height={200}
+                  alt={career.title}
+                />
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {career.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Deadline: {career.deadline}
+                  </Typography>
+                </CardContent>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  size="medium"
+                  endIcon={
+                    <Iconify
+                      icon={"ic:round-arrow-right-alt"}
+                      width={24}
+                      height={24}
+                    />
+                  }
+                  sx={{ mx: "auto", mb: 2 }}
+                  onClick={() => handleClick(career.careerPostId)}
+                >
+                  See Details
+                </Button>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Container>
   );
 }
