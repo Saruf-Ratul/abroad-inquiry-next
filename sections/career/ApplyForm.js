@@ -84,11 +84,11 @@ const ApplyForm = ({ title, careerPostId }) => {
     }
 
     // const linkedinRegex = /^https:\/\/(www\.)?linkedin\.com\/.*$/;
-    const linkedinRegex = /^[a-zA-Z.\s]+$/;
-    if (!linkedinRegex.test(linkedinLink)) {
-      setError("Invalid LinkedIn Profile URL.");
-      return;
-    }
+    // const linkedinRegex = /^[a-zA-Z.\s]+$/;
+    // if (!linkedinRegex.test(linkedinLink)) {
+    //   setError("Invalid LinkedIn Profile URL.");
+    //   return;
+    // }
 
     if (coverLetter.split(/\s+/).length > 500) {
       return "Cover Letter must be a maximum of 500 words.";
@@ -103,47 +103,39 @@ const ApplyForm = ({ title, careerPostId }) => {
 
   const handleApply = async (e) => {
     e.preventDefault();
+
     const validationError = validateInputs();
     if (validationError) {
       setError(validationError);
       return;
     }
 
-    const allowedExtensions = /(\.pdf)$/i;
-    if (!allowedExtensions.exec(cvFile.name)) {
-      setError("Invalid CV file format. Please upload a PDF file.");
-      return;
-    }
     if (!cvFile) {
       setError("PDF Not Selected");
       return;
     }
 
     // Prepare form data
-    const myForm = new FormData();
-    myForm.append("careerPostId", careerPostId);
-    myForm.append("applicationFor", applicationFor);
-    myForm.append("firstName", firstName);
-    myForm.append("lastName", lastName);
-    myForm.append("status", "Pending");
-    myForm.append("email", email);
-    myForm.append("phone", phone);
-    myForm.append("linkedinLink", linkedinLink);
-    myForm.append("coverLetter", coverLetter);
-    myForm.append("cvFile", cvFile);
-
-    // Log the FormData contents
-    myForm.forEach((value, key) => {
-      console.log(key, value);
-    });
+    const formData = new FormData();
+    formData.append("careerPostId", careerPostId);
+    formData.append("applicationFor", applicationFor);
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("status", "Pending");
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("linkedinLink", linkedinLink);
+    formData.append("coverLetter", coverLetter);
+    formData.append("cvFile", cvFile);
 
     try {
-      await dispatch(carrierJobApplication(myForm)).unwrap();
+      await dispatch(carrierJobApplication(formData)).unwrap();
       setError(null);
       setSuccess(true);
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       setError(
-        error.response && error.response.status === 409
+        err.response && err.response.status === 409
           ? "You have already applied for this position."
           : "Something went wrong. Please try again later."
       );
@@ -295,6 +287,7 @@ const ApplyForm = ({ title, careerPostId }) => {
                     name="cvFile"
                     onChange={handleFileChange}
                   />
+
                   <Typography variant="body2" color="textSecondary">
                     PDF file, max 2MB
                   </Typography>
