@@ -51,6 +51,7 @@ const ApplyForm = ({ title, careerPostId }) => {
   const [cvFile, setCvFile] = useState(null);
   const [showFile, setShowFile] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -115,7 +116,8 @@ const ApplyForm = ({ title, careerPostId }) => {
       return;
     }
 
-    // Prepare form data
+    setLoading(true); // Start loading
+
     const formData = new FormData();
     formData.append("careerPostId", careerPostId);
     formData.append("applicationFor", applicationFor);
@@ -133,12 +135,13 @@ const ApplyForm = ({ title, careerPostId }) => {
       setError(null);
       setSuccess(true);
     } catch (err) {
-      console.error(err);
       setError(
         err.response && err.response.status === 409
           ? "You have already applied for this position."
           : "Something went wrong. Please try again later."
       );
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -325,11 +328,11 @@ const ApplyForm = ({ title, careerPostId }) => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!agree}
+                disabled={!agree || loading}
                 fullWidth
                 size="large"
               >
-                Apply
+                {loading ? "Applying..." : "Apply"}
               </Button>
             </form>
           </ScrollableForm>

@@ -31,7 +31,6 @@ export const carrierJobApplication = createAsyncThunk(
   "career/carrierJobApplication",
   async (data) => {
     const response = jobApplication(data);
-    console.log(response.then((data) => console.log(data)));
     return response;
   }
 );
