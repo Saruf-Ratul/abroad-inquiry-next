@@ -33,7 +33,7 @@ const ScrollableForm = styled(Box)`
   overflow-y: auto;
 `;
 
-const ApplyForm = ({ title, handleClose, career }) => {
+const ApplyForm = ({ title, careerPostId }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [agree, setAgree] = useState(false);
@@ -83,9 +83,12 @@ const ApplyForm = ({ title, handleClose, career }) => {
       return "Mobile Number must be exactly 11 digits.";
     }
 
-    // if (!linkedinRegex.test(linkedinLink)) {
-    //   return "Invalid LinkedIn Profile URL.";
-    // }
+    // const linkedinRegex = /^https:\/\/(www\.)?linkedin\.com\/.*$/;
+    const linkedinRegex = /^[a-zA-Z.\s]+$/;
+    if (!linkedinRegex.test(linkedinLink)) {
+      setError("Invalid LinkedIn Profile URL.");
+      return;
+    }
 
     if (coverLetter.split(/\s+/).length > 500) {
       return "Cover Letter must be a maximum of 500 words.";
@@ -106,20 +109,38 @@ const ApplyForm = ({ title, handleClose, career }) => {
       return;
     }
 
+    const allowedExtensions = /(\.pdf)$/i;
+    if (!allowedExtensions.exec(cvFile.name)) {
+      setError("Invalid CV file format. Please upload a PDF file.");
+      return;
+    }
+    if (!cvFile) {
+      setError("PDF Not Selected");
+      return;
+    }
+
+    // Prepare form data
     const myForm = new FormData();
+    myForm.append("careerPostId", careerPostId);
     myForm.append("applicationFor", applicationFor);
     myForm.append("firstName", firstName);
     myForm.append("lastName", lastName);
+    myForm.append("status", "Pending");
     myForm.append("email", email);
     myForm.append("phone", phone);
     myForm.append("linkedinLink", linkedinLink);
     myForm.append("coverLetter", coverLetter);
     myForm.append("cvFile", cvFile);
 
+    // Log the FormData contents
+    myForm.forEach((value, key) => {
+      console.log(key, value);
+    });
+
     try {
       await dispatch(carrierJobApplication(myForm)).unwrap();
+      setError(null);
       setSuccess(true);
-      handleClose();
     } catch (error) {
       setError(
         error.response && error.response.status === 409
