@@ -31,7 +31,7 @@ const VisuallyHiddenInput = styled("input")`
   width: 1px;
 `;
 
-const ApplyForm = ({ title, handleClose }) => {
+const ApplyForm = ({ title, careerPostId }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [agree, setAgree] = useState(false);
@@ -82,7 +82,8 @@ const ApplyForm = ({ title, handleClose }) => {
       return;
     }
 
-    const linkedinRegex = /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/.*$/;
+    // const linkedinRegex = /^https:\/\/(www\.)?linkedin\.com\/.*$/;
+    const linkedinRegex = /^[a-zA-Z.\s]+$/;
     if (!linkedinRegex.test(linkedinLink)) {
       setError("Invalid LinkedIn Profile URL.");
       return;
@@ -98,31 +99,34 @@ const ApplyForm = ({ title, handleClose }) => {
       setError("Invalid CV file format. Please upload a PDF file.");
       return;
     }
+    if (!cvFile) {
+      setError("PDF Not Selected");
+      return;
+  }
+
 
     // Prepare form data
     const myForm = new FormData();
+    myForm.append("careerPostId", careerPostId);
     myForm.append("applicationFor", applicationFor);
     myForm.append("firstName", firstName);
     myForm.append("lastName", lastName);
+    myForm.append("status", "Pending");
     myForm.append("email", email);
     myForm.append("phone", phone);
     myForm.append("linkedinLink", linkedinLink);
     myForm.append("coverLetter", coverLetter);
     myForm.append("cvFile", cvFile);
 
+    // Log the FormData contents
+    myForm.forEach((value, key) => {
+      console.log(key, value);
+    });
+
     try {
       await dispatch(carrierJobApplication(myForm)).unwrap();
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setLinkedinLink("");
-      setCoverLetter("");
-      setCvFile("");
-      setAgree(false);
-      setError(null);``
+      setError(null);
       setSuccess(true);
-      handleClose();
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setError("You have already applied for this position.");
@@ -156,11 +160,12 @@ const ApplyForm = ({ title, handleClose }) => {
             <Typography variant="body1" marginY={3} textAlign="center">
               If you are shortlisted, we will contact you as soon as possible.
             </Typography>
-            <Button 
-            variant="contained" 
-            onClick={() => router.push("/")}
-            endIcon={<Iconify icon={"lets-icons:back"} width={24} height={24} />}
-            
+            <Button
+              variant="contained"
+              onClick={() => router.push("/")}
+              endIcon={
+                <Iconify icon={"lets-icons:back"} width={24} height={24} />
+              }
             >
               Back to home
             </Button>
@@ -323,8 +328,10 @@ const ApplyForm = ({ title, handleClose }) => {
                     <VisuallyHiddenInput
                       type="file"
                       ref={fileInputRef}
+                      accept=".pdf"
                       onChange={handleFileChange}
                     />
+
                     <h4
                       style={{
                         marginLeft: "10px",

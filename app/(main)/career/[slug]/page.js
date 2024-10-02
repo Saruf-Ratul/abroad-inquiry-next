@@ -191,7 +191,7 @@ function CareerDetail({ params }) {
           open={open}
           onClose={handleClose}
         >
-          <ApplyForm title={career.title} handleClose={handleClose} />
+          <ApplyForm title={career.title} careerPostId={career.careerPostId} handleClose={handleClose} />
         </Dialog>
       </>
     </div>
