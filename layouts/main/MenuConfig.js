@@ -14,42 +14,42 @@ const ICON_SIZE = {
 const menuConfig = [
   {
     title: "Home",
-    icon: <Iconify icon={"eva:home-fill"} {...ICON_SIZE} />,
+    icon: <Iconify icon={"flowbite:home-outline"} {...ICON_SIZE} />,
     path: PATH_PAGE.home,
   },
   {
     title: "Mentors",
-    icon: <Iconify icon={"eva:file-fill"} {...ICON_SIZE} />,
+    icon: <Iconify icon={"hugeicons:mentor"} {...ICON_SIZE} />,
     path: PATH_PAGE.mentors,
   },
   {
     title: "Countries",
-    icon: <Iconify icon={"ic:round-grain"} {...ICON_SIZE} />,
+    icon: <Iconify icon={"streamline:earth-airplane"} {...ICON_SIZE} />,
     path: PATH_PAGE.countries,
   },
   {
     title: "Services",
-    icon: <Iconify icon={"ic:round-grain"} {...ICON_SIZE} />,
+    icon: <Iconify icon={"pepicons-pop:list"} {...ICON_SIZE} />,
     path: PATH_PAGE.services,
   },
   {
     title: "Newsfeed",
-    icon: <Iconify icon={"ic:round-grain"} {...ICON_SIZE} />,
+    icon: <Iconify icon={"fluent:feed-16-regular"} {...ICON_SIZE} />,
     path: PATH_PAGE.newsfeed,
   },
   {
     title: "About us",
-    icon: <Iconify icon={"ic:round-grain"} {...ICON_SIZE} />,
+    icon: <Iconify icon={"mdi:about-circle-outline"} {...ICON_SIZE} />,
     path: PATH_PAGE.about,
   },
   {
     title: "Contact us",
-    icon: <Iconify icon={"ic:round-grain"} {...ICON_SIZE} />,
+    icon: <Iconify icon={"fluent:call-28-regular"} {...ICON_SIZE} />,
     path: PATH_PAGE.contact,
   },
   {
     title: "Career",
-    icon: <Iconify icon={"ic:round-grain"} {...ICON_SIZE} />,
+    icon: <Iconify icon={"hugeicons:permanent-job"} {...ICON_SIZE} />,
     path: PATH_PAGE.career,
   },
   // {

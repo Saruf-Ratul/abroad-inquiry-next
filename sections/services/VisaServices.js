@@ -1,15 +1,22 @@
-import React from "react";
-import { Box, Container, Typography } from "@mui/material";
-
+"use client";
+import Iconify from "@/components/Iconify";
 import AnimatedComponent from "@/components/animate/AnimatedComponent";
-import { ServiceRootStyle } from "./style";
 import Timeline from "@mui/lab/Timeline";
-import TimelineItem from "@mui/lab/TimelineItem";
-import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineDot from "@mui/lab/TimelineDot";
-import Iconify from "@/components/Iconify";
+import TimelineItem from "@mui/lab/TimelineItem";
+import TimelineSeparator from "@mui/lab/TimelineSeparator";
+import {
+  Box,
+  Card,
+  Container,
+  Grid,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { ServiceRootStyle } from "./style";
 
 export const SERVICES = [
   {
@@ -64,6 +71,9 @@ export const SERVICES = [
 ];
 
 export default function VisaServices() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <>
       <ServiceRootStyle>
@@ -71,7 +81,7 @@ export default function VisaServices() {
           <Box
             sx={{
               textAlign: "center",
-              mb: { xs: 4, md: 4 },
+              mb: { xs: 4, md: 6 },
             }}
           >
             <AnimatedComponent animationType="inUp">
@@ -84,45 +94,96 @@ export default function VisaServices() {
               </Typography>
             </AnimatedComponent>
             <AnimatedComponent animationType="inDown">
-              <Typography variant="h2">Visa Services</Typography>
+              <Typography variant="h2" sx={{ fontWeight: "bold" }}>
+                Visa Services
+              </Typography>
             </AnimatedComponent>
           </Box>
 
-          <Timeline 
-          position="alternate"
-          
-          >
-            {SERVICES.map((step, index) => (
-              <TimelineItem key={index}>
-                <TimelineSeparator>
-                  <TimelineConnector />
-                  <TimelineDot color="primary" variant="outlined">
-                    <Iconify
-                      icon={step.icon}
-                      color="#FFFF"
+          {!isMobile ? (
+            <Timeline position="alternate">
+              {SERVICES.map((step, index) => (
+                <TimelineItem key={index}>
+                  <TimelineSeparator>
+                    <TimelineDot color="primary" variant="outlined">
+                      <Iconify
+                        icon={step.icon}
+                        color="#FFF"
+                        sx={{
+                          bgcolor: "secondary.main",
+                          width: 40,
+                          height: 40,
+                          m: "auto",
+                          borderRadius: "50%",
+                          p: 1,
+                        }}
+                      />
+                    </TimelineDot>
+                    {index < SERVICES.length - 1 && (
+                      <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
+                    )}
+                  </TimelineSeparator>
+                  <TimelineContent sx={{ py: "12px", px: 2 }}>
+                    <Card
                       sx={{
-                        bgcolor: "secondary.main",
-                        width: 50,
-                        height: 50,
-                        m: "auto",
-                        borderRadius: "50%",
-                        p: 1,
+                        p: 3,
+                        boxShadow: 4,
+                        transition: "transform 0.3s ease",
+                        "&:hover": { transform: "scale(1.05)" },
                       }}
-                    />
-                  </TimelineDot>
-                  <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
-                </TimelineSeparator>
-                <TimelineContent sx={{ py: "12px", px: 2 }}>
-                  <Typography variant="h6" component="span">
-                    {step.title}  
-                  </Typography>
-                  <Typography variant="body2" textAlign="justify">
-                    {step.description}
-                  </Typography>
-                </TimelineContent>
-              </TimelineItem>
-            ))}
-          </Timeline>
+                    >
+                      <Typography variant="h6" fontWeight="bold">
+                        {step.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ mt: 1, textAlign: "justify" }}
+                      >
+                        {step.description}
+                      </Typography>
+                    </Card>
+                  </TimelineContent>
+                </TimelineItem>
+              ))}
+            </Timeline>
+          ) : (
+            <Grid container spacing={4}>
+              {SERVICES.map((step, index) => (
+                <Grid item xs={12} key={index}>
+                  <Card sx={{ p: 3, boxShadow: 3 }}>
+                    <Box
+                      display="flex"
+                      justifyContent={"flex-start"}
+                      alignItems="center"
+                      mb={2}
+                    >
+                      <Iconify
+                        icon={step.icon}
+                        color="#FFF"
+                        width={40}
+                        height={40}
+                        sx={{
+                          bgcolor: "secondary.main",
+                          borderRadius: "50%",
+                          mr: 2,
+                          p: 0.5,
+                        }}
+                      />
+                      <Typography variant="h6" fontWeight="bold">
+                        {step.title}
+                      </Typography>
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      sx={{ mt: 1, textAlign: "justify" }}
+                    >
+                      {step.description}
+                    </Typography>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          )}
         </Container>
       </ServiceRootStyle>
     </>

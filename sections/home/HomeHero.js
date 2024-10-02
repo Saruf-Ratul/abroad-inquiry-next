@@ -34,7 +34,7 @@ import slide5 from "@/public/assets/banner-slide-imgs/slide-8.webp";
 import slide6 from "@/public/assets/banner-slide-imgs/slide-6.webp";
 import slide7 from "@/public/assets/banner-slide-imgs/slide-7.webp";
 import testimonial from "@/public/assets/images/img/testimonial-bg.webp";
-import backgroundVideo from "@/public/assets/images/img/backgroundVideo.mp4";
+// import backgroundVideo from "@/public/assets/images/img/backgroundVideo.mp4";
 import googlePlay from "@/public/assets/banner-slide-imgs/google-play-store.webp";
 import appleStore from "@/public/assets/banner-slide-imgs/apple-app-store.webp";
 import shape from "@/public/assets/images/img/shape-7.webp";
@@ -176,7 +176,7 @@ export default function HomeHero() {
       <RootStyle>
         <OverlayStyle>
           <video autoPlay muted loop>
-            <source src={backgroundVideo} type="video/mp4" />
+          <source src="/assets/images/img/backgroundVideo.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </OverlayStyle>

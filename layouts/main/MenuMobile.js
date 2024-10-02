@@ -160,7 +160,7 @@ function MenuMobileItem({ item, isOpen, onOpen }) {
   }
 
   return (
-    <NextLink href={path} passHref>
+    <Link component={NextLink} href={path} passHref>
       <ListItemStyle
         sx={{
           ...(isActive && {
@@ -177,6 +177,6 @@ function MenuMobileItem({ item, isOpen, onOpen }) {
         <ListItemIcon>{icon}</ListItemIcon>
         <ListItemText disableTypography primary={title} />
       </ListItemStyle>
-    </NextLink>
+    </Link>
   );
 }

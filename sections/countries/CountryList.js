@@ -1,26 +1,23 @@
 "use client";
+import DataLoading from "@/components/DataLoading";
+import { fetchCountries } from "@/redux/features/country/countrySlice";
+import { BASE_URL } from "@/utils/axios";
+import cssStyles from "@/utils/cssStyles";
 import {
   Avatar,
   Box,
-  Button,
   Card,
   Container,
   Grid,
-  Pagination,
   Stack,
   Typography,
   styled,
   useMediaQuery,
 } from "@mui/material";
 import Image from "next/image";
-
-import cssStyles from "@/utils/cssStyles";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { BASE_URL } from "@/utils/axios";
-import { fetchCountries } from "@/redux/features/country/countrySlice";
 import { useRouter } from "next/navigation";
-import DataLoading from "@/components/DataLoading";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const OverlayStyle = styled("div")(({ theme }) => ({
   ...cssStyles().bgBlur({ blur: 2, color: theme.palette.primary.darker }),
@@ -34,24 +31,54 @@ const OverlayStyle = styled("div")(({ theme }) => ({
 
 export default function CountryList() {
   const dispatch = useDispatch();
-  const [page,setPage] = useState(1);
-  const { countries, loading,totalCountry } = useSelector((state) => state.countries);
+  const [page, setPage] = useState(1);
+  const { countries, loading, totalCountry } = useSelector(
+    (state) => state.countries
+  );
+  const loader = useRef(null); // For observing the scroll position
 
+  // Fetch countries when page changes
   useEffect(() => {
-    if(page){
+    if (page) {
       dispatch(fetchCountries(page));
     }
-  }, [dispatch,page]);
+  }, [dispatch, page]);
 
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && countries.length < totalCountry) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      {
+        root: null, // Observe viewport
+        rootMargin: "20px",
+        threshold: 1.0, // Trigger when fully in view
+      }
+    );
+
+    if (loader.current) {
+      observer.observe(loader.current);
+    }
+
+    return () => {
+      if (loader.current) {
+        observer.unobserve(loader.current);
+      }
+    };
+  }, [countries, totalCountry]);
 
   return (
     <>
       <Container sx={{ mb: 6 }}>
         <Box sx={{ mt: 5 }}>
           <Typography variant="h4" sx={{ marginBottom: "30px" }}>
-            Popular place to study abroad
+            Popular places to study abroad
           </Typography>
-          {loading ? (
+          {loading && page === 1 ? (
             <DataLoading />
           ) : (
             <Grid container spacing={3}>
@@ -63,17 +90,14 @@ export default function CountryList() {
             </Grid>
           )}
         </Box>
-        <Stack alignItems="center" mt={2}>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="large"
-            disabled={totalCountry === countries?.length}
-            onClick={() => setPage((prev) => prev + 1)}
-          >
-            Load More
-          </Button>
-        </Stack>
+
+        {/* Loader Element for triggering next page load */}
+        {loading && page > 1 && (
+          <Stack alignItems="center" mt={2}>
+            <DataLoading />
+          </Stack>
+        )}
+        <div ref={loader} style={{ height: "20px", marginTop: "20px" }} />
       </Container>
     </>
   );
@@ -94,7 +118,7 @@ function CountryCard({ country }) {
 
   return (
     <Card
-      sx={{ textAlign: "center", position: "relative" }} // Add relative positioning
+      sx={{ textAlign: "center", position: "relative", cursor: "pointer" }} // Add relative positioning
       onClick={() => router.push(`/countries/${country.countryId}`)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -151,7 +175,7 @@ function CountryCard({ country }) {
               {country.countryName} is a popular place for study. International
               students can apply for bachelor, master’s, doctoral and
               postdoctoral programs...
-              <Typography color="secondary" variant="h6" display="inline">
+              <Typography color="secondary" variant="body2" display="inline">
                 Read More
               </Typography>
             </Typography>
