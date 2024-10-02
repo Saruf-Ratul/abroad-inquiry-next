@@ -1,36 +1,34 @@
 "use client";
-import { useEffect, useState } from "react";
-import * as Yup from "yup";
-import NextLink from "next/link";
+import { FormProvider, RHFTextField } from "@/components/hook-form";
+import Iconify from "@/components/Iconify";
+import { auth } from "@/firebase/firebaseConfig";
+import useIsMountedRef from "@/hooks/useIsMountedRef";
+import { userLogin } from "@/redux/features/auth/authSlice";
+import { PATH_AUTH } from "@/routes/paths";
+import { STUDENT_SIGNUP_CALL } from "@/services/studentRequests";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import {
   Alert,
+  Box,
   Checkbox,
-  useTheme,
+  Divider,
   FormControlLabel,
   IconButton,
   InputAdornment,
   Link,
   Stack,
-  Divider,
-  Box,
   Typography,
-  Button,
+  useTheme,
 } from "@mui/material";
-import { PATH_AUTH } from "@/routes/paths";
-import useIsMountedRef from "@/hooks/useIsMountedRef";
-import { useRouter } from "next/navigation";
-import { FormProvider, RHFTextField } from "@/components/hook-form";
-import Iconify from "@/components/Iconify";
-import { fetchUserInfo, userLogin } from "@/redux/features/auth/authSlice";
-import { useDispatch, useSelector } from "react-redux";
-import Cookies from "js-cookie";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth, provider } from "@/firebase/firebaseConfig";
-import { STUDENT_SIGNUP_CALL } from "@/services/studentRequests";
-import Loading from "@/app/loading";
+import Cookies from "js-cookie";
+import NextLink from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import * as Yup from "yup";
 
 export default function LoginForm() {
   const theme = useTheme();
@@ -40,8 +38,8 @@ export default function LoginForm() {
   const [checked, setChecked] = useState(false);
   const isMountedRef = useIsMountedRef();
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null); 
-  const [message,setMessage] = useState("");
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState("");
 
   const token = Cookies.get("token");
 
@@ -82,7 +80,7 @@ export default function LoginForm() {
       router.push("/");
     } catch (err) {
       reset();
-      setMessage("Email and Password didn't match!")
+      setMessage("Email and Password didn't match!");
       setError(err.message || "An error occurred during login.");
       if (isMountedRef.current) {
         setFormError("afterSubmit", { type: "manual", message: err.message });
@@ -282,8 +280,8 @@ export default function LoginForm() {
           fullWidth
           size="large"
           type="submit"
-          variant="outlined"
-          color="success"
+          variant="contained"
+          color="secondary"
           loading={isSubmitting}
         >
           Login
@@ -325,7 +323,7 @@ export default function LoginForm() {
         <LoadingButton
           loading={loading}
           onClick={SignUpUsingGoogle}
-          variant="contained"
+          variant="outlined"
           startIcon={
             loading ? null : (
               <Iconify
@@ -337,11 +335,11 @@ export default function LoginForm() {
           }
           size="large"
           fullWidth
-          style={{
-            textAlign: "left",
-            backgroundColor: "#022552",
-            color: "white",
-          }}
+          // style={{
+          //   textAlign: "left",
+          //   // backgroundColor: "#022552",
+          //   // color: "white",
+          // }}
         >
           {loading ? null : "Google"}
         </LoadingButton>

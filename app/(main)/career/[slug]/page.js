@@ -1,19 +1,19 @@
 "use client";
 import { fetchSingleCareer } from "@/redux/features/career/careerSlice";
+import ApplyForm from "@/sections/career/ApplyForm";
 import {
   Box,
-  Card,
-  Typography,
-  CardActions,
   Button,
-  Container,
+  Card,
+  CardActions,
   CircularProgress,
+  Container,
+  Typography,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import Dialog from "@mui/material/Dialog";
-import ApplyForm from "@/sections/career/ApplyForm";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 function CareerDetail({ params }) {
   const theme = useTheme();
@@ -187,11 +187,12 @@ function CareerDetail({ params }) {
       )}
 
       <>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-        >
-          <ApplyForm title={career.title} handleClose={handleClose} />
+        <Dialog open={open} onClose={handleClose}>
+          <ApplyForm
+            title={career.title}
+            career={career}
+            handleClose={handleClose}
+          />
         </Dialog>
       </>
     </div>

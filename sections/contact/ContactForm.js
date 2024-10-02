@@ -2,6 +2,7 @@
 import { fetchCountries } from "@/redux/features/country/countrySlice";
 import emailjs from "@emailjs/browser";
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -14,7 +15,6 @@ import {
   Select,
   Snackbar,
   TextField,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -118,7 +118,6 @@ function ContactForm() {
       sendEmail(data, resetForm);
     },
   });
-
 
   const handleClose = () => {
     setOpen(false);
@@ -425,10 +424,10 @@ function ContactForm() {
                 </Grid>
               </Grid>
 
-              <Typography pb={0.5} pt={0.8} variant="h6" fontWeight="bold">
+              <Alert severity="info" sx={{ my: { sm: 1, md: 2 } }}>
                 Abroad Inquiry will not share your details with others without
-                your permission
-              </Typography>
+                your permission.
+              </Alert>
 
               <FormControlLabel
                 onChange={() => setAgree(!agree)}

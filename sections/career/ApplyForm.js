@@ -1,3 +1,6 @@
+import Iconify from "@/components/Iconify";
+import successImg from "@/public/assets/images/others/success.png";
+import { carrierJobApplication } from "@/redux/features/career/careerSlice";
 import {
   Button,
   Card,
@@ -9,15 +12,12 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import React, { useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
-import { carrierJobApplication } from "@/redux/features/career/careerSlice";
-import { useDispatch } from "react-redux";
-import successImg from "@/public/assets/images/others/success.png";
+import { Box } from "@mui/system";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Iconify from "@/components/Iconify";
+import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const VisuallyHiddenInput = styled("input")`
   clip: rect(0 0 0 0);
@@ -25,13 +25,15 @@ const VisuallyHiddenInput = styled("input")`
   height: 1px;
   overflow: hidden;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  white-space: nowrap;
   width: 1px;
 `;
 
-const ApplyForm = ({ title, handleClose }) => {
+const ScrollableForm = styled(Box)`
+  max-height: 80vh;
+  overflow-y: auto;
+`;
+
+const ApplyForm = ({ title, handleClose, career }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [agree, setAgree] = useState(false);
@@ -46,7 +48,7 @@ const ApplyForm = ({ title, handleClose }) => {
   const [phone, setPhone] = useState("");
   const [linkedinLink, setLinkedinLink] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
-  const [cvFile, setCvFile] = useState("");
+  const [cvFile, setCvFile] = useState(null);
   const [showFile, setShowFile] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -63,43 +65,47 @@ const ApplyForm = ({ title, handleClose }) => {
     setError(null);
   };
 
-  const handleApply = async (e) => {
-    e.preventDefault();
+  const validateInputs = () => {
     const nameRegex = /^[a-zA-Z.\s]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //  const linkedinRegex = /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/.*$/;
+    const allowedExtensions = /(\.pdf)$/i;
+
     if (!nameRegex.test(firstName) || !nameRegex.test(lastName)) {
-      setError("First Name and Last Name must be strings.");
-      return;
+      return "First Name and Last Name must be strings.";
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError("Invalid email address.");
-      return;
+      return "Invalid email address.";
     }
 
     if (phone.length !== 11 || isNaN(Number(phone))) {
-      setError("Mobile Number must be exactly 11 digits.");
-      return;
+      return "Mobile Number must be exactly 11 digits.";
     }
 
-    const linkedinRegex = /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/.*$/;
-    if (!linkedinRegex.test(linkedinLink)) {
-      setError("Invalid LinkedIn Profile URL.");
-      return;
-    }
+    // if (!linkedinRegex.test(linkedinLink)) {
+    //   return "Invalid LinkedIn Profile URL.";
+    // }
 
     if (coverLetter.split(/\s+/).length > 500) {
-      setError("Cover Letter must be a maximum of 500 words.");
+      return "Cover Letter must be a maximum of 500 words.";
+    }
+
+    if (!cvFile || !allowedExtensions.exec(cvFile.name)) {
+      return "Invalid CV file format. Please upload a PDF file.";
+    }
+
+    return null;
+  };
+
+  const handleApply = async (e) => {
+    e.preventDefault();
+    const validationError = validateInputs();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
-    const allowedExtensions = /(\.pdf)$/i;
-    if (!allowedExtensions.exec(cvFile.name)) {
-      setError("Invalid CV file format. Please upload a PDF file.");
-      return;
-    }
-
-    // Prepare form data
     const myForm = new FormData();
     myForm.append("applicationFor", applicationFor);
     myForm.append("firstName", firstName);
@@ -112,23 +118,14 @@ const ApplyForm = ({ title, handleClose }) => {
 
     try {
       await dispatch(carrierJobApplication(myForm)).unwrap();
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setLinkedinLink("");
-      setCoverLetter("");
-      setCvFile("");
-      setAgree(false);
-      setError(null);``
       setSuccess(true);
       handleClose();
     } catch (error) {
-      if (error.response && error.response.status === 409) {
-        setError("You have already applied for this position.");
-      } else {
-        setError("Something went wrong. Please try again later.");
-      }
+      setError(
+        error.response && error.response.status === 409
+          ? "You have already applied for this position."
+          : "Something went wrong. Please try again later."
+      );
     }
   };
 
@@ -156,11 +153,12 @@ const ApplyForm = ({ title, handleClose }) => {
             <Typography variant="body1" marginY={3} textAlign="center">
               If you are shortlisted, we will contact you as soon as possible.
             </Typography>
-            <Button 
-            variant="contained" 
-            onClick={() => router.push("/")}
-            endIcon={<Iconify icon={"lets-icons:back"} width={24} height={24} />}
-            
+            <Button
+              variant="contained"
+              onClick={() => router.push("/")}
+              endIcon={
+                <Iconify icon={"lets-icons:back"} width={24} height={24} />
+              }
             >
               Back to home
             </Button>
@@ -168,227 +166,159 @@ const ApplyForm = ({ title, handleClose }) => {
         </Container>
       ) : (
         <Card>
-          <Box paddingX={matchesSm ? 3 : 8} paddingY={5}>
+          <ScrollableForm paddingX={matchesSm ? 3 : 5} paddingY={5}>
             <form onSubmit={handleApply}>
-              <Grid container>
-                <Grid item xs={12} md={12}>
+              <Typography variant="h6" pb={2}>
+                Application for {applicationFor}
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
                   <TextField
-                    required
-                    onChange={(e) => setApplicationFor(e.target.value)}
-                    id="applicationFor"
-                    fullWidth
-                    value={applicationFor}
-                    size={matchesSm ? "small" : "medium"}
                     label="Application For"
-                    disabled
-                    name="applicationFor"
+                    fullWidth
                     variant="filled"
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    inputProps={{
-                      required: true,
-                    }}
+                    name="applicationFor"
+                    value={applicationFor}
+                    disabled
+                    size={matchesSm ? "small" : "medium"}
                   />
                 </Grid>
-                <Grid item xs={12} md={5.8} sx={{ marginTop: "12px" }}>
+                <Grid item xs={12} sm={6}>
                   <TextField
-                    required
-                    size={matchesSm ? "small" : "medium"}
-                    fullWidth
-                    name="firstName"
                     label="First Name"
+                    fullWidth
+                    required
                     variant="filled"
+                    name="firstName"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    inputProps={{
-                      required: true,
-                    }}
+                    size={matchesSm ? "small" : "medium"}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={0.4} />
-
-                <Grid item xs={12} md={5.8} sx={{ marginTop: "12px" }}>
+                <Grid item xs={12} sm={6}>
                   <TextField
-                    required
-                    size={matchesSm ? "small" : "medium"}
-                    fullWidth
                     label="Last Name"
+                    fullWidth
+                    required
                     name="lastName"
                     variant="filled"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    inputProps={{
-                      required: true,
-                    }}
+                    size={matchesSm ? "small" : "medium"}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={12} sx={{ marginTop: "12px" }}>
+                <Grid item xs={12}>
                   <TextField
-                    required
-                    size={matchesSm ? "small" : "medium"}
-                    fullWidth
                     label="Email Address"
-                    name="email"
+                    fullWidth
+                    required
                     variant="filled"
                     value={email}
+                    name="email"
+                    type="email"
                     onChange={(e) => setEmail(e.target.value)}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    inputProps={{
-                      required: true,
-                    }}
+                    size={matchesSm ? "small" : "medium"}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={12} sx={{ marginTop: "12px" }}>
+                <Grid item xs={12}>
                   <TextField
-                    required
-                    size={matchesSm ? "small" : "medium"}
+                    label="Mobile Number (11 digits)"
                     fullWidth
-                    label="Enter mobile number must have 11 digit"
-                    variant="filled"
+                    required
                     name="phone"
+                    type="tel"
+                    inputProps={{ pattern: "\\d{11}", maxLength: 11 }}
+                    variant="filled"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    inputProps={{
-                      required: true,
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={12} sx={{ marginTop: "12px" }}>
-                  <TextField
-                    required
                     size={matchesSm ? "small" : "medium"}
-                    fullWidth
-                    label="Linkedin Profile (https://www.linkedin.com/)"
-                    name="linkedinLink"
-                    variant="filled"
-                    value={linkedinLink}
-                    onChange={(e) => setLinkedinLink(e.target.value)}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    inputProps={{
-                      required: true,
-                    }}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={12}>
-                  <br />
+                <Grid item xs={12}>
                   <TextField
+                    label="LinkedIn Profile"
+                    fullWidth
                     required
                     variant="filled"
-                    id="outlined-multiline-static"
-                    label="Cover Letter in 400 words max 500 words"
+                    name="linkedin"
+                    value={linkedinLink}
+                    type="url"
+                    onChange={(e) => setLinkedinLink(e.target.value)}
+                    size={matchesSm ? "small" : "medium"}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Cover Letter (Max 500 words)"
+                    fullWidth
+                    required
+                    multiline
+                    rows={4}
+                    variant="filled"
                     name="coverLetter"
                     value={coverLetter}
                     onChange={(e) => setCoverLetter(e.target.value)}
-                    fullWidth
-                    multiline
-                    rows={4}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    inputProps={{
-                      required: true,
-                    }}
                   />
                 </Grid>
-                <Grid item xs={12} md={12}>
-                  <br />
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Button
-                      component="span"
-                      variant="contained"
-                      onClick={() => fileInputRef.current.click()}
-                      style={{ fontSize: matchesSm ? "12px" : "16px" }}
-                    >
-                      {showFile ? cvFile.name : "Upload Your Resume in PDF"}
-                    </Button>
-                    <VisuallyHiddenInput
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                    />
-                    <h4
-                      style={{
-                        marginLeft: "10px",
-                        fontSize: matchesSm ? "12px" : "16px",
-                      }}
-                    >
-                      PDF File Size max 2MB
-                    </h4>
-                  </div>
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    onClick={() => fileInputRef.current.click()}
+                  >
+                    {showFile ? cvFile.name : "Upload Your Resume (PDF)"}
+                  </Button>
+                  <VisuallyHiddenInput
+                    type="file"
+                    ref={fileInputRef}
+                    accept=".pdf"
+                    name="cvFile"
+                    onChange={handleFileChange}
+                  />
+                  <Typography variant="body2" color="textSecondary">
+                    PDF file, max 2MB
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={agree}
+                        onChange={() => setAgree(!agree)}
+                        color="primary"
+                        name="agree"
+                      />
+                    }
+                    label={
+                      <Typography variant="body2">
+                        I have read the{" "}
+                        <a onClick={() => router.push("/terms-and-conditions")}>
+                          Job Description
+                        </a>{" "}
+                        and{" "}
+                        <u onClick={() => router.push("/privacy-policy")}>
+                          Privacy Policy
+                        </u>
+                        .
+                      </Typography>
+                    }
+                  />
                 </Grid>
               </Grid>
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    size="small"
-                    style={{ color: "green" }}
-                    color="success"
-                    onChange={() => {
-                      setAgree(!agree);
-                    }}
-                  />
-                }
-                label={
-                  <small>
-                    Yes, I have read{" "}
-                    <u
-                      style={{ fontWeight: "bold" }}
-                      onClick={() => router.push("/terms-and-conditions")}
-                    >
-                      The Job Description
-                    </u>{" "}
-                    and{" "}
-                    <u
-                      style={{ fontWeight: "bold" }}
-                      onClick={() => router.push("/privacy-policy")}
-                    >
-                      I Fulfill All The Requirements.
-                    </u>
-                  </small>
-                }
-              />
-
-              <Box mb={1} />
-
-              {error && (
-                <Typography variant="body1" color="error" gutterBottom>
-                  {error}
-                </Typography>
-              )}
+              {error && <Typography color="error">{error}</Typography>}
 
               <Button
-                disabled={!agree}
                 type="submit"
-                color="secondary"
                 variant="contained"
-                size={matchesSm ? "medium" : "large"}
+                color="primary"
+                disabled={!agree}
                 fullWidth
-                style={{ color: "#FFFF" }}
+                size="large"
               >
-                APPLY
+                Apply
               </Button>
             </form>
-          </Box>
+          </ScrollableForm>
         </Card>
       )}
     </>
