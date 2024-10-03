@@ -1,29 +1,27 @@
 "use client";
-import Image from "next/image";
+import Iconify from "@/components/Iconify";
+import { varFade } from "@/components/animate";
+import useResponsive from "@/hooks/useResponsive";
+import AuthHeader from "@/layouts/auth/MainHeader";
+import { PATH_AUTH } from "@/routes/paths";
+import { LoginForm } from "@/sections/auth/login";
 import {
-  Alert,
   Box,
   Button,
-  Card,
   Container,
   Link,
   Stack,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { PATH_AUTH } from "@/routes/paths";
-import useResponsive from "@/hooks/useResponsive";
-import Iconify from "@/components/Iconify";
-import { varFade } from "@/components/animate";
-import { LoginForm } from "@/sections/auth/login";
+import { styled, useTheme } from "@mui/material/styles";
 import { m } from "framer-motion";
-import wave from "../../../public/assets/images/others/wave.png";
-import login from "../../../public/assets/images/others/login.png";
-import AuthHeader from "@/layouts/auth/MainHeader";
+import Cookies from "js-cookie";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Cookies from "js-cookie";
+import login from "../../../public/assets/images/others/login.png";
+import wave from "../../../public/assets/images/others/wave.png";
 
 const RootStyle = styled("Card")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
@@ -31,7 +29,7 @@ const RootStyle = styled("Card")(({ theme }) => ({
     marginLeft: "120px",
     marginRight: "120px",
     height: "80vh",
-    marginTop: "100px",
+    marginTop: theme.spacing(6),
   },
 }));
 
@@ -43,7 +41,6 @@ const SectionStyle = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   alignItems: "center",
   padding: theme.spacing(0, 8),
-
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
@@ -60,6 +57,7 @@ const isAuthenticated = () => {
 };
 
 export default function LoginPage() {
+  const theme = useTheme();
   const router = useRouter();
   const smUp = useResponsive("up", "sm");
   const mdUp = useResponsive("up", "md");
@@ -67,12 +65,12 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      router.push('/dashboard'); 
+      router.push("/dashboard");
     }
   }, [router]);
 
   return (
-    <div style={{position: mdUp ? "fixed":"", width:"100%"}}>
+    <div style={{ width: "100%" }}>
       <AuthHeader />
       {mdUp && (
         <Image
@@ -94,8 +92,8 @@ export default function LoginPage() {
       <RootStyle>
         {mdUp && (
           <SectionStyle>
-            <Image src={login} width={150} height={150} alt="login img"/>
-             <Typography variant="h3" sx={{ textAlign: "center" }}>
+            <Image src={login} width={150} height={150} alt="login img" />
+            <Typography variant="h3" sx={{ textAlign: "center" }}>
               Embark on your study abroad journey with ease!
             </Typography>
             <Stack my={3} spacing={2} textAlign="left">
@@ -125,14 +123,33 @@ export default function LoginPage() {
                     alignItems="center"
                     key={i}
                   >
-                    <Stack width={20} px={1}>
-                      <Iconify icon={itm.icon} sx={{ width: 25, height: 25 }} />
+                    <Stack
+                      width={20}
+                      px={1}
+                      sx={{
+                        bgcolor: theme.palette.background.default,
+                        width: 30,
+                        height: 30,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Iconify
+                        icon={itm.icon}
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          color: theme.palette.secondary.main,
+                        }}
+                      />
                     </Stack>
                     <Typography
                       sx={{
                         mx: "auto",
                         maxWidth: 630,
-                        fontWeight:"bold"
+                        //   fontWeight: "bold",
                         // color: "common.white",
                       }}
                     >
@@ -161,22 +178,32 @@ export default function LoginPage() {
             <LoginForm />
 
             {!smUp && (
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="body2" textAlign="center" sx={{ mb: 3 }}>
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="body2" textAlign="center" sx={{ mb: 2 }}>
                   Don’t have an account?{" "}
                 </Typography>
-                <Box sx={{display: matchesSm ? "flex" :"none"}}>
-                <Link href={PATH_AUTH.register}>
-                  <Button size="small" variant="contained" color="secondary">
-                    Become a student
-                  </Button>
-                </Link>
+                <Box
+                  sx={{
+                    display: matchesSm ? "flex" : "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Link href={PATH_AUTH.register}>
+                    <Button size="small" variant="contained" color="secondary">
+                      Become a student
+                    </Button>
+                  </Link>
 
-                <Link href="/auth/mentor/mentorApplication" style={{ marginLeft: "15px" }}>
-                  <Button size="small" variant="outlined" color="error">
-                    Become a mentor
-                  </Button>
-                </Link>
+                  <Link
+                    href="/auth/mentor/mentorApplication"
+                    style={{ marginLeft: "15px" }}
+                  >
+                    <Button size="small" variant="outlined" color="error">
+                      Become a mentor
+                    </Button>
+                  </Link>
                 </Box>
               </Box>
             )}

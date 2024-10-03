@@ -8,7 +8,7 @@ export default function RootLayout({ children }) {
   return (
     <>
       <MainHeader />
-        {children}
+      {children}
       <DownloadApp />
       <MainFooter />
       <SocialMediaSidebar />

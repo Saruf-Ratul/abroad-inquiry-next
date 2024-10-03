@@ -1,16 +1,16 @@
 import Iconify from "@/components/Iconify";
 import {
-    Box,
-    Button,
-    Divider,
-    Grid,
-    Paper,
-    Typography,
-    useMediaQuery,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+  useMediaQuery,
 } from "@mui/material";
 
 function NewsfeedFacebookPost() {
-    const matchesMd = useMediaQuery("(max-width:900px)");
+  const matchesMd = useMediaQuery("(max-width:900px)");
 
   return (
     <Box>
@@ -33,8 +33,6 @@ function NewsfeedFacebookPost() {
                 href="https://www.facebook.com/Abroadinquiry"
                 target="_blank"
                 rel="noopener noreferrer"
-               
-              
               >
                 Visit Page
               </Button>
@@ -47,7 +45,7 @@ function NewsfeedFacebookPost() {
                   matchesMd ? "100%" : "850"
                 }&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId`}
                 width="100%"
-                height="850"
+                height="600"
                 style={{
                   border: "none",
                   overflow: "hidden",
