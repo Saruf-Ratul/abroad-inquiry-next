@@ -21,52 +21,89 @@ import Iconify from "@/components/Iconify";
 import managingTime from "@/components/managingTime";
 import { format } from "timeago.js";
 import Pagination from "@/components/Pagination";
+import MentorController from "@/services/controllers/mentor";
+import StudentController from "@/services/controllers/student";
+import NotificationController from "@/services/controllers/notification";
 
 const Notifications = () => {
-  const dispatch = useDispatch();
-  const [page, setPage] = useState(1);
-  const [socket, setSocket] = useState(null);
-  const [notification,setNotification]= useState([]);
-  const matchesSm = useMediaQuery("(max-width:600px)");
-  const { notifications, loading, totalNotification } = useSelector(
-    (state) => state.notification
-  );
   const { userInfo } = useSelector((state) => state.user);
+  const [notifications, setNotifications] = useState({
+    totalNotification: 0,
+    notificationData: [],
+  });
+
+  const [socket, setSocket] = useState(null);
+  const [page, setPage] = React.useState(1);
+  const [loading, setLoading] = useState(true);
+  const [clickedNotification, setClickedNotification] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const matchesSm = useMediaQuery("(max-width:600px)");
+
+
 
   useEffect(() => {
-    if (userInfo?.id && page) {
-      dispatch(fetchAllStudentNotifications({ id: userInfo.id, page }));
-      dispatch(fetchAllMentorNotifications({ id: userInfo.id, page }));
+    if (userInfo.userStatus === "student") {
+      StudentController.GET_NOTIFICATIONS(
+        userInfo.id,
+        page,
+        setNotifications,
+        setLoading
+      );
+    } else {
+      MentorController.GET_NOTIFICATIONS(
+        userInfo.id,
+        page,
+        setNotifications,
+        setLoading
+      );
     }
-  }, [dispatch, userInfo.id, page]); 
+  }, [page]);
 
-  useEffect(()=>{
-   if(notifications.length > 0 ){
-    setNotification(notifications);
-   }
-  },[notifications])
-
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("getNotification", (message) => {
-        const newNotification = {
-          notification: message.message,
-          isRead: false,
-          appointmentId: message.appointmentId,
-          notificationId: message.notificationId,
-          createdAt: message.createdAt,
-        };
-        setPage(1);
-      });
-    }
-    return () => {
-      if (socket) socket.off("getNotification");
+  socket?.on("getNotification", (message) => {
+    const newNotifcation = {
+      notification: message.message,
+      isRead: false,
+      appointmentId: message.appointmentId,
+      notificationId: message.notificationId,
+      createdAt: message.createdAt,
     };
-  }, [socket]);
+
+    const newTotal = notifications.totalNotification + 1;
+    const newData = [newNotifcation, ...notifications.notificationData];
+    setPage(1);
+    setNotifications({
+      totalNotification: newTotal,
+      notificationData: newData,
+    });
+  });
 
   const handleChangePage = (event, value) => {
     setPage(value);
+  };
+
+  const handleAppointmentClick = (data) => {
+    const objIndex = notifications?.notificationData.findIndex(
+      (obj) => obj.notificationId === data.notificationId
+    );
+
+    const newState = [...notifications.notificationData];
+    notifications.notificationData[objIndex].isRead = true;
+
+    NotificationController.readNotification({
+      notificationId: data.notificationId,
+    })
+      .then((res) => {
+        setNotifications({
+          ...notifications,
+          newState,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setClickedNotification(data.appointmentId);
+    setDialogOpen(true);
   };
 
   return (
@@ -80,16 +117,17 @@ const Notifications = () => {
           <Box textAlign="center" py={5}>
             <CircularProgress />
           </Box>
-        ) : notification?.length !== 0 ? (
+        ) : notifications.notificationData?.length !== 0 ? (
           <>
             <List>
-              {notification.map((notification, idx) => (
+              {notifications.notificationData.map((notification, idx) => (
                 <React.Fragment key={idx}>
                   <ButtonBase
                     sx={{
                       width: "100%",
                       py: 0.8,
                     }}
+                    onClick={() => handleAppointmentClick(notification)}
                   >
                     <ListItem>
                       <ListItemAvatar>
@@ -116,10 +154,10 @@ const Notifications = () => {
               ))}
             </List>
             <Pagination
-              page={page}
-              handleChangePage={handleChangePage}
-              totalItem={totalNotification}
-              itemPerPage={10}
+               page={page}
+               handleChangePage={handleChangePage}
+               totalItem={notifications.totalNotification}
+               itemPerPage={10}
             />
             <br />
           </>
@@ -134,6 +172,7 @@ const Notifications = () => {
         )}
       </Box>
     </Paper>
+    
   );
 };
 

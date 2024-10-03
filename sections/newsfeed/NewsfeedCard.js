@@ -101,7 +101,6 @@ function NewsfeedCard({ blogs }) {
                   boxShadow: theme.shadows[6],
                 },
               }}
-              onClick={() => router.push(`/newsfeed/${blog.blogId}`)}
             >
               <Box
                 sx={{
