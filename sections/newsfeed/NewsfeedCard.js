@@ -34,8 +34,9 @@ function NewsfeedCard({ blogs }) {
     severity: "",
   });
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  // Handle opening the menu and passing the blogId
+  const handleMenuClick = (event, blogId) => {
+    setAnchorEl({ target: event.currentTarget, blogId });
   };
 
   const handleMenuClose = () => {
@@ -46,8 +47,9 @@ function NewsfeedCard({ blogs }) {
     setLike(!like);
   };
 
-  const handleCopyLink = (blogId) => {
-    const postLink = `${window.location.origin}/newsfeed/${blogId}`;
+  // Copy the link to clipboard
+  const handleCopyLink = () => {
+    const postLink = `${window.location.origin}/newsfeed/${anchorEl.blogId}`;
     navigator.clipboard
       .writeText(postLink)
       .then(() => {
@@ -66,8 +68,9 @@ function NewsfeedCard({ blogs }) {
       });
   };
 
-  const handleShare = (platform, blogId) => {
-    const postLink = `${window.location.origin}/newsfeed/${blogId}`;
+  // Share the post on selected platform
+  const handleShare = (platform) => {
+    const postLink = `${window.location.origin}/newsfeed/${anchorEl.blogId}`;
     const shareUrls = {
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
         postLink
@@ -162,10 +165,13 @@ function NewsfeedCard({ blogs }) {
                       }}
                     />
                   </IconButton>
-                  <IconButton onClick={handleMenuClick} aria-label="comment">
+                  <IconButton aria-label="comment">
                     <Iconify icon="ant-design:comment-outlined" />
                   </IconButton>
-                  <IconButton onClick={handleMenuClick} aria-label="share">
+                  <IconButton
+                    onClick={(event) => handleMenuClick(event, blog.blogId)}
+                    aria-label="share"
+                  >
                     <Iconify icon="mdi:share-outline" />
                   </IconButton>
                 </Box>
@@ -187,7 +193,7 @@ function NewsfeedCard({ blogs }) {
       </Grid>
 
       <Menu
-        anchorEl={anchorEl}
+        anchorEl={anchorEl?.target}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
         PaperProps={{
