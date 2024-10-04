@@ -7,18 +7,17 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import Slider from "react-slick";
 import { visaSuccessData } from "../../data/visaSuccess";
 
-var settings = {
+const settings = {
   dots: false,
   arrows: false,
   speed: 500,
   slidesToShow: 3,
   slidesToScroll: 1,
   autoplay: true,
-  initialSlide: 0,
   infinite: true,
   pauseOnHover: false,
   responsive: [
@@ -27,7 +26,6 @@ var settings = {
       settings: {
         slidesToShow: 3,
         slidesToScroll: 3,
-        infinite: true,
         dots: true,
       },
     },
@@ -36,11 +34,10 @@ var settings = {
       settings: {
         slidesToShow: 2,
         slidesToScroll: 2,
-        initialSlide: 2,
       },
     },
     {
-      breakpoint: 500,
+      breakpoint: 600,
       settings: {
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -49,116 +46,81 @@ var settings = {
   ],
 };
 
-/**
- * Service pages
- * @memberof module:service
- * @type {React.Component}
- * @returns {JSX.Element}
- */
 function OurSuccessStory() {
   const sliderRef = useRef();
-  const matchesSm = useMediaQuery("(max-width:400px)");
+  const matchesXs = useMediaQuery("(max-width: 600px)");
 
-  const gotoNext = () => {
-    sliderRef.current.slickNext();
-  };
-
-  const gotoPrev = () => {
-    sliderRef.current.slickPrev();
-  };
+  const gotoNext = () => sliderRef.current.slickNext();
+  const gotoPrev = () => sliderRef.current.slickPrev();
 
   return (
-    <>
-      <Box position="relative">
-        <Container>
-          <Box py={5}>
-            <Box>
-              <Typography variant="h3" sx={{ mb: 3 }}>
-                OUR SUCCESS STORY
-              </Typography>
-            </Box>
+    <Box position="relative">
+      <Container>
+        <Box py={5}>
+          <Typography
+            variant="h3"
+            sx={{
+              mb: 3,
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
+              textAlign: "center",
+            }}
+          >
+            OUR SUCCESS STORY
+          </Typography>
 
-            <Slider
-              {...settings}
-              ref={sliderRef}
-              style={{
-                marginTop: "-20px",
-              }}
-            >
-              {visaSuccessData.map((data, idx) => (
-                <VisaSuccessCard key={idx} data={data} />
-              ))}
-            </Slider>
-          </Box>
-        </Container>
-        <Container sx={{ marginTop: "30px" }}>
-          <Stack>
-            <Typography variant="h3">WHAT OUR STUDENTS SAY?</Typography>
-          </Stack>
+          <Slider {...settings} ref={sliderRef} style={{ marginTop: "-20px" }}>
+            {visaSuccessData.map((data, idx) => (
+              <VisaSuccessCard key={idx} data={data} />
+            ))}
+          </Slider>
+        </Box>
+      </Container>
 
-          <div>
-            <div
-              className="container"
-              style={{
-                paddingBottom: matchesSm ? "340%" : "22.25%",
-                height: 0,
-                overflow: "hidden",
-                maxWidth: "100%",
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                marginTop: "20px",
-              }}
-            >
+      <Container sx={{ marginTop: "30px" }}>
+        <Stack>
+          <Typography
+            variant="h3"
+            sx={{
+              fontSize: { xs: "1.8rem", md: "2.5rem" },
+              textAlign: "center",
+              mb: 3,
+            }}
+          >
+            WHAT OUR STUDENTS SAY?
+          </Typography>
+        </Stack>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 2,
+            marginTop: "20px",
+            mb: { xs: 10, md: 0 },
+            flexDirection: matchesXs ? "column" : "row",
+          }}
+        >
+          {["Axi6t1IBjUU", "tKxBD0SRl4A", "jQdV74fH3YY", "lWSgfYgoHgQ"].map(
+            (videoId, idx) => (
               <iframe
-                style={{ marginTop: "20px", borderRadius: "10px" }}
-                width={matchesSm ? "515" : "275"}
-                height={matchesSm ? "280" : "220"}
-                src="https://www.youtube.com/embed/Axi6t1IBjUU?si=RwSEPPmlp5SANwVJ"
+                key={idx}
+                style={{
+                  borderRadius: "10px",
+                }}
+                width={matchesXs ? "100%" : "275px"}
+                height={matchesXs ? "auto" : "220px"}
+                src={`https://www.youtube.com/embed/${videoId}`}
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
+                allowFullScreen
               ></iframe>
-              <iframe
-                style={{ marginTop: "20px", borderRadius: "10px" }}
-                width={matchesSm ? "515" : "275"}
-                height={matchesSm ? "280" : "220"}
-                src="https://www.youtube.com/embed/tKxBD0SRl4A?si=tQve4quztKoiVwJe"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-              ></iframe>
-              <iframe
-                style={{ marginTop: "20px", borderRadius: "10px" }}
-                width={matchesSm ? "515" : "275"}
-                height={matchesSm ? "280" : "220"}
-                src="https://www.youtube.com/embed/jQdV74fH3YY?si=XmgzC2C-RBFiPFl8"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-              ></iframe>
-              <iframe
-                style={{ marginTop: "20px", borderRadius: "10px" }}
-                width={matchesSm ? "515" : "275"}
-                height={matchesSm ? "280" : "220"}
-                src="https://www.youtube.com/embed/lWSgfYgoHgQ?si=49MFkyQuwBNASqCr"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-              ></iframe>
-            </div>
-          </div>
-        </Container>
-      </Box>
-    </>
+            )
+          )}
+        </Box>
+      </Container>
+    </Box>
   );
 }
 

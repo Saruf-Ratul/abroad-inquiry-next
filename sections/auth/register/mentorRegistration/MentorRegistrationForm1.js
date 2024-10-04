@@ -229,7 +229,7 @@ function MentorRegistrationForm1() {
         <Stepper
           alternativeLabel
           activeStep={activeStep}
-          //   connector={<ColorlibConnector />}
+          connector={<ColorlibConnector />}
         >
           {steps.map((label) => (
             <Step key={label}>

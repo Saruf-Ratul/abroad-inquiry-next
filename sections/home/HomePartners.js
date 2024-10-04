@@ -1,8 +1,8 @@
-import partners from "@/data/partners";
-import { m } from "framer-motion";
 import { MotionViewport, varFade } from "@/components/animate";
+import partners from "@/data/partners";
 import { Box, Container, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { m } from "framer-motion";
 import Image from "next/image";
 import Slider from "react-slick";
 
@@ -10,6 +10,7 @@ const RootStyle = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.neutral,
   marginTop: "40px",
   paddingTop: theme.spacing(5),
+  paddingBottom: theme.spacing(5),
   [theme.breakpoints.up("md")]: {
     paddingBottom: theme.spacing(10),
   },

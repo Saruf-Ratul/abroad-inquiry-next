@@ -1,5 +1,4 @@
 "use client";
-import { RootStyle } from "@/app/(main)/contact/style";
 import { fetchBlogPostDetails } from "@/redux/features/newsfeed/newsfeedSlice";
 import NewsfeedFacebookPost from "@/sections/newsfeed/NewsfeedFacebookPost";
 import {
@@ -29,7 +28,7 @@ export default function NewsfeedSinglePost({ blogId }) {
   }, [dispatch, blogId]);
 
   return (
-    <RootStyle>
+    <Box sx={{ mt: { xs: 10, md: 20 } }}>
       {loading ? (
         <Box
           sx={{
@@ -37,6 +36,7 @@ export default function NewsfeedSinglePost({ blogId }) {
             justifyContent: "center",
             alignItems: "center",
             height: "100%",
+            py: 20,
           }}
         >
           <CircularProgress
@@ -65,6 +65,6 @@ export default function NewsfeedSinglePost({ blogId }) {
           </Box>
         </Container>
       )}
-    </RootStyle>
+    </Box>
   );
 }

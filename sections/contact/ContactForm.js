@@ -24,6 +24,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 
+// Validation schema for form fields
 const validationSchema = yup.object({
   email: yup
     .string("Enter your email")
@@ -50,14 +51,13 @@ const validationSchema = yup.object({
 
 function ContactForm() {
   const route = useRouter();
-  const [agree, setAgree] = useState();
+  const [agree, setAgree] = useState(false);
   const matchesSm = useMediaQuery("(max-width:600px)");
-  const matchesMd = useMediaQuery("(max-width:900px)");
   const form = useRef();
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
-  const { countries, loading } = useSelector((state) => state.countries);
+  const { countries } = useSelector((state) => state.countries);
 
   useEffect(() => {
     dispatch(fetchCountries(1));
@@ -76,10 +76,11 @@ function ContactForm() {
           setOpen(true);
           resetForm();
           setMessage("Message sent!");
+          console.log(result);
         },
         (error) => {
           setOpen(true);
-          setMessage("Error ! Try again.");
+          setMessage("Error! Try again.");
         }
       );
   };
@@ -102,18 +103,9 @@ function ContactForm() {
       const selectedCountries = values.preferred_destination.map(
         (country, index) => `${index + 1}. ${country}`
       );
-
       const data = {
-        email: values.email,
-        first_name: values.first_name,
-        last_name: values.last_name,
-        phone: values.phone,
+        ...values,
         preferred_destination: selectedCountries.join(", "),
-        counselling_mode: values.counselling_mode,
-        preferred_service: values.preferred_service,
-        description: values.description,
-        IELTS: values.IELTS,
-        others: values.others,
       };
       sendEmail(data, resetForm);
     },
@@ -125,27 +117,25 @@ function ContactForm() {
 
   return (
     <>
-      <div>
-        <Snackbar
-          open={open}
-          autoHideDuration={2000}
-          onClose={handleClose}
-          message={message}
-        />
-      </div>
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        message={message}
+      />
       <Container maxWidth="md">
-        <Card>
-          <Box paddingX={matchesSm ? 5 : 8} paddingY={5}>
+        <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
+          <Box paddingX={matchesSm ? 2 : 8} paddingY={5}>
             <form ref={form} onSubmit={formik.handleSubmit}>
-              <Grid container>
-                <Grid item xs={12} md={5.8}>
+              <Grid container spacing={2}>
+                {/* First Name Field */}
+                <Grid item xs={12} md={6}>
                   <TextField
-                    size={matchesSm ? "small" : "medium"}
                     fullWidth
+                    size={matchesSm ? "small" : "medium"}
                     name="first_name"
                     label="First Name*"
-                    variant="filled"
-                    // className={.inpuclassest}
+                    variant="outlined"
                     value={formik.values.first_name}
                     onChange={formik.handleChange}
                     error={
@@ -155,25 +145,16 @@ function ContactForm() {
                     helperText={
                       formik.touched.first_name && formik.errors.first_name
                     }
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    sx={{
-                      marginBottom: "20px",
-                    }}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={0.4} />
-
-                <Grid item xs={12} md={5.8}>
+                {/* Last Name Field */}
+                <Grid item xs={12} md={6}>
                   <TextField
-                    size={matchesSm ? "small" : "medium"}
                     fullWidth
-                    label="Last Name*"
+                    size={matchesSm ? "small" : "medium"}
                     name="last_name"
-                    variant="filled"
-                    // className={classes.input}
+                    label="Last Name*"
+                    variant="outlined"
                     value={formik.values.last_name}
                     onChange={formik.handleChange}
                     error={
@@ -183,171 +164,107 @@ function ContactForm() {
                     helperText={
                       formik.touched.last_name && formik.errors.last_name
                     }
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={12}>
+                {/* Email Field */}
+                <Grid item xs={12}>
                   <TextField
-                    size={matchesSm ? "small" : "medium"}
                     fullWidth
-                    label="Email Address*"
+                    size={matchesSm ? "small" : "medium"}
                     name="email"
-                    variant="filled"
-                    // className={classes.input}
+                    label="Email Address*"
+                    variant="outlined"
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={formik.touched.email && formik.errors.email}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    sx={{
-                      marginBottom: "20px",
-                    }}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={12}>
+                {/* Phone Number */}
+                <Grid item xs={12}>
                   <TextField
-                    size={matchesSm ? "small" : "medium"}
                     fullWidth
-                    label="Mobile Number with Country Code*"
-                    variant="filled"
+                    size={matchesSm ? "small" : "medium"}
                     name="phone"
-                    // className={classes.input}
+                    label="Mobile Number with Country Code*"
+                    variant="outlined"
                     value={formik.values.phone}
                     onChange={formik.handleChange}
                     error={formik.touched.phone && Boolean(formik.errors.phone)}
                     helperText={formik.touched.phone && formik.errors.phone}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    sx={{
-                      marginBottom: "20px",
-                    }}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={5.8}>
+                {/* IELTS Score */}
+                <Grid item xs={12} md={6}>
                   <TextField
-                    size={matchesSm ? "small" : "medium"}
                     fullWidth
+                    size={matchesSm ? "small" : "medium"}
                     name="IELTS"
-                    label="IELTS"
-                    variant="filled"
-                    // className={classes.input}
+                    label="IELTS*"
+                    variant="outlined"
                     value={formik.values.IELTS}
                     onChange={formik.handleChange}
                     error={formik.touched.IELTS && Boolean(formik.errors.IELTS)}
                     helperText={formik.touched.IELTS && formik.errors.IELTS}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    sx={{
-                      marginBottom: "20px",
-                    }}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={0.4} />
-
-                <Grid item xs={12} md={5.8}>
+                {/* Additional Exams */}
+                <Grid item xs={12} md={6}>
                   <TextField
-                    size={matchesSm ? "small" : "medium"}
                     fullWidth
-                    label="TOEFL/SAT/GRE/GMAT with name & result?"
+                    size={matchesSm ? "small" : "medium"}
                     name="others"
-                    variant="filled"
-                    // className={classes.others}
+                    label="TOEFL/SAT/GRE/GMAT with name & result?"
+                    variant="outlined"
                     value={formik.values.others}
                     onChange={formik.handleChange}
                     error={
                       formik.touched.others && Boolean(formik.errors.others)
                     }
                     helperText={formik.touched.others && formik.errors.others}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                    sx={{
-                      marginBottom: "20px",
-                    }}
                   />
                 </Grid>
-
-                <Grid item xs={12} md={5.8}>
-                  <FormControl fullWidth variant="filled">
-                    <InputLabel
-                      style={{ color: "#787A80" }}
-                      id="preferred-destination-label"
-                    >
-                      Preferred Destination
-                    </InputLabel>
+                {/* Preferred Destination */}
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel>Preferred Destination</InputLabel>
                     <Select
                       size={matchesSm ? "small" : "medium"}
                       multiple
-                      labelId="preferred-destination-label"
-                      id="preferred-destination"
                       name="preferred_destination"
-                      label="Preferred Destination"
                       value={formik.values.preferred_destination}
                       onChange={formik.handleChange}
                       error={
                         formik.touched.preferred_destination &&
                         Boolean(formik.errors.preferred_destination)
                       }
-                      helperText={
-                        formik.touched.preferred_destination &&
-                        formik.errors.preferred_destination
-                      }
-                      InputLabelProps={{
-                        style: { color: "#787A80" },
-                      }}
                     >
-                      {countries.map((option) => (
+                      {countries.map((country) => (
                         <MenuItem
-                          key={option.countryName}
-                          value={option.countryName}
+                          key={country.countryName}
+                          value={country.countryName}
                         >
-                          {option.countryName}
+                          {country.countryName}
                         </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
-                  {matchesMd && (
-                    <>
-                      <br />
-                      <br />
-                    </>
-                  )}
                 </Grid>
-
-                <Grid item xs={12} md={0.4} />
-
-                <Grid item xs={12} md={5.8}>
+                {/* Mode of Counselling */}
+                <Grid item xs={12} md={6}>
                   <TextField
-                    size={matchesSm ? "small" : "medium"}
                     fullWidth
                     select
+                    size={matchesSm ? "small" : "medium"}
                     name="counselling_mode"
-                    defaultValue=""
                     label="Preferred Mode of Counselling"
-                    variant="filled"
+                    variant="outlined"
                     value={formik.values.counselling_mode}
                     onChange={formik.handleChange}
                     error={
                       formik.touched.counselling_mode &&
                       Boolean(formik.errors.counselling_mode)
                     }
-                    helperText={
-                      formik.touched.counselling_mode &&
-                      formik.errors.counselling_mode
-                    }
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
                   >
                     {["In-person", "Virtual Counselling"].map((option) => (
                       <MenuItem key={option} value={option}>
@@ -356,62 +273,18 @@ function ContactForm() {
                     ))}
                   </TextField>
                 </Grid>
-
-                <Grid item xs={12} md={12}>
-                  <br />
+                {/* Description */}
+                <Grid item xs={12}>
                   <TextField
-                    size={matchesSm ? "small" : "medium"}
-                    fullWidth
-                    defaultValue=""
-                    select
-                    name="preferred_service"
-                    label="Preferred Service"
-                    variant="filled"
-                    value={formik.values.preferred_service}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.preferred_service &&
-                      Boolean(formik.errors.preferred_service)
-                    }
-                    helperText={
-                      formik.touched.preferred_service &&
-                      formik.errors.preferred_service
-                    }
-                    style={{ paddingTop: 0 }}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
-                  >
-                    {[
-                      "Online Guidance",
-                      "Admission and Visa",
-                      "Scholarship and Visa",
-                      "Spous/Dependent Visa",
-                      "Document Ligalization/Attestation",
-                      "Ticket Service",
-                    ].map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-
-                <Grid item xs={12} md={12}>
-                  <br />
-                  <TextField
-                    variant="filled"
-                    id="outlined-multiline-static"
-                    label="Description"
-                    name="description"
-                    value={formik.values.description}
-                    onChange={formik.handleChange}
                     fullWidth
                     multiline
                     rows={4}
-                    InputLabelProps={{
-                      style: { color: "#787A80" },
-                    }}
+                    size={matchesSm ? "small" : "medium"}
+                    name="description"
+                    label="Any specific questions you have in mind?"
+                    variant="outlined"
+                    value={formik.values.description}
+                    onChange={formik.handleChange}
                     error={
                       formik.touched.description &&
                       Boolean(formik.errors.description)
@@ -419,58 +292,62 @@ function ContactForm() {
                     helperText={
                       formik.touched.description && formik.errors.description
                     }
-                    style={{ paddingTop: 0 }}
+                  />
+                </Grid>
+                {/* Agreement Checkbox */}
+                <Grid item xs={12}>
+                  <Alert severity="info" sx={{ my: { sm: 1, md: 2 } }}>
+                    Abroad Inquiry will not share your details with others
+                    without your permission.
+                  </Alert>
+
+                  <FormControlLabel
+                    onChange={() => setAgree(!agree)}
+                    control={
+                      <Checkbox
+                        size="small"
+                        style={{ color: "green" }}
+                        color="success"
+                      />
+                    }
+                    label={
+                      <small>
+                        I agree with the{" "}
+                        <u
+                          style={{ fontWeight: "bold" }}
+                          onClick={() => route.push("/terms-and-conditions")}
+                        >
+                          Terms and Conditions
+                        </u>{" "}
+                        and{" "}
+                        <u
+                          style={{ fontWeight: "bold" }}
+                          onClick={() => route.push("/privacy-policy")}
+                        >
+                          Privacy Policy
+                        </u>
+                      </small>
+                    }
                   />
                 </Grid>
               </Grid>
-
-              <Alert severity="info" sx={{ my: { sm: 1, md: 2 } }}>
-                Abroad Inquiry will not share your details with others without
-                your permission.
-              </Alert>
-
-              <FormControlLabel
-                onChange={() => setAgree(!agree)}
-                control={
-                  <Checkbox
-                    size="small"
-                    style={{ color: "green" }}
-                    color="success"
-                  />
-                }
-                label={
-                  <small>
-                    I agree with the{" "}
-                    <u
-                      style={{ fontWeight: "bold" }}
-                      onClick={() => route.push("/terms-and-conditions")}
-                    >
-                      Terms and Conditions
-                    </u>{" "}
-                    and{" "}
-                    <u
-                      style={{ fontWeight: "bold" }}
-                      onClick={() => route.push("/privacy-policy")}
-                    >
-                      Privacy Policy
-                    </u>
-                  </small>
-                }
-              />
-
-              <Box mb={1} />
-
-              <Button
-                disabled={!agree}
-                type="submit"
-                color="secondary"
-                variant="contained"
-                size={matchesSm ? "medium" : "large"}
-                fullWidth
-                style={{ color: "#FFFF" }}
-              >
-                REGISTER
-              </Button>
+              <Box mt={4} display="flex" justifyContent="center">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size={matchesSm ? "small" : "large"}
+                  disabled={!agree}
+                  sx={{
+                    borderRadius: 2,
+                    paddingX: 6,
+                    paddingY: 2,
+                    textTransform: "none",
+                  }}
+                >
+                  Submit
+                </Button>
+              </Box>
             </form>
           </Box>
         </Card>
