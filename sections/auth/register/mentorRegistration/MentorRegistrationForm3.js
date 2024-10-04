@@ -1,5 +1,9 @@
 "use client";
+import { countries as country } from "@/data/countryData";
+import { fetchCountries } from "@/redux/features/country/countrySlice";
+import { MENTOR_SIGNUP_3 } from "@/services/mentorRequests";
 import {
+  Box,
   Button,
   CircularProgress,
   Container,
@@ -12,15 +16,11 @@ import {
   TextField,
   useMediaQuery,
   useTheme,
-  Box,
 } from "@mui/material";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import * as yup from "yup";
-import { countries as country } from "@/data/countryData";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCountries } from "@/redux/features/country/countrySlice";
-import { MENTOR_SIGNUP_3 } from "@/services/mentorRequests";
+import * as yup from "yup";
 
 let professionalInfoValidationschema = yup.object().shape({
   know_abroad_inquiry: yup
@@ -214,7 +214,7 @@ function MentorRegistrationForm3({ userId, setActiveStep }) {
       <Container maxWidth="sm" sx={{ marginBottom: "60px" }}>
         <form onSubmit={formik.handleSubmit} method="post">
           {mentorProfessionalInputData.map((data, idx) => (
-            <div>
+            <div key={idx}>
               {data.type === "radioButton" ? (
                 <>
                   <br />

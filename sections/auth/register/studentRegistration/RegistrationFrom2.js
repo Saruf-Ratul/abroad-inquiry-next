@@ -1,5 +1,10 @@
 "use client";
 import Iconify from "@/components/Iconify";
+import { countries } from "@/data/countryData";
+import {
+  UPDATE_ALL_STUDENT_DATA_CALL,
+  UPDATE_STUDENT_PROFILE_PIC,
+} from "@/services/studentRequests";
 import {
   Avatar,
   Box,
@@ -18,15 +23,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
-import React, { useState } from "react";
-import * as yup from "yup";
-import { countries } from "@/data/countryData";
-import {
-  UPDATE_ALL_STUDENT_DATA_CALL,
-  UPDATE_STUDENT_PROFILE_PIC,
-} from "@/services/studentRequests";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import { useState } from "react";
+import * as yup from "yup";
 
 const additionalInfoInputData = [
   {
@@ -168,7 +167,6 @@ function RegistrationFrom2({ userId }) {
     },
   });
 
-
   const handleFormSubmit = (userData, resetForm) => {
     setLoading(true);
     let data = {
@@ -198,8 +196,8 @@ function RegistrationFrom2({ userId }) {
           profilePic: res.data.studentProfilePic,
           id: res.data.studentId,
         };
+        router.push("/");
         setLoading(false);
-        router.push("/")
       })
       .catch((err) => {
         setLoading(false);

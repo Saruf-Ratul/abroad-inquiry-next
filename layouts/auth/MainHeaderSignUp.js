@@ -1,34 +1,71 @@
 "use client";
 import Logo from "@/components/Logo";
 import SettingMode from "@/components/SettingMode";
-import { Box, Button, Link, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { HEADER } from "@/config";
+import useOffSetTop from "@/hooks/useOffSetTop";
+import cssStyles from "@/utils/cssStyles";
+import { AppBar, Box, Container, Toolbar } from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
 
-const HeaderStyle = styled("header")(({ theme }) => ({
-  top: 0,
-  zIndex: 9,
-  lineHeight: 0,
-  width: "100%",
-  display: "flex",
-  alignItems: "center",
-  position: "absolute",
-  padding: theme.spacing(3),
-  height: "100px",
-  justifyContent: "space-between",
-  boxShadow: "0px 13px 6px 0px rgba(0,0,0,0.1)",
+const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
+  height: HEADER.MOBILE_HEIGHT,
+
+  transition: theme.transitions.create(["height", "background-color"], {
+    easing: theme.transitions.easing.easeInOut,
+    duration: theme.transitions.duration.shorter,
+  }),
   [theme.breakpoints.up("md")]: {
-    alignItems: "flex-start",
-    padding: theme.spacing(5, 5, 0, 7),
+    height: HEADER.MAIN_DESKTOP_HEIGHT,
   },
 }));
 
+const ToolbarShadowStyle = styled("div")(({ theme }) => ({
+  position: "absolute",
+  left: 0,
+  right: 0,
+  bottom: 0,
+  height: 24,
+  zIndex: -1,
+  width: "100%",
+  margin: "auto",
+  boxShadow: theme.customShadows.z8,
+}));
+
 export default function AuthHeaderSignUp() {
+  const isOffset = useOffSetTop(HEADER.MAIN_DESKTOP_HEIGHT);
+  const theme = useTheme();
+
   return (
-    <HeaderStyle>
-      <Logo />
-      <Box>
-      <SettingMode />
-      </Box>
-    </HeaderStyle>
+    <AppBar
+      sx={{
+        boxShadow: 0,
+        bgcolor: "transparent",
+      }}
+    >
+      <ToolbarStyle
+        disableGutters
+        sx={{
+          ...(isOffset && {
+            ...cssStyles(theme).bgBlur(),
+            height: { md: HEADER.MAIN_DESKTOP_HEIGHT - 16 },
+          }),
+        }}
+      >
+        <Container
+          maxWidth="xl"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Logo />
+          <Box>
+            <SettingMode />
+          </Box>
+        </Container>
+      </ToolbarStyle>
+      <ToolbarShadowStyle />
+    </AppBar>
   );
 }
