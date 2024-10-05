@@ -4,12 +4,14 @@ import { MotionContainer } from "@/components/animate";
 import MentorsBanner from "@/public/assets/bannerImage/mentorProfile.jpg";
 import { BASE_URL } from "@/utils/axios";
 import {
+  Alert,
   Avatar,
   Box,
   Button,
   Chip,
   Container,
   IconButton,
+  Snackbar,
   Stack,
   Tooltip,
   Typography,
@@ -18,6 +20,7 @@ import {
 import { alpha, styled, useTheme } from "@mui/material/styles";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const RootStyle = styled("div")(({ theme }) => ({
   backgroundSize: "cover",
@@ -51,13 +54,19 @@ export default function MentorProfileHero({ profileDeatails }) {
   const token = Cookies.get("token");
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   function formatPhoneNumber(phone) {
     if (!phone) return "Phone number not available";
     let parsedPhone;
     try {
       parsedPhone = JSON.parse(phone);
     } catch (error) {
-      // console.error("Invalid phone data", error);
       return "Invalid phone data";
     }
     const { dialCode, phoneNumber } = parsedPhone;
@@ -109,9 +118,15 @@ export default function MentorProfileHero({ profileDeatails }) {
       });
     } else {
       const shareUrls = {
-        facebook: `https://www.facebook.com/sharer/sharer.php?u=${profileLink}`,
-        twitter: `https://twitter.com/intent/tweet?url=${profileLink}`,
-        linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${profileLink}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          profileLink
+        )}`,
+        twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+          profileLink
+        )}`,
+        linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+          profileLink
+        )}`,
       };
       window.open(shareUrls[platform], "_blank");
     }
@@ -180,12 +195,7 @@ export default function MentorProfileHero({ profileDeatails }) {
                   {profileDeatails?.mentorName}
                 </Typography>
                 <Stack direction="row" sx={{ marginLeft: "20px" }}>
-                  <Chip
-                    label="Active"
-                    color="success"
-                    variant="outlined"
-                    // onClick={handleClick}
-                  />
+                  <Chip label="Active" color="success" variant="outlined" />
                 </Stack>
               </Box>
               <Box
@@ -246,13 +256,23 @@ export default function MentorProfileHero({ profileDeatails }) {
                 style={{ marginTop: 10 }}
                 variant="outlined"
                 color="error"
-                //   startIcon={<AiOutlineMessage />}
               >
                 Message
               </Button>
             </Box>
           </Box>
         </ContentStyle>
+
+        {/* Snackbar Component */}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={4000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert onClose={handleSnackbarClose} severity="success">
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Container>
     </RootStyle>
   );
