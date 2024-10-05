@@ -9,7 +9,6 @@ import {
   Container,
   Stack,
   Typography,
-  CircularProgress,
   Rating,
   Avatar,
   Divider,
@@ -195,6 +194,8 @@ function MemberCard({ mentor }) {
   
   const handleMessageClick = (mentorId) => {
     if (token) {
+      Cookies.remove("fcmToken");
+      Cookies.remove("conversationId");
       router.push(`/dashboard/chat/${mentorId}`);
     } else {
       router.push("/auth/login");

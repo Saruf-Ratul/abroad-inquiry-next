@@ -2,7 +2,7 @@
 import { fetchSearchMessage } from "@/redux/features/chat/chatSlice";
 import withAuth from "@/sections/auth/withAuth";
 import { ChatSidebar, ChatWindow } from "@/sections/dashboard/chat";
-import { Card, Container, Typography } from "@mui/material";
+import { Card, Container, Typography, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -13,6 +13,7 @@ const MessagePage = () => {
   const [searchTerm, setSearchTerm] = useState(" ");
 
   const {searchedMessages} = useSelector((state) => state.chat);
+  const matchesSm = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
     if (page) {
@@ -25,7 +26,9 @@ const MessagePage = () => {
     <>
       <Container maxWidth={"xl"}>
         <Card sx={{ height: "80vh", display: "flex" }}>
+         
           <ChatSidebar />
+         
           <ChatWindow />
         </Card>
       </Container>

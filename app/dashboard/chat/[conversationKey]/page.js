@@ -5,6 +5,7 @@ import {
   Card,
   CircularProgress,
   Container,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +27,7 @@ export default function Chat({ params }) {
 
   const conversationId = Cookies.get("conversationId");
   const {conversationKey} = params;
+  const matchesSm = useMediaQuery("(max-width:600px)");
 
 
   useEffect(() => {
@@ -36,13 +38,10 @@ export default function Chat({ params }) {
   }, [dispatch, conversationId]);
 
 
-
-
-
   return (
     <Container maxWidth={"xl"}>
       <Card sx={{ height: "80vh", display: "flex" }}>
-        <ChatSidebar lastMessage={lastMessage} conversationKey={conversationKey} />
+         <ChatSidebar lastMessage={lastMessage} conversationKey={conversationKey} />
         {loading ? (
           <Box
             sx={{
