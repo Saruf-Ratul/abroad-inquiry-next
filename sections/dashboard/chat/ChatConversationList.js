@@ -45,6 +45,8 @@ export default function ChatConversationList({
   }, [conversationKey, lastMessage, conversations]);
 
   const handleSelectConversation = (id, conversationId, fcmToken, isUnread) => {
+    Cookies.remove("fcmToken");
+    Cookies.remove("conversationId");
     const index = updatedConversations.findIndex((x) => x.id === id);
     if (index !== -1) {
       const updatedConversation = [...updatedConversations];

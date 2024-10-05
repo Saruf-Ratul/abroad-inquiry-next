@@ -18,22 +18,23 @@ import {
   TableRow,
   TextField,
   Typography,
+  Box,
+  Pagination,
 } from "@mui/material";
 
 import React, { useContext, useEffect, useState } from "react";
 import { isLessThan24HourAgo } from "@/components/dateLessThan24HourAgo";
 import ManageTime from "@/components/managingTime";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  AddacceptOrDenyAppointment,
-  AddcompleteAnAppointment,
-  deleteAppointmentRequest,
-  fetchAllApprovedAppointments,
-  fetchAppointmentApplication,
-  fetchAppointmentRecords,
-} from "@/redux/features/appoinment/AppointmentSlice";
+import {useSelector } from "react-redux";
 import { BASE_URL } from "@/utils/axios";
 import withAuth from "@/sections/auth/withAuth";
+import io from "socket.io-client";
+import AppointmentController from "@/services/controllers/appointment";
+import {
+  ACCEPT_OR_DENY_APPOINTMENT,
+  DELETE_AN_APPOINTMENT,
+} from "@/services/appointmentRequest";
+import NotificationDialog from "@/components/NotificationDialog";
 import Iconify from "@/components/Iconify";
 
 const ActionButton = styled(Button)(({ theme }) => ({
@@ -43,29 +44,26 @@ const ActionButton = styled(Button)(({ theme }) => ({
   minHeight: "30px",
 }));
 
-
 const Appointments = () => {
-  const dispatch = useDispatch();
-  const {
-    appointmentApplication,
-    scheduledAppointment,
-    appointmentRecords,
-    totalAppointmentApplication,
-    totalScheduledAppointment,
-    totalAppointmentRecords,
-    snackbarTest,
-    deleteMsg
-  } = useSelector((state) => state.appoinment);
-
-  const { userInfo } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    dispatch(fetchAllApprovedAppointments(1));
-    dispatch(fetchAppointmentApplication(1));
-    dispatch(fetchAppointmentRecords(1));
-  }, [dispatch]);
-
- 
+  const [appointmentApplications, setAppointmentApplications] = useState({
+    totalAppointmentApplication: 0,
+    appointmentApplication: [],
+  });
+  const [appointmentHistory, setAppointmentHistory] = useState({
+    totalAppointmentRecords: 0,
+    appointmentRecords: [],
+  });
+  const [appointmentSchedules, setAppointmentSchedules] = useState({
+    totalScheduledAppointment: 0,
+    scheduledAppointment: [],
+  });
+  const [page, setPage] = useState({
+    appointmentHistory: 1,
+    appointmentSchedules: 1,
+    appointmentApplications: 1,
+  });
+  const [openDialog, setOpenDialog] = useState(false);
+  const [appointmentAction, setAppoitmentAction] = useState(false);
   const [focusedAppointment, setFocusedAppointment] = useState(null);
   const [denyReason, setDenyReason] = useState("");
   const [cancelReason, setCancelReason] = useState("");
@@ -75,12 +73,39 @@ const Appointments = () => {
     severity: "",
   });
 
+  const socket = io("https://realtime.abroadinquiry.com:2096", {
+    path: "/socket.io",
+    secure: true,
+  });
+  const { userInfo } = useSelector((state) => state.user);
+  const checkUserStatus = () => {
+    return userInfo.userStatus === "student" ? "Mentor" : "Student";
+  };
   const [clickedNotification, setClickedNotification] = useState(null);
   const [cancelAppointment, setCancelAppointment] = useState(false);
   const [doneAppointment, setDoneAppointment] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [appointmentAction, setAppoitmentAction] = useState(false);
+
+  useEffect(() => {
+    AppointmentController.SHOW_APPOINTMENT_APPLICATIONS(
+      page.appointmentApplications,
+      setAppointmentApplications
+    );
+  }, [page.appointmentApplications]);
+
+  useEffect(() => {
+    AppointmentController.GET_ALL_APPROVED_APPOINTMENTS(
+      page.appointmentSchedules,
+      setAppointmentSchedules
+    );
+  }, [page.appointmentSchedules]);
+
+  useEffect(() => {
+    AppointmentController.GET_APPOINTMENT_RECORDS(
+      page.appointmentHistory,
+      setAppointmentHistory
+    );
+  }, [page.appointmentHistory]);
 
   const handleAcceptOrDenyAppointment = () => {
     let data = {
@@ -91,66 +116,148 @@ const Appointments = () => {
       reason: denyReason,
       mentorName: userInfo.name,
     };
-    dispatch(AddacceptOrDenyAppointment(data));
-    setOpenDialog(false);
-    if(snackbarTest){
-      setSnackbarOpen({
-        ...snackbarOpen,
-        status: true,
-        severity: "success",
-        text: "Appointment Accept Successfully",
-      });
-    }else{
-      setSnackbarOpen({
-        ...snackbarOpen,
-        status: true,
-        severity: "error",
-        text: "Appointment Accept Successfully",
-      });
-    }
-  };
 
-  const checkUserStatus = () => {
-    return userInfo.userStatus === "student" ? "Mentor" : "Student";
+    const filterState = appointmentApplications.appointmentApplication.filter(
+      (item) => item.appointmentId !== focusedAppointment.appointmentId
+    );
+
+    setAppointmentApplications({
+      totalAppointmentApplication:
+        appointmentApplications.totalAppointmentApplication - 1,
+      appointmentApplication: filterState,
+    });
+
+    setFocusedAppointment(null);
+
+    ACCEPT_OR_DENY_APPOINTMENT(data)
+      .then((res) => {
+        socket?.emit("sendNotification", {
+          receiver: "student".concat(data.student_id.toString()),
+          appointmentId: res.data.appointmentId,
+          message: res.data.notification,
+          notificationId: res.data.notificationId,
+          createdAt: res.data.createdAt,
+          isRead: false,
+          rootScreen: "Appointments",
+          screen: "AcceptedAppointments",
+          fcmToken: res.data.fcmToken,
+        });
+        setOpenDialog(false);
+        if (res.data.status === "Accepted") {
+          setAppointmentSchedules({
+            totalScheduledAppointment:
+              appointmentSchedules.totalScheduledAppointment + 1,
+            scheduledAppointment: [
+              focusedAppointment,
+              ...appointmentSchedules.scheduledAppointment,
+            ],
+          });
+
+          setSnackbarOpen({
+            ...snackbarOpen,
+            status: true,
+            severity: "success",
+            text: "Appointment Accepted.",
+          });
+        } else {
+          setSnackbarOpen({
+            ...snackbarOpen,
+            status: true,
+            severity: "error",
+            text: "Appointment Denied.",
+          });
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleAppointmentDone = () => {
-    dispatch(AddcompleteAnAppointment(focusedAppointment));
-    setFocusedAppointment(null);
-    setDoneAppointment(false);
-    setOpenDialog(false);
-    setSnackbarOpen({
-      ...snackbarOpen,
-      status: true,
-      severity: "success",
-      text: "Appointment Done Successfully",
-    });
-  };
+    const filterState = appointmentSchedules.scheduledAppointment.filter(
+      (item) => item.appointmentId !== focusedAppointment.appointmentId
+    );
 
-  const handleStdCancel = (appointmentId) => {
-    if (appointmentId) {
-      dispatch(
-        deleteAppointmentRequest({
-          appointmentId,
-          reason: cancelReason,
-          userName: userInfo.name,
-        })
-      );
-      setCancelAppointment(false);
-      setFocusedAppointment(null);
-      setOpenDialog(false);
-    }
-    if(deleteMsg?.length > 0){
-      setSnackbarOpen({
-        ...snackbarOpen,
-        status: true,
-        severity: "success",
-        text: deleteMsg,
+    AppointmentController.COMPLETE_AN_APPOINTMENT(focusedAppointment)
+      .then((res) => {
+        if (res.isCompleted) {
+          setAppointmentSchedules({
+            totalScheduledAppointment:
+              appointmentSchedules.totalScheduledAppointment - 1,
+            scheduledAppointment: filterState,
+          });
+
+          setAppointmentHistory({
+            totalAppointmentRecords:
+              appointmentHistory.totalAppointmentRecords + 1,
+            appointmentRecords: [
+              focusedAppointment,
+              ...appointmentHistory.appointmentRecords,
+            ],
+          });
+          setFocusedAppointment(null);
+          setDoneAppointment(false);
+          setOpenDialog(false);
+          setSnackbarOpen({
+            ...snackbarOpen,
+            status: true,
+            severity: "success",
+            text: res.message,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setOpenDialog(false);
       });
-    }
   };
-  
 
+  const handleStdCancel = (data) => {
+    const filterState = appointmentSchedules.scheduledAppointment.filter(
+      (item) => item.appointmentId !== data
+    );
+
+    DELETE_AN_APPOINTMENT(data, cancelReason, userInfo.name)
+      .then((res) => {
+        socket?.emit("sendNotification", {
+          receiver: "mentor".concat(res.data.mentorId.toString()),
+          message: res.data.notificationMessage,
+          notificationId: res.data.notificationId,
+          createdAt: res.data.createdAt,
+          isRead: false,
+          rootScreen: "Notification",
+          screen: "NotificationScreen",
+          fcmToken: res.data.fcmToken,
+        });
+
+        setCancelAppointment(false);
+        setFocusedAppointment(null);
+
+        setOpenDialog(false);
+
+        setAppointmentSchedules({
+          totalScheduledAppointment:
+            appointmentSchedules.totalScheduledAppointment - 1,
+          scheduledAppointment: filterState,
+        });
+
+        setSnackbarOpen({
+          ...snackbarOpen,
+          status: true,
+          severity: "success",
+          text: res.data.message,
+        });
+      })
+      .catch((err) => {
+        setOpenDialog(false);
+        setCancelAppointment(false);
+
+        setSnackbarOpen({
+          ...snackbarOpen,
+          status: true,
+          severity: "error",
+          text: err.response.data.message,
+        });
+      });
+  };
 
   const layoutData = [
     {
@@ -159,9 +266,9 @@ const Appointments = () => {
       action: true,
       status: false,
       grid: 12,
-      tableData: appointmentApplication,
+      tableData: appointmentApplications.appointmentApplication,
       key: "appointmentApplications",
-      count: totalAppointmentApplication,
+      count: appointmentApplications.totalAppointmentApplication,
     },
 
     {
@@ -170,9 +277,9 @@ const Appointments = () => {
       action: false,
       status: true,
       grid: 12,
-      tableData: scheduledAppointment,
+      tableData: appointmentSchedules.scheduledAppointment,
       key: "appointmentSchedules",
-      count: totalScheduledAppointment,
+      count: appointmentSchedules.totalScheduledAppointment,
     },
     {
       id: 2,
@@ -180,41 +287,45 @@ const Appointments = () => {
       action: false,
       status: false,
       grid: 12,
-      tableData: appointmentRecords,
+      tableData: appointmentHistory.appointmentRecords,
       key: "appointmentHistory",
-      count: totalAppointmentRecords,
+      count: appointmentHistory.totalAppointmentRecords,
     },
   ];
 
+  const handleChangePage = (event, value, key) => {
+    setPage({ ...page, [key]: value });
+  };
+
   return (
     <>
-      <Grid container spacing={4}>
+      <Grid container spacing={4} sx={{ marginTop: "15px" }}>
         {layoutData.map((data, idx) => (
           <Grid item xs={data.grid} key={idx}>
             <Typography variant="h4" py={2}>
               {data.title}
             </Typography>
-            {data?.tableData?.length ? (
-              <TableContainer component={Paper} sx={{ padding: "12px" }}>
-                <Table stickyHeader sx={{ minWidth: 300 }}>
+            {data.tableData.length ? (
+              <TableContainer component={Paper}>
+                <Table stickyHeader sx={{ minWidth: 500 }}>
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ fontWeight: "bold" }}>
                         {checkUserStatus()}
                       </TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      <TableCell sx={{ fontWeight: "bold" }} align="right">
                         Date
                       </TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      <TableCell sx={{ fontWeight: "bold" }} align="right">
                         Time
                       </TableCell>
                       {data.action ? (
-                        <TableCell sx={{ fontWeight: "bold" }} align="center">
+                        <TableCell sx={{ fontWeight: "bold" }} align="right">
                           Action
                         </TableCell>
                       ) : (
                         data.status && (
-                          <TableCell sx={{ fontWeight: "bold" }} align="center">
+                          <TableCell sx={{ fontWeight: "bold" }} align="right">
                             Status
                           </TableCell>
                         )
@@ -249,18 +360,18 @@ const Appointments = () => {
                           &nbsp;&nbsp;
                           {row.name}
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell align="right">
                           {ManageTime.getLocalDate(row.startTime)}
                         </TableCell>
 
-                        <TableCell align="center">
-                        {ManageTime.getLocalTime(row.startTime)} -{" "}
-                        {ManageTime.getLocalTime(row.endTime)}
+                        <TableCell align="right">
+                          {ManageTime.getLocalTime(row.startTime)} -{" "}
+                          {ManageTime.getLocalTime(row.endTime)}
                         </TableCell>
 
                         {data.action ? (
                           userInfo.userStatus === "mentor" ? (
-                            <TableCell align="center">
+                            <TableCell align="right">
                               <ActionButton
                                 variant="contained"
                                 color="success"
@@ -287,16 +398,14 @@ const Appointments = () => {
                               </ActionButton>
                             </TableCell>
                           ) : (
-                            <TableCell align="center">
+                            <TableCell align="right">
                               <Button
                                 variant="contained"
-                                startIcon={
-                                  <Iconify
-                                    icon={"fluent:delete-12-regular"}
-                                    width={24}
-                                    height={24}
-                                  />
-                                }
+                                startIcon={<Iconify
+                                  icon={"fluent:delete-24-regular"}
+                                  width={24}
+                                  height={24}
+                                />}
                                 color="error"
                                 onClick={() => {
                                   setOpenDialog(true);
@@ -313,8 +422,8 @@ const Appointments = () => {
                         ) : (
                           data.status &&
                           (isLessThan24HourAgo(row.startTime) ||
-                          userInfo.userStatus === "mentor" ? (
-                            <TableCell align="center">
+                            userInfo.userStatus === "mentor" ? (
+                            <TableCell align="right">
                               <Button
                                 color="success"
                                 // disabled={!isLessThan24HourAgo(row.startTime)}
@@ -331,10 +440,15 @@ const Appointments = () => {
                             </TableCell>
                           ) : (
                             userInfo.userStatus === "student" && (
-                              <TableCell align="center">
+                              <TableCell align="right">
                                 <Button
                                   color="error"
                                   size="small"
+                                  startIcon={<Iconify
+                                    icon={"fluent:delete-24-regular"}
+                                    width={24}
+                                    height={24}
+                                  />}
                                   variant="contained"
                                   onClick={() => {
                                     setOpenDialog(true);
@@ -352,7 +466,7 @@ const Appointments = () => {
                     ))}
                   </TableBody>
                 </Table>
-                {/* <Box display="flex" justifyContent="flex-end" pr={2} py={2}>
+                <Box display="flex" justifyContent="flex-end" pr={2} py={2}>
                   <Pagination
                     page={page[data.key]}
                     handleChangePage={(e, v) =>
@@ -361,7 +475,7 @@ const Appointments = () => {
                     totalItem={data.count}
                     itemPerPage={5}
                   />
-                </Box> */}
+                </Box>
               </TableContainer>
             ) : (
               <Typography>{data.title} is empty!</Typography>
@@ -370,16 +484,16 @@ const Appointments = () => {
         ))}
       </Grid>
 
-      {/* {clickedNotification && (
+      {clickedNotification && (
         <NotificationDialog
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
-          userStatus={loggedInUser.userStatus}
+          userStatus={userInfo.userStatus}
           clickedNotification={clickedNotification}
           setClickedNotification={setClickedNotification}
           fromAppointmentPage={true}
         />
-      )} */}
+      )}
 
       <Dialog
         open={openDialog}
@@ -387,7 +501,7 @@ const Appointments = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        {appointmentApplication && appointmentAction ? (
+        {appointmentAction ? (
           <>
             <DialogContent>
               <Typography>
@@ -453,7 +567,8 @@ const Appointments = () => {
           </>
         ) : doneAppointment ? (
           <>
-             <DialogContent>
+            <>
+              <DialogContent>
                 <Typography>Are you sure this appointment is done?</Typography>
               </DialogContent>
               <DialogActions>
@@ -466,6 +581,7 @@ const Appointments = () => {
                   Confirm
                 </Button>
               </DialogActions>
+            </>
           </>
         ) : (
           <>

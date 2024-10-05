@@ -76,7 +76,6 @@ function ContactForm() {
           setOpen(true);
           resetForm();
           setMessage("Message sent!");
-          console.log(result);
         },
         (error) => {
           setOpen(true);

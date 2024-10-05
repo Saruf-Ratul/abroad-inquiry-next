@@ -32,6 +32,8 @@ const SIDEBAR_WIDTH = 240;
 
 export default function ChatRoom({
   conversationKey,
+  details,
+  loading
 }) {
   const theme = useTheme();
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -64,6 +66,8 @@ export default function ChatRoom({
           conversationKey={conversationKey}
           isCollapse={showInfo}
           onCollapse={() => setShowInfo((prev) => !prev)}
+          details={details}
+          loading={loading}
         />
       </div>
 
