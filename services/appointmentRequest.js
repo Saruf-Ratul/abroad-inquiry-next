@@ -1,6 +1,7 @@
 /**@module api/request */
 import axios from "axios";
 import { api, BASE_URL } from "./apis";
+import Cookies from "js-cookie";
 
 /**
  * header configuration for api request
@@ -8,11 +9,10 @@ import { api, BASE_URL } from "./apis";
  * @returns {Object}
  */
 const configParamsWithToken = () => {
+  const token = Cookies.get("token");
   return {
     "Content-Type": "application/json",
-    authentication_token: localStorage.getItem("token")
-      ? `Bearer ${JSON.parse(localStorage.getItem("token"))}`
-      : null,
+    authentication_token: token ? `Bearer ${token}` : null,
   };
 };
 

@@ -1,8 +1,7 @@
 "use client";
-import {fetchAllMentorNotifications, fetchAllStudentNotifications } from "@/redux/features/notification/notificationSlice";
 import withAuth from "@/sections/auth/withAuth";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Typography,
   Divider,
@@ -24,6 +23,7 @@ import Pagination from "@/components/Pagination";
 import MentorController from "@/services/controllers/mentor";
 import StudentController from "@/services/controllers/student";
 import NotificationController from "@/services/controllers/notification";
+import NotificationDialog from "@/components/NotificationDialog";
 
 const Notifications = () => {
   const { userInfo } = useSelector((state) => state.user);
@@ -58,7 +58,7 @@ const Notifications = () => {
         setLoading
       );
     }
-  }, [page]);
+  }, [page,userInfo.id ,userInfo.userStatus]);
 
   socket?.on("getNotification", (message) => {
     const newNotifcation = {
@@ -126,6 +126,9 @@ const Notifications = () => {
                     sx={{
                       width: "100%",
                       py: 0.8,
+                      backgroundColor: notification.isRead
+                        ? ""
+                        : "rgb(242, 242, 242)",
                     }}
                     onClick={() => handleAppointmentClick(notification)}
                   >
@@ -171,6 +174,16 @@ const Notifications = () => {
           </Box>
         )}
       </Box>
+
+      {clickedNotification && (
+        <NotificationDialog
+          dialogOpen={dialogOpen}
+          setDialogOpen={setDialogOpen}
+          userStatus={userInfo.userStatus}
+          clickedNotification={clickedNotification}
+          setClickedNotification={setClickedNotification}
+        />
+      )}
     </Paper>
     
   );

@@ -32,6 +32,8 @@ import Image from "next/image";
 import { fetchMentorProfileDetails } from "@/redux/features/mentor/mentorSlice";
 import makingTimeSlot from "@/components/makingTimeSlot";
 import managingTime from "@/components/managingTime";
+import io from "socket.io-client";
+import AppointmentController from "@/services/controllers/appointment";
 
 // Convert GMT string to Date object
 const convertGMTToDate = (gmtString) => {
@@ -63,9 +65,7 @@ function AppointmentBooking() {
     severity: "",
   });
   const dispatch = useDispatch();
-  const { mentorAvaialeSlots, loading } = useSelector(
-    (state) => state.appoinment
-  );
+  const { mentorAvaialeSlots } = useSelector((state) => state.appoinment);
   const { profileDeatails } = useSelector((state) => state.mentors);
   const { userInfo } = useSelector((state) => state.user);
   const [date, setDate] = useState(new Date());
@@ -73,6 +73,13 @@ function AppointmentBooking() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [query, setQuery] = useState(null);
   const matchesSm = useMediaQuery("(max-width:600px)");
+  const [appointmentApplyRes, setAppointmentApplyRes] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const socket = io("https://realtime.abroadinquiry.com:2096", {
+    path: "/socket.io",
+    secure: true,
+  });
 
   useEffect(() => {
     if (userInfo.userStatus !== "mentor") {
@@ -84,7 +91,7 @@ function AppointmentBooking() {
       dispatch(fetchMentorProfileDetails(slug));
       dispatch(fetchMentoravailableSlots(data));
     }
-  }, [dispatch, date, slug, userInfo.userStatus]);
+  }, [dispatch, date, slug, userInfo.userStatus,data]);
 
   useEffect(() => {
     let timeSlots = makingTimeSlot(mentorAvaialeSlots, date);
@@ -95,27 +102,49 @@ function AppointmentBooking() {
   }, [mentorAvaialeSlots, date]);
 
   const handleBookTimeSlot = () => {
-    const data = {
-      mentor_id: selectedDate.mentor_id,
-      student_name: userInfo.name,
-      student_id: userInfo.id,
-      start_time: managingTime.toUTC(selectedDate.start_time),
-      end_time: managingTime.toUTC(selectedDate.end_time),
-      appointment_date: ManageTime.getUTCDate(
-        new Date(selectedDate.start_time)
-      ),
-      notification: `You got a new appointment application from ${userInfo.name}`,
-      query: query,
-    };
-    dispatch(StudentAppointmentApplication(data));
-    setSnackbarOpen({
-      ...snackbarOpen,
-      status: true,
-      severity: "success",
-      text: "Appointment get successfully",
-    });
-   router.push("/dashboard/appointments");
+    AppointmentController.REQUEST_APPOINTMENT(
+      {
+        mentor_id: selectedDate.mentor_id,
+        student_name: userInfo.name,
+        student_id: userInfo.id,
+        start_time: managingTime.toUTC(selectedDate.start_time),
+        end_time: managingTime.toUTC(selectedDate.end_time),
+        appointment_date: ManageTime.getUTCDate(
+          new Date(selectedDate.start_time)
+        ),
+        notification: `You got a new appointment application from ${userInfo.name}`,
+        query: query,
+      },
+      socket,
+      setAppointmentApplyRes
+    );
   };
+
+  useEffect(() => {
+    if (appointmentApplyRes.isAppointmentCreated) {
+      const filterRemainigSlots = data.filter(
+        (slot) => slot.id !== selectedDate.id
+      );
+
+      setSelectedDate(null);
+      setQuery(null);
+      setData(filterRemainigSlots);
+      setSnackbarOpen({
+        ...snackbarOpen,
+        status: true,
+        severity: "success",
+        text: "An Appointment Request is Given",
+      });
+      // alerts.success("An Appointment Request is Given.");
+    } else if (appointmentApplyRes.isAppointmentCreated == false) {
+      setSnackbarOpen({
+        ...snackbarOpen,
+        status: true,
+        severity: "error",
+        text: `${appointmentApplyRes.message}`,
+      });
+    }
+  }, [appointmentApplyRes,data,snackbarOpen]);
 
   return (
     <CalendarWrapper>
@@ -265,7 +294,14 @@ function AppointmentBooking() {
                     </Button>
                   </>
                 ) : (
-                  <Typography>No Available Slots. Try Another Date.</Typography>
+                  <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight:"bold"
+                  }}
+                  >
+                    No Available Slots. <span style={{color:"red"}}>Try Another Date.</span> 
+                  </Typography>
                 )}
               </Box>
             </Grid>
