@@ -1,33 +1,34 @@
 "use client";
-import { useState } from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { STUDENT_SIGNUP_CALL } from "@/services/studentRequests";
 import {
-  Container,
+  Box,
   Button,
   Checkbox,
+  CircularProgress,
+  Container,
   FormControlLabel,
   IconButton,
   InputAdornment,
-  TextField,
-  useMediaQuery,
-  Box,
-  Typography,
-  Stepper,
   Step,
   StepLabel,
+  Stepper,
+  TextField,
+  Typography,
+  useMediaQuery,
 } from "@mui/material";
-import Iconify from "../../../../components/Iconify";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/bootstrap.css";
-import RegistrationFrom2 from "./RegistrationFrom2";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
-import { STUDENT_SIGNUP_CALL } from "@/services/studentRequests";
-import { useRouter } from "next/navigation";
+import { styled, useTheme } from "@mui/material/styles";
+import { useFormik } from "formik";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/bootstrap.css";
+import * as yup from "yup";
+import Iconify from "../../../../components/Iconify";
+import RegistrationFrom2 from "./RegistrationFrom2";
 
 const steps = ["Basic Information", "Personal Information"];
 
@@ -185,10 +186,11 @@ export default function RegisterForm() {
       phone: phoneNumber,
       password: formData.password,
     };
+
     setSignupUserId();
-    setLoading(true);
+    setLoading(true); // Start loading
     setError("");
-  
+
     STUDENT_SIGNUP_CALL(data)
       .then((res) => {
         let token = res.data.token;
@@ -196,7 +198,7 @@ export default function RegisterForm() {
         Cookies.set("token", token, { expires: 7, secure: true });
         Cookies.set("userId", userId, { expires: 7, secure: true });
         Cookies.set("userStatus", "student", { expires: 7, secure: true });
-  
+
         setSignupUserId(userId);
         setError("");
         resetForm();
@@ -206,222 +208,220 @@ export default function RegisterForm() {
       .catch((error) => {
         if (error.response && error.response.status === 422) {
           setError("This email is already registered!");
+        } else {
+          setError("An unexpected error occurred.");
         }
-        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false); // Ensure loading is stopped in both success and failure
       });
   };
-  
 
   return (
     <>
-      <Container
-        maxWidth="md"
-        sx={{
-          marginTop: "150px",
-          marginBottom: "100px",
-        }}
-      >
-        <Box>
-          <Stepper
-            alternativeLabel
-            activeStep={activeStep}
-            connector={<ColorlibConnector />}
-          >
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel StepIconComponent={ColorlibStepIcon}>
-                  {label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <div>
-            <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
-              {activeStep === 0 && (
-                <Container maxWidth="sm">
-                  <form onSubmit={formik.handleSubmit} method="post">
-                    {signupInputData.map((data, idx) => (
-                      <div key={idx}>
-                        <br />
-                        {data.type === "tel" ? (
-                          <PhoneInput
-                            country={"bd"}
-                            inputStyle={{
-                              width: "100%",
-                              backgroundColor:
-                                theme.palette.mode === "dark"
-                                  ? theme.palette.background.paper
-                                  : theme.palette.background.default,
+      <Box sx={{ borderLeft: "1px solid lightgrey" }}>
+        <Stepper
+          alternativeLabel
+          activeStep={activeStep}
+          connector={<ColorlibConnector />}
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel StepIconComponent={ColorlibStepIcon}>
+                {label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <div>
+          <Box sx={{ mt: 2, mb: 1, py: 1 }}>
+            {activeStep === 0 && (
+              <Container maxWidth="sm">
+                <form onSubmit={formik.handleSubmit} method="post">
+                  {signupInputData.map((data, idx) => (
+                    <div key={idx}>
+                      <br />
+                      {data.type === "tel" ? (
+                        <PhoneInput
+                          country={"bd"}
+                          inputStyle={{
+                            width: "100%",
+                            backgroundColor:
+                              theme.palette.mode === "dark"
+                                ? theme.palette.background.paper
+                                : theme.palette.background.default,
+                            color:
+                              theme.palette.mode === "dark"
+                                ? theme.palette.text.primary
+                                : theme.palette.text.secondary,
+                          }}
+                          onChange={(value, country) => {
+                            let phoneData = JSON.stringify({
+                              countryCode: country.countryCode,
+                              dialCode: "+" + country.dialCode,
+                              phoneNumber: value.slice(country.dialCode.length),
+                            });
+                            setPhoneNumber(phoneData);
+                          }}
+                          enableSearch={true}
+                        />
+                      ) : (
+                        <TextField
+                          fullWidth
+                          name={data.name}
+                          label={data.label}
+                          type={
+                            data.type === "password"
+                              ? showPassword[data.name]
+                                ? "text"
+                                : "password"
+                              : data.type
+                          }
+                          InputProps={{
+                            endAdornment: data.type === "password" && (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={() =>
+                                    setShowPassword({
+                                      ...showPassword,
+                                      [data.name]: !showPassword[data.name],
+                                    })
+                                  }
+                                  edge="end"
+                                >
+                                  {showPassword[data.name] ? (
+                                    <Iconify
+                                      icon={"f7:eye-fill"}
+                                      width={24}
+                                      height={24}
+                                    />
+                                  ) : (
+                                    <Iconify
+                                      icon={"eva:eye-off-fill"}
+                                      width={24}
+                                      height={24}
+                                    />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                          sx={{
+                            backgroundColor:
+                              theme.palette.mode === "dark"
+                                ? theme.palette.background.paper
+                                : theme.palette.background.default,
+                            "& .MuiInputBase-input": {
                               color:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.text.primary
                                   : theme.palette.text.secondary,
-                            }}
-                            onChange={(value, country) => {
-                              let phoneData = JSON.stringify({
-                                countryCode: country.countryCode,
-                                dialCode: "+" + country.dialCode,
-                                phoneNumber: value.slice(
-                                  country.dialCode.length
-                                ),
-                              });
-                              setPhoneNumber(phoneData);
-                            }}
-                            enableSearch={true}
-                          />
-                        ) : (
-                          <TextField
-                            fullWidth
-                            name={data.name}
-                            label={data.label}
-                            type={
-                              data.type === "password"
-                                ? showPassword[data.name]
-                                  ? "text"
-                                  : "password"
-                                : data.type
-                            }
-                            InputProps={{
-                              endAdornment: data.type === "password" && (
-                                <InputAdornment position="end">
-                                  <IconButton
-                                    onClick={() =>
-                                      setShowPassword({
-                                        ...showPassword,
-                                        [data.name]: !showPassword[data.name],
-                                      })
-                                    }
-                                    edge="end"
-                                  >
-                                    {showPassword[data.name] ? (
-                                      <Iconify
-                                        icon={"f7:eye-fill"}
-                                        width={24}
-                                        height={24}
-                                      />
-                                    ) : (
-                                      <Iconify
-                                        icon={"eva:eye-off-fill"}
-                                        width={24}
-                                        height={24}
-                                      />
-                                    )}
-                                  </IconButton>
-                                </InputAdornment>
-                              ),
-                            }}
-                            sx={{
-                              backgroundColor:
-                                theme.palette.mode === "dark"
-                                  ? theme.palette.background.paper
-                                  : theme.palette.background.default,
-                              "& .MuiInputBase-input": {
+                            },
+                            "& .MuiOutlinedInput-root": {
+                              "&.Mui-focused fieldset": {
+                                borderColor: theme.palette.primary.main,
+                              },
+                            },
+                            "& .MuiInputLabel-root": {
+                              "&.Mui-focused": {
                                 color:
                                   theme.palette.mode === "dark"
-                                    ? theme.palette.text.primary
-                                    : theme.palette.text.secondary,
+                                    ? "white"
+                                    : theme.palette.primary.dark,
                               },
-                              "& .MuiOutlinedInput-root": {
-                                "&.Mui-focused fieldset": {
-                                  borderColor: theme.palette.primary.main,
-                                },
-                              },
-                              "& .MuiInputLabel-root": {
-                                "&.Mui-focused": {
-                                  color:
-                                    theme.palette.mode === "dark"
-                                      ? "white"
-                                      : theme.palette.primary.dark,
-                                },
-                              },
-                            }}
-                            variant="outlined"
-                            value={formik.values[data.name]}
-                            onChange={formik.handleChange}
-                            error={
-                              formik.touched[data.name] &&
-                              Boolean(formik.errors[data.name])
-                            }
-                            helperText={
-                              formik.touched[data.name] &&
-                              formik.errors[data.name]
-                            }
-                          />
-                        )}
-                      </div>
-                    ))}
-                    <br />
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography sx={{ color: "red" }}>{error}</Typography>
-                    </Box>
-
-                    <FormControlLabel
-                      onChange={formik.handleChange}
-                      name="checked"
-                      value={formik.values.checked}
-                      control={
-                        <Checkbox
-                          checked={formik.values.checked}
-                          onClick={() => !formik.values.checked}
-                          size="small"
-                          style={{ color: "green" }}
-                          color="success"
+                            },
+                          }}
+                          variant="outlined"
+                          value={formik.values[data.name]}
+                          onChange={formik.handleChange}
+                          error={
+                            formik.touched[data.name] &&
+                            Boolean(formik.errors[data.name])
+                          }
+                          helperText={
+                            formik.touched[data.name] &&
+                            formik.errors[data.name]
+                          }
                         />
-                      }
-                      label={
-                        <small>
-                          I agree with the{" "}
-                          <u
-                            style={{ fontWeight: "bold" }}
-                            onClick={() => router.push("/terms-and-conditions")}
-                          >
-                            Terms & Conditions
-                          </u>
-                          ,{" "}
-                          <u
-                            style={{ fontWeight: "bold" }}
-                            onClick={() => router.push("/privacy-policy")}
-                          >
-                            {" "}
-                            Privacy Policy
-                          </u>{" "}
-                          and{" "}
-                          <u
-                            style={{ fontWeight: "bold" }}
-                            onClick={() => router.push("/refund-policy")}
-                          >
-                            Refund Policy
-                          </u>
-                        </small>
-                      }
-                    />
+                      )}
+                    </div>
+                  ))}
+                  <br />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography sx={{ color: "red" }}>{error}</Typography>
+                  </Box>
 
-                    <Box mb={1} />
-                    <Button
-                      disabled={!formik.values.checked}
-                      type="submit"
-                      color="primary"
-                      variant="contained"
-                      size={matchesSm ? "medium" : "large"}
-                      fullWidth
-                    >
-                      Next
-                    </Button>
-                  </form>
-                </Container>
-              )}
+                  <FormControlLabel
+                    onChange={formik.handleChange}
+                    name="checked"
+                    value={formik.values.checked}
+                    control={
+                      <Checkbox
+                        checked={formik.values.checked}
+                        onClick={() => !formik.values.checked}
+                        size="small"
+                        style={{ color: "green" }}
+                        color="success"
+                      />
+                    }
+                    label={
+                      <small>
+                        I agree with the{" "}
+                        <u
+                          style={{ fontWeight: "bold" }}
+                          onClick={() => router.push("/terms-and-conditions")}
+                        >
+                          Terms & Conditions
+                        </u>
+                        ,{" "}
+                        <u
+                          style={{ fontWeight: "bold" }}
+                          onClick={() => router.push("/privacy-policy")}
+                        >
+                          {" "}
+                          Privacy Policy
+                        </u>{" "}
+                        and{" "}
+                        <u
+                          style={{ fontWeight: "bold" }}
+                          onClick={() => router.push("/refund-policy")}
+                        >
+                          Refund Policy
+                        </u>
+                      </small>
+                    }
+                  />
 
-              {activeStep === 1 && <RegistrationFrom2 userId={signupUserId} />}
-            </Typography>
-          </div>
-        </Box>
-      </Container>
+                  <Box mb={1} />
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    fullWidth
+                    type="submit"
+                    size={matchesSm ? "medium" : "large"}
+                    disabled={loading || !formik.values.checked} // Disable the button when loading
+                    startIcon={
+                      loading ? (
+                        <CircularProgress size={20} color="inherit" />
+                      ) : null
+                    }
+                  >
+                    {loading ? "Signing up..." : "Sign Up"}
+                  </Button>
+                </form>
+              </Container>
+            )}
+
+            {activeStep === 1 && <RegistrationFrom2 userId={signupUserId} />}
+          </Box>
+        </div>
+      </Box>
     </>
   );
 }

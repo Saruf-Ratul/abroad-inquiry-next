@@ -73,6 +73,7 @@ export const officeInfo = [
     officeHour: "Sat - Thu 9.30 AM - 6.00 PM",
     email: email,
     phone: phoneNumbers,
+    country: "Bangladesh",
     map: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d322.7309433020732!2d90.41230002696352!3d23.772905683210215!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x679ff0b229fcaa71!2sAbroad%20Inquiry!5e0!3m2!1sen!2sbd!4v1650032843785!5m2!1sen!2sbd",
   },
   {
@@ -80,6 +81,7 @@ export const officeInfo = [
     officeHour: "Sat - Thu 9.30 AM - 6.00 PM",
     email: email,
     phone: phoneNumbers,
+    country: "Netherlands",
     map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2452.5143315021437!2d4.3214407999999995!3d52.07036639999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c5b71fc0e8a2bf%3A0xec5e74c07b36fc72!2sStationsweg%20267%2C%202515%20BM%20Den%20Haag%2C%20Netherlands!5e0!3m2!1sen!2sbd!4v1691078545002!5m2!1sen!2sbd",
   },
 ];

@@ -1,38 +1,44 @@
 "use client";
-import { m } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import Slider from "react-slick";
+import { MotionViewport, varFade } from "@/components/animate";
+import { CarouselArrows } from "@/components/carousel";
+import DataLoading from "@/components/DataLoading";
+import Iconify from "@/components/Iconify";
+import Label from "@/components/Label";
+import { fetchMentors } from "@/redux/features/mentor/mentorSlice";
+import { BASE_URL } from "@/utils/axios";
+import cssStyles from "@/utils/cssStyles";
 import {
+  Avatar,
   Box,
   Button,
   Card,
   Container,
+<<<<<<< HEAD
   Stack,
   Typography,
   Rating,
   Avatar,
+=======
+>>>>>>> 5a6d95660c1ac4893d6fb1c083d87177f92c92be
   Divider,
-  styled,
-  Modal,
-  TextField,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
+  Modal,
+  Rating,
+  Select,
+  Stack,
+  styled,
+  TextField,
+  Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Iconify from "@/components/Iconify";
-import Label from "@/components/Label";
-import cssStyles from "@/utils/cssStyles";
-import { MotionViewport, varFade } from "@/components/animate";
-import { CarouselArrows } from "@/components/carousel";
-import Image from "next/image";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchMentors } from "@/redux/features/mentor/mentorSlice";
-import { BASE_URL } from "@/utils/axios";
-import { useRouter } from "next/navigation";
-import DataLoading from "@/components/DataLoading";
+import { m } from "framer-motion";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Slider from "react-slick";
 
 const OverlayStyle = styled("div")(({ theme }) => ({
   ...cssStyles().bgBlur({ blur: 2, color: theme.palette.primary.darker }),
@@ -105,7 +111,10 @@ export default function HomeMentorList() {
   };
 
   return (
-    <Container component={MotionViewport} sx={{ pb: 10, textAlign: "center" }}>
+    <Container
+      component={MotionViewport}
+      sx={{ pb: 10, mt: { xs: 10, md: 0 }, textAlign: "center" }}
+    >
       <m.div variants={varFade().inDown}>
         <Typography
           component="p"
@@ -190,8 +199,8 @@ function MemberCard({ mentor }) {
 
   const router = useRouter();
   const token = Cookies.get("token");
-  const {userInfo} = useSelector((state)=>state.user);
-  
+  const { userInfo } = useSelector((state) => state.user);
+
   const handleMessageClick = (mentorId) => {
     if (token) {
       Cookies.remove("fcmToken");
@@ -203,7 +212,7 @@ function MemberCard({ mentor }) {
   };
 
   const handleAppointmentClick = (mentorId) => {
-    if (token  ) {
+    if (token) {
       router.push(`/dashboard/appointmentBooking/${mentorId}`);
     } else {
       router.push("/auth/login");
@@ -262,7 +271,7 @@ function MemberCard({ mentor }) {
         >
           <Button
             disabled={userInfo?.userStatus === "mentor"}
-            onClick={()=> handleMessageClick(mentor.id)}
+            onClick={() => handleMessageClick(mentor.id)}
             variant="contained"
             startIcon={
               <Iconify icon={"tabler:message"} width={24} height={24} />

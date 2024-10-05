@@ -7,19 +7,19 @@ import {
   Button,
   CircularProgress,
   Container,
-  FormHelperText,
   FormLabel,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const data = [
   {
     title:
-      "A valid color copy of your current resident permit & passport (both side). *",
+      "A valid color copy of your current resident permit & passport (both sides). *",
     name: "resident_permit_passport",
   },
   {
@@ -38,6 +38,7 @@ const ImageUpload = styled("input")({
 });
 
 function MentorRegistrationForm4({ userId }) {
+  const router = useRouter();
   const theme = useTheme();
   const matchesSm = useMediaQuery("(max-width:600px)");
   const [error, setError] = useState(null);
@@ -57,15 +58,16 @@ function MentorRegistrationForm4({ userId }) {
   };
 
   const hanleFileUpload = () => {
-    //  setLoading(true);
+    setLoading(true); // Start loading spinner
     const formData = new FormData();
     formData.append("resident_permit_passport", files.resident_permit_passport);
     formData.append("campus_or_employee_card", files.campus_or_employee_card);
     formData.append("signature", files.signature);
     setError(null);
+
     MENTOR_SIGNUP_4(userId, formData)
       .then((res) => {
-        setLoading(false);
+        setLoading(false); // Stop loading spinner
         if (res.status === 200) {
           setError(null);
           setFiles({
@@ -79,10 +81,11 @@ function MentorRegistrationForm4({ userId }) {
         }
       })
       .catch((err) => {
-        setLoading(false);
-        setError("File No Valid. Please Select Valid Files.");
+        setLoading(false); // Stop loading spinner on error
+        setError("File Not Valid. Please Select Valid Files.");
       });
   };
+
   return (
     <Container maxWidth="sm" sx={{ marginTop: "40px", marginBottom: "50px" }}>
       {!success ? (
@@ -90,21 +93,21 @@ function MentorRegistrationForm4({ userId }) {
           <Alert severity={error ? "error" : "info"}>
             {error
               ? error
-              : "File size cannot exceed 500kb & only pdf and image types are allowed"}
+              : "File size cannot exceed 500kb & only PDF and image types are allowed."}
           </Alert>
-          {data.map((data, idx) => (
+          {data.map((item, idx) => (
             <div key={idx}>
               <br />
               <FormLabel sx={{ color: theme.palette.text.primary }}>
-                {data.title}
+                {item.title}
               </FormLabel>
               <Box mt={1} />
-              <label htmlFor={data.name}>
+              <label htmlFor={item.name}>
                 <ImageUpload
-                  id={data.name}
+                  id={item.name}
                   accept=".jpg, .jpeg, .png, .pdf, .doc, .docx"
                   type="file"
-                  name={data.name}
+                  name={item.name}
                   onChange={handleFileChange}
                 />
                 <Button
@@ -121,13 +124,8 @@ function MentorRegistrationForm4({ userId }) {
                   Upload
                 </Button>
               </label>
-              {files[data.name] && <small>{files[data.name].name}</small>}
+              {files[item.name] && <small>{files[item.name].name}</small>}
               <br />
-              {/* {!files[data.name] && (
-                <FormHelperText error={true}>
-                  This field is required!
-                </FormHelperText>
-              )} */}
             </div>
           ))}
           <br />
@@ -142,12 +140,12 @@ function MentorRegistrationForm4({ userId }) {
             onClick={hanleFileUpload}
             color="primary"
             variant="contained"
-            startIcon={loading && <CircularProgress size={20} />}
+            startIcon={loading ? <CircularProgress size={20} /> : null} // Show spinner when loading
             size={matchesSm ? "medium" : "large"}
             fullWidth
             style={{ color: "#FFFF" }}
           >
-            Submit
+            {loading ? "Submitting..." : "Submit"} {/* Button text change */}
           </Button>
           <br />
           <br />
@@ -155,7 +153,24 @@ function MentorRegistrationForm4({ userId }) {
         </Box>
       ) : (
         <Box textAlign="center" py={8}>
-          {/* <FaCheckCircle size={120} color="#41AD49" /> */}
+          <Box
+            sx={{
+              bgcolor: theme.palette.success.main,
+              width: 150,
+              height: 150,
+              borderRadius: 50,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              m: "auto",
+            }}
+          >
+            <Iconify
+              icon="line-md:check-all"
+              sx={{ height: 120, width: 120, color: "#FFFF" }}
+            />
+          </Box>
+
           <Typography mt={2}>
             Further Abroad Inquiry will send the confirmation email to your
             domain email.
@@ -167,8 +182,8 @@ function MentorRegistrationForm4({ userId }) {
           <br />
           <Button
             variant="contained"
-            onClick={() => navigate("/")}
-            //   startIcon={<RiArrowGoBackFill />}
+            onClick={() => router.push("/")}
+            startIcon={<Iconify icon="icon-park-outline:back" />}
           >
             Back to home
           </Button>

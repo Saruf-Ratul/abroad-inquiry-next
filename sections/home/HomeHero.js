@@ -1,42 +1,32 @@
-import { backIn, color, m } from "framer-motion";
+import { m } from "framer-motion";
 import { useRef, useState } from "react";
 import Slider from "react-slick";
 // @mui
 import {
   Box,
-  Card,
-  CardContent,
+  ButtonBase,
   Container,
   Grid,
-  Link,
   Stack,
   Typography,
-  ButtonBase,
 } from "@mui/material";
-import { alpha, styled, useTheme } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 
 // components
 import Iconify from "@/components/Iconify";
-import {
-  MotionContainer,
-  MotionViewport,
-  varBounce,
-  varFade,
-} from "@/components/animate";
-import { CarouselArrows, CarouselDots } from "@/components/carousel";
-import zIndex from "@mui/material/styles/zIndex";
-import Image from "next/image";
+import { MotionContainer, MotionViewport, varFade } from "@/components/animate";
+import { CarouselDots } from "@/components/carousel";
 import slide1 from "@/public/assets/banner-slide-imgs/slide-1.webp";
 import slide2 from "@/public/assets/banner-slide-imgs/slide-2.webp";
 import slide3 from "@/public/assets/banner-slide-imgs/slide-3.webp";
 import slide4 from "@/public/assets/banner-slide-imgs/slide-4.webp";
-import slide5 from "@/public/assets/banner-slide-imgs/slide-8.webp";
 import slide6 from "@/public/assets/banner-slide-imgs/slide-6.webp";
 import slide7 from "@/public/assets/banner-slide-imgs/slide-7.webp";
-import testimonial from "@/public/assets/images/img/testimonial-bg.webp";
+import slide5 from "@/public/assets/banner-slide-imgs/slide-8.webp";
+import Image from "next/image";
 // import backgroundVideo from "@/public/assets/images/img/backgroundVideo.mp4";
-import googlePlay from "@/public/assets/banner-slide-imgs/google-play-store.webp";
 import appleStore from "@/public/assets/banner-slide-imgs/apple-app-store.webp";
+import googlePlay from "@/public/assets/banner-slide-imgs/google-play-store.webp";
 import shape from "@/public/assets/images/img/shape-7.webp";
 
 // ----------------------------------------------------------------------
@@ -67,7 +57,7 @@ const OverlayStyle = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor:"black",
+  backgroundColor: "black",
   "& video": {
     position: "absolute",
     top: 0,
@@ -76,7 +66,7 @@ const OverlayStyle = styled("div")(({ theme }) => ({
     height: "100%",
     objectFit: "cover",
     zIndex: -1,
-    opacity:0.4
+    opacity: 0.4,
   },
 }));
 
@@ -176,7 +166,10 @@ export default function HomeHero() {
       <RootStyle>
         <OverlayStyle>
           <video autoPlay muted loop>
-          <source src="/assets/images/img/backgroundVideo.mp4" type="video/mp4" />
+            <source
+              src="/assets/images/img/backgroundVideo.mp4"
+              type="video/mp4"
+            />
             Your browser does not support the video tag.
           </video>
         </OverlayStyle>
@@ -195,7 +188,7 @@ export default function HomeHero() {
             justifyContent="center"
             sx={{ height: "100%" }}
           >
-            <Grid item xs={8} md={7}>
+            <Grid item xs={12} md={7}>
               <Box component={m.div} pb={2} variants={varFade().inRight}>
                 <Typography variant="h3" sx={{ color: "common.white" }}>
                   A Whole World of
@@ -315,7 +308,13 @@ export default function HomeHero() {
           </Grid>
         </Container>
 
-        <FlyImg src={shape} alt="" width={300} height={250} style={{zIndex:"2"}}/>
+        <FlyImg
+          src={shape}
+          alt=""
+          width={300}
+          height={250}
+          style={{ zIndex: "2" }}
+        />
       </RootStyle>
     </MotionContainer>
   );

@@ -1,39 +1,37 @@
 "use client";
 import {
+  Alert,
   Avatar,
   Box,
   Button,
   Card,
   Container,
   Divider,
+  FormControl,
   Grid,
-  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Modal,
   Rating,
+  Select,
+  Snackbar,
   Stack,
   TextField,
   Typography,
   styled,
-  Select,
-  FormControl,
-  MenuItem,
-  InputLabel,
-  Modal,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 
+import DataLoading from "@/components/DataLoading";
 import Iconify from "@/components/Iconify";
-import InputStyle from "@/components/InputStyle";
 import Label from "@/components/Label";
-import cssStyles from "@/utils/cssStyles";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
 import { fetchMentors } from "@/redux/features/mentor/mentorSlice";
 import { BASE_URL } from "@/utils/axios";
-import { useRouter } from "next/navigation";
-import DataLoading from "@/components/DataLoading";
+import cssStyles from "@/utils/cssStyles";
 import { useTheme } from "@mui/material/styles";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const OverlayStyle = styled("div")(({ theme }) => ({
   ...cssStyles().bgBlur({ blur: 2, color: theme.palette.primary.darker }),
@@ -62,7 +60,7 @@ const style = {
 export default function MentorsList() {
   const dispatch = useDispatch();
   const { mentors, loading } = useSelector((state) => state.mentors);
-  const {userInfo} = useSelector((state)=>state.user);
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchMentors(1));
@@ -76,11 +74,11 @@ export default function MentorsList() {
             Chat or Book Appointment with our Mentors
           </Typography>
           {!userInfo.id && (
-          <Alert severity="info" sx={{ marginBottom: "30px" }}>
-            Login or Sign Up is required to message or schedule an appointment
-            with our esteemed mentors.
-          </Alert>
-        )}
+            <Alert severity="info" sx={{ marginBottom: "30px" }}>
+              Login or Sign Up is required to message or schedule an appointment
+              with our esteemed mentors.
+            </Alert>
+          )}
           {/* <InputStyle
             stretchStart={240}
             placeholder="Find Mentors..."
@@ -164,11 +162,11 @@ function FriendCard({ mentor }) {
   return (
     <>
       <div>
-        <Snackbar 
-        open={snackbarOpen} 
-        autoHideDuration={2000}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        sx={{mt:"32"}}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={2000}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          sx={{ mt: "32" }}
         >
           <Alert
             onClose={handleClose}
@@ -226,8 +224,9 @@ function FriendCard({ mentor }) {
           sx={{ mx: 3, my: 2 }}
         >
           <Button
+            size="small"
             disabled={userInfo?.userStatus === "mentor"}
-            onClick={()=> handleMessageClick(mentor.id)}
+            onClick={() => handleMessageClick(mentor.id)}
             variant="contained"
             startIcon={
               <Iconify icon={"tabler:message"} width={24} height={24} />
@@ -237,6 +236,7 @@ function FriendCard({ mentor }) {
           </Button>
           <Stack justifyContent="center" direction="row">
             <Button
+              size="small"
               disabled={userInfo?.userStatus === "mentor"}
               onClick={() => handleAppointmentClick(mentor.id)}
               variant="contained"

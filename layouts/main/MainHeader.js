@@ -29,16 +29,16 @@ import MenuDesktop from "./MenuDesktop";
 // import MenuMobile from "./MenuMobile";
 import Iconify from "@/components/Iconify";
 import SettingMode from "@/components/SettingMode";
+import TopLabel from "@/components/TopLabel";
 import { fetchUserInfo, logout } from "@/redux/features/auth/authSlice";
 import { PATH_AUTH, PATH_DASHBOARD } from "@/routes/paths";
 import { BASE_URL } from "@/utils/axios";
+import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import navConfig from "./MenuConfig";
 import MenuMobile from "./MenuMobile";
-import Cookies from "js-cookie";
-import TopLabel from "@/components/TopLabel";
 
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   height: HEADER.MOBILE_HEIGHT,
@@ -101,11 +101,13 @@ export default function MainHeader() {
 
   return (
     <>
-      <AppBar sx={{ 
-        boxShadow: 0, 
-        bgcolor: "transparent",
-        }}>
-      {!isOffset && isDesktop && <TopLabel />}
+      <AppBar
+        sx={{
+          boxShadow: 0,
+          bgcolor: "transparent",
+        }}
+      >
+        {!isOffset && isDesktop && <TopLabel />}
         <ToolbarStyle
           disableGutters
           sx={{
@@ -172,7 +174,8 @@ export default function MainHeader() {
                         href={PATH_DASHBOARD.root}
                         style={{
                           textDecoration: "none",
-                          color: theme.palette.mode === "dark" ? "white" : "black",
+                          color:
+                            theme.palette.mode === "dark" ? "white" : "black",
                           fontWeight: "bold",
                         }}
                       >
@@ -219,7 +222,8 @@ export default function MainHeader() {
                           href={PATH_DASHBOARD.chat.root}
                           style={{
                             textDecoration: "none",
-                            color: theme.palette.mode === "dark" ? "white" : "black",
+                            color:
+                              theme.palette.mode === "dark" ? "white" : "black",
                             fontWeight: "bold",
                           }}
                         >
@@ -241,11 +245,12 @@ export default function MainHeader() {
                           href="/dashboard/notifications"
                           style={{
                             textDecoration: "none",
-                            color: theme.palette.mode === "dark" ? "white" : "black",
+                            color:
+                              theme.palette.mode === "dark" ? "white" : "black",
                             fontWeight: "bold",
                           }}
                         >
-                        <ListItemText primary="Notifications" />
+                          <ListItemText primary="Notifications" />
                         </Link>
                       </ListItemButton>
 

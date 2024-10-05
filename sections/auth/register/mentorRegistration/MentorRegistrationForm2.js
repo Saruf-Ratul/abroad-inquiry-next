@@ -1,5 +1,10 @@
 "use client";
 import Iconify from "@/components/Iconify";
+import { countries } from "@/data/countryData";
+import {
+  MENTOR_SIGNUP_2,
+  UPDATE_MENTOR_PROFILE_PIC,
+} from "@/services/mentorRequests";
 import {
   Avatar,
   Button,
@@ -16,16 +21,11 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Box, maxWidth, styled } from "@mui/system";
+import { Box, styled } from "@mui/system";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import * as yup from "yup";
-import { countries } from "@/data/countryData";
-import {
-  MENTOR_SIGNUP_2,
-  UPDATE_MENTOR_PROFILE_PIC,
-} from "@/services/mentorRequests";
 
 export const basicInfoInputData = [
   {

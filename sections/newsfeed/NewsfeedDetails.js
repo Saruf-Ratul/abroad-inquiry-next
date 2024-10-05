@@ -7,7 +7,7 @@ import {
   Button,
   Card,
   Container,
-  IconButton,
+  Divider,
   Menu,
   MenuItem,
   Snackbar,
@@ -48,57 +48,47 @@ function NewsfeedDetails({ blogDetails }) {
     setAnchorEl(null);
   };
 
-  // const handleCopyLink = () => {
-  //   const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
-  //   navigator.clipboard
-  //     .writeText(postLink)
-  //     .then(() => {
-  //       setSnackbarOpen({
-  //         ...snackbarOpen,
-  //         status: true,
-  //         severity: "success",
-  //         text: "The link has been copied to your clipboard",
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       setSnackbarOpen({
-  //         ...snackbarOpen,
-  //         status: true,
-  //         severity: "error",
-  //         text: "Sorry! The link has not been copied to your clipboard",
-  //       });
-  //     });
-  // };
+  const handleCopyLink = () => {
+    const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
+    navigator.clipboard
+      .writeText(postLink)
+      .then(() => {
+        setSnackbarOpen({
+          status: true,
+          severity: "success",
+          text: "The link has been copied to your clipboard",
+        });
+      })
+      .catch(() => {
+        setSnackbarOpen({
+          status: true,
+          severity: "error",
+          text: "Sorry! The link has not been copied",
+        });
+      });
+  };
 
-  // const handleShareFacebook = () => {
-  //   const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
-  //   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-  //     postLink
-  //   )}`;
-  //   window.open(facebookShareUrl, "_blank");
-  // };
-
-  // const handleShareTwitter = () => {
-  //   const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
-  //   const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-  //     postLink
-  //   )}`;
-  //   window.open(twitterShareUrl, "_blank");
-  // };
-
-  // const handleShareLinkedin = () => {
-  //   const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
-  //   const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-  //     postLink
-  //   )}`;
-  //   window.open(linkedinShareUrl, "_blank");
-  // };
+  const handleShare = (platform) => {
+    const postLink = `${window.location.origin}/newsfeed/${blogDetails.blogId}`;
+    const shareUrls = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+        postLink
+      )}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+        postLink
+      )}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        postLink
+      )}`,
+    };
+    window.open(shareUrls[platform], "_blank");
+  };
 
   return (
     <Container>
-      <Box >
+      <Box>
         <Card>
-          <Box m={3}>
+          <Box sx={{ p: { xs: 2, md: 3 } }}>
             {/* Author Info */}
             <Box
               display="flex"
@@ -118,6 +108,21 @@ function NewsfeedDetails({ blogDetails }) {
                   </Typography>
                 </Box>
               </Box>
+
+              {/* Share Button */}
+
+              <Button
+                onClick={handleMenuClick}
+                startIcon={<Iconify icon="mdi:share-outline" />}
+                aria-label="share"
+                variant="outlined"
+              >
+                Share
+              </Button>
+
+              {/* <IconButton onClick={handleMenuClick} >
+                <Iconify icon="mdi:share-outline" />
+              </IconButton> */}
             </Box>
 
             {/* Blog Title */}
@@ -160,105 +165,91 @@ function NewsfeedDetails({ blogDetails }) {
               }}
             />
 
-            {/* Actions: Like, Comment, Share */}
-            {/* <Box display="flex" alignItems="center" mt={3}>
+            {/* Like and Comment Buttons */}
+            <Divider />
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              mt={3}
+            >
               <Button
-                size="small"
-                startIcon={
-                  like ? (
-                    <Iconify
-                      icon={"bxs:like"}
-                      width={24}
-                      height={24}
-                      style={{ color: "red" }}
-                    />
-                  ) : (
-                    <Iconify
-                      icon={"bx:like"}
-                      width={24}
-                      height={24}
-                      style={{ color: "black" }}
-                    />
-                  )
-                }
                 onClick={handleLike}
+                startIcon={
+                  <Iconify
+                    icon={like ? "bxs:like" : "bx:like"}
+                    sx={{ color: like ? "red" : "black" }}
+                  />
+                }
               >
                 {like ? "Liked" : "Like"}
               </Button>
-
-              <IconButton onClick={handleMenuClick}>
-                <Iconify
-                  icon={"mdi:share-outline"}
-                  width={24}
-                  height={24}
-                  style={{ color: "black" }}
-                />
-              </IconButton>
-
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
+              <Button
+                startIcon={<Iconify icon="ant-design:comment-outlined" />}
+                aria-label="comment"
               >
-                <MenuItem onClick={handleCopyLink}>
-                  <Iconify
-                    icon={"tabler:copy"}
-                    width={24}
-                    height={24}
-                    style={{ marginRight: "5px" }}
-                  />
-                  Copy link
-                </MenuItem>
+                Comment
+              </Button>
+            </Box>
 
-                <MenuItem onClick={handleShareTwitter}>
-                  <Iconify
-                    icon={"ant-design:twitter-outlined"}
-                    width={24}
-                    height={24}
-                    style={{ marginRight: "5px" }}
-                  />
-                  Share on Twitter
-                </MenuItem>
+            {/* Share Menu */}
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              PaperProps={{
+                style: { borderRadius: 8, minWidth: 200 },
+              }}
+            >
+              <MenuItem onClick={handleCopyLink}>
+                <Iconify icon="tabler:copy" sx={{ marginRight: "8px" }} />
+                Copy link
+              </MenuItem>
+              <MenuItem onClick={() => handleShare("twitter")}>
+                <Iconify
+                  icon="ant-design:twitter-outlined"
+                  sx={{ marginRight: "8px" }}
+                />
+                Share on Twitter
+              </MenuItem>
+              <MenuItem onClick={() => handleShare("facebook")}>
+                <Iconify
+                  icon="ic:twotone-facebook"
+                  sx={{ marginRight: "8px" }}
+                />
+                Share on Facebook
+              </MenuItem>
+              <MenuItem onClick={() => handleShare("linkedin")}>
+                <Iconify
+                  icon="mingcute:linkedin-fill"
+                  sx={{ marginRight: "8px" }}
+                />
+                Share on LinkedIn
+              </MenuItem>
+            </Menu>
 
-                <MenuItem onClick={handleShareFacebook}>
-                  <Iconify
-                    icon={"ic:twotone-facebook"}
-                    width={24}
-                    height={24}
-                    style={{ marginRight: "5px" }}
-                  />
-                  Share on Facebook
-                </MenuItem>
-
-                <MenuItem onClick={handleShareLinkedin}>
-                  <Iconify
-                    icon={"mingcute:linkedin-fill"}
-                    width={24}
-                    height={24}
-                    style={{ marginRight: "5px" }}
-                  />
-                  Share on LinkedIn
-                </MenuItem>
-              </Menu>
-            </Box> */}
+            {/* Snackbar Notification */}
+            <Snackbar
+              open={snackbarOpen.status}
+              autoHideDuration={4000}
+              onClose={() =>
+                setSnackbarOpen({ status: false, text: "", severity: "" })
+              }
+              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+              <Alert
+                onClose={() =>
+                  setSnackbarOpen({ status: false, text: "", severity: "" })
+                }
+                severity={snackbarOpen.severity}
+                sx={{ width: "100%" }}
+              >
+                {snackbarOpen.text}
+              </Alert>
+            </Snackbar>
           </Box>
         </Card>
       </Box>
-
-      <Snackbar
-        open={snackbarOpen.status}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen({ ...snackbarOpen, status: false })}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen({ ...snackbarOpen, status: false })}
-          severity={snackbarOpen.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarOpen.text}
-        </Alert>
-      </Snackbar>
     </Container>
   );
 }

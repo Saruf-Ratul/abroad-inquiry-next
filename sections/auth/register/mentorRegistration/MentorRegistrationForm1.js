@@ -1,4 +1,7 @@
 "use client";
+import Iconify from "@/components/Iconify";
+import { MENTOR_SIGNUP_1 } from "@/services/mentorRequests";
+import styled from "@emotion/styled";
 import {
   Button,
   Checkbox,
@@ -7,37 +10,29 @@ import {
   FormControlLabel,
   IconButton,
   InputAdornment,
+  Step,
+  StepLabel,
+  Stepper,
   TextField,
   Typography,
   useMediaQuery,
   useTheme,
-  Stepper,
-  Step,
-  StepLabel,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import { useFormik } from "formik";
-import React, { useState } from "react";
-import * as yup from "yup";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/bootstrap.css";
-import Iconify from "@/components/Iconify";
-import styled from "@emotion/styled";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
+import { Box } from "@mui/system";
+import { useFormik } from "formik";
+import { useRouter } from "next/navigation.js";
+import { useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/bootstrap.css";
+import * as yup from "yup";
 import MentorRegistrationForm2 from "./MentorRegistrationForm2.js";
 import MentorRegistrationForm3 from "./MentorRegistrationForm3";
 import MentorRegistrationForm4 from "./MentorRegistrationForm4";
-import { MENTOR_SIGNUP_1 } from "@/services/mentorRequests";
-import { useRouter } from "next/navigation.js";
 
-const steps = [
-  "Basic Information",
-  "Personal Information",
-  "Educations & Others",
-  "Ducuments Submission",
-];
+const steps = ["Basics", "Personal", "Education", "Documents"];
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -69,8 +64,8 @@ const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
     theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
   zIndex: 1,
   color: "#fff",
-  width: 50,
-  height: 50,
+  width: 45,
+  height: 45,
   display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
@@ -230,230 +225,225 @@ function MentorRegistrationForm1() {
 
   return (
     <>
-      <Container
-        maxWidth="md"
-        sx={{ marginTop: "150px", marginBottom: "80px" }}
-      >
-        <Box>
-          <Stepper
-            alternativeLabel
-            activeStep={activeStep}
-            connector={<ColorlibConnector />}
-          >
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel StepIconComponent={ColorlibStepIcon}>
-                  {label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <div>
-            <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
-              {activeStep === 0 && (
-                <Container maxWidth="sm">
-                  <form
-                    autoComplete="off"
-                    onSubmit={formik.handleSubmit}
-                    method="post"
-                  >
-                    {mentorSignupInputData.map((data, idx) => (
-                      <div key={idx}>
-                        <br />
-                        {data.type === "tel" ? (
-                          <PhoneInput
-                            country={"bd"}
-                            onChange={(value, country) => {
-                              setPhoneNumber(value);
-                            }}
-                            inputStyle={{
-                              width: "100%",
-                              backgroundColor:
-                                theme.palette.mode === "dark"
-                                  ? theme.palette.background.paper
-                                  : theme.palette.background.default,
+      <Box sx={{ borderLeft: "1px solid lightgrey" }}>
+        <Stepper
+          alternativeLabel
+          activeStep={activeStep}
+          connector={<ColorlibConnector />}
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel StepIconComponent={ColorlibStepIcon}>
+                {label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <div>
+          <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
+            {activeStep === 0 && (
+              <Container maxWidth="sm">
+                <form
+                  autoComplete="off"
+                  onSubmit={formik.handleSubmit}
+                  method="post"
+                >
+                  {mentorSignupInputData.map((data, idx) => (
+                    <div key={idx}>
+                      <br />
+                      {data.type === "tel" ? (
+                        <PhoneInput
+                          country={"bd"}
+                          onChange={(value, country) => {
+                            setPhoneNumber(value);
+                          }}
+                          inputStyle={{
+                            width: "100%",
+                            backgroundColor:
+                              theme.palette.mode === "dark"
+                                ? theme.palette.background.paper
+                                : theme.palette.background.default,
+                            color:
+                              theme.palette.mode === "dark"
+                                ? theme.palette.text.primary
+                                : theme.palette.text.secondary,
+                          }}
+                          sx={{
+                            "& .MuiInputLabel-root": {
+                              "&.Mui-focused": {
+                                color:
+                                  theme.palette.mode === "dark"
+                                    ? "white"
+                                    : theme.palette.primary.dark,
+                              },
+                            },
+                          }}
+                        />
+                      ) : (
+                        <TextField
+                          fullWidth
+                          name={data.name}
+                          label={data.label}
+                          type={
+                            data.type === "password"
+                              ? showPassword[data.name]
+                                ? "text"
+                                : "password"
+                              : data.type
+                          }
+                          InputProps={{
+                            endAdornment: data.type === "password" && (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={() =>
+                                    setShowPassword((prev) => ({
+                                      ...prev,
+                                      [data.name]: !prev[data.name],
+                                    }))
+                                  }
+                                  edge="end"
+                                >
+                                  {showPassword[data.name] ? (
+                                    <Iconify
+                                      icon={"eva:eye-fill"}
+                                      width={24}
+                                      height={24}
+                                    />
+                                  ) : (
+                                    <Iconify
+                                      icon={"eva:eye-off-fill"}
+                                      width={24}
+                                      height={24}
+                                    />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                          variant="outlined"
+                          value={formik.values[data.name]}
+                          onChange={formik.handleChange}
+                          error={
+                            formik.touched[data.name] &&
+                            Boolean(formik.errors[data.name])
+                          }
+                          helperText={
+                            formik.touched[data.name] &&
+                            formik.errors[data.name]
+                          }
+                          InputLabelProps={{
+                            style: { color: theme.palette.text.primary },
+                          }}
+                          sx={{
+                            backgroundColor:
+                              theme.palette.mode === "dark"
+                                ? theme.palette.background.paper
+                                : theme.palette.background.default,
+                            "& .MuiInputBase-input": {
                               color:
                                 theme.palette.mode === "dark"
                                   ? theme.palette.text.primary
                                   : theme.palette.text.secondary,
-                            }}
-                            sx={{
-                              "& .MuiInputLabel-root": {
-                                "&.Mui-focused": {
-                                  color:
-                                    theme.palette.mode === "dark"
-                                      ? "white"
-                                      : theme.palette.primary.dark,
-                                },
+                            },
+                            "& .MuiOutlinedInput-root": {
+                              "&.Mui-focused fieldset": {
+                                borderColor: theme.palette.primary.main,
                               },
-                            }}
-                          />
-                        ) : (
-                          <TextField
-                            fullWidth
-                            name={data.name}
-                            label={data.label}
-                            type={
-                              data.type === "password"
-                                ? showPassword[data.name]
-                                  ? "text"
-                                  : "password"
-                                : data.type
-                            }
-                            InputProps={{
-                              endAdornment: data.type === "password" && (
-                                <InputAdornment position="end">
-                                  <IconButton
-                                    onClick={() =>
-                                      setShowPassword((prev) => ({
-                                        ...prev,
-                                        [data.name]: !prev[data.name],
-                                      }))
-                                    }
-                                    edge="end"
-                                  >
-                                    {showPassword[data.name] ? (
-                                      <Iconify
-                                        icon={"eva:eye-fill"}
-                                        width={24}
-                                        height={24}
-                                      />
-                                    ) : (
-                                      <Iconify
-                                        icon={"eva:eye-off-fill"}
-                                        width={24}
-                                        height={24}
-                                      />
-                                    )}
-                                  </IconButton>
-                                </InputAdornment>
-                              ),
-                            }}
-                            variant="outlined"
-                            value={formik.values[data.name]}
-                            onChange={formik.handleChange}
-                            error={
-                              formik.touched[data.name] &&
-                              Boolean(formik.errors[data.name])
-                            }
-                            helperText={
-                              formik.touched[data.name] &&
-                              formik.errors[data.name]
-                            }
-                            InputLabelProps={{
-                              style: { color: theme.palette.text.primary },
-                            }}
-                            sx={{
-                              backgroundColor:
-                                theme.palette.mode === "dark"
-                                  ? theme.palette.background.paper
-                                  : theme.palette.background.default,
-                              "& .MuiInputBase-input": {
+                            },
+                            "& .MuiInputLabel-root": {
+                              "&.Mui-focused": {
                                 color:
                                   theme.palette.mode === "dark"
-                                    ? theme.palette.text.primary
-                                    : theme.palette.text.secondary,
+                                    ? "white"
+                                    : theme.palette.primary.dark,
                               },
-                              "& .MuiOutlinedInput-root": {
-                                "&.Mui-focused fieldset": {
-                                  borderColor: theme.palette.primary.main,
-                                },
-                              },
-                              "& .MuiInputLabel-root": {
-                                "&.Mui-focused": {
-                                  color:
-                                    theme.palette.mode === "dark"
-                                      ? "white"
-                                      : theme.palette.primary.dark,
-                                },
-                              },
-                            }}
-                          />
-                        )}
-                      </div>
-                    ))}
-
-                    <br/>
-
-                    <Box>
-                      <Typography sx={{color:"red"}}>{error}</Typography>
-                    </Box>
-                    <br />
-                    <FormControlLabel
-                      onChange={formik.handleChange}
-                      name="checked"
-                      value={formik.values.checked}
-                      control={
-                        <Checkbox
-                          checked={formik.values.checked}
-                          onClick={() =>
-                            formik.setFieldValue(
-                              "checked",
-                              !formik.values.checked
-                            )
-                          }
-                          size="small"
-                          style={{ color: "green" }}
-                          color="success"
+                            },
+                          }}
                         />
-                      }
-                      label={
-                        <small>
-                          I agree with the{" "}
-                          <u
-                            style={{ fontWeight: "bold" }}
-                            onClick={() => router.push("/terms-and-conditions")}
-                          >
-                            Terms & Conditions
-                          </u>
-                          ,{" "}
-                          <u
-                            style={{ fontWeight: "bold" }}
-                            onClick={() => router.push("/privacy-policy")}
-                          >
-                            {" "}
-                            Privacy Policy
-                          </u>{" "}
-                        </small>
-                      }
-                    />
+                      )}
+                    </div>
+                  ))}
 
-                    <Box mb={1} />
-                    <Button
-                      disabled={!formik.values.checked || loading}
-                      type="submit"
-                      color="primary"
-                      variant="contained"
-                      startIcon={loading && <CircularProgress size={20} />}
-                      size={matchesSm ? "medium" : "large"}
-                      fullWidth
-                      style={{ color: "#FFFF" }}
-                    >
-                      Next
-                    </Button>
-                  </form>
-                </Container>
-              )}
+                  <br />
 
-              {activeStep === 1 && (
-                <MentorRegistrationForm2
-                  setActiveStep={setActiveStep}
-                  userId={signupUserId}
-                />
-              )}
-              {activeStep === 2 && (
-                <MentorRegistrationForm3
-                  setActiveStep={setActiveStep}
-                  userId={signupUserId}
-                />
-              )}
-              {activeStep === 3 && (
-                <MentorRegistrationForm4 userId={signupUserId} />
-              )}
-            </Typography>
-          </div>
-        </Box>
-      </Container>
+                  <Box>
+                    <Typography sx={{ color: "red" }}>{error}</Typography>
+                  </Box>
+                  <br />
+                  <FormControlLabel
+                    onChange={formik.handleChange}
+                    name="checked"
+                    value={formik.values.checked}
+                    control={
+                      <Checkbox
+                        checked={formik.values.checked}
+                        onClick={() =>
+                          formik.setFieldValue(
+                            "checked",
+                            !formik.values.checked
+                          )
+                        }
+                        size="small"
+                        style={{ color: "green" }}
+                        color="success"
+                      />
+                    }
+                    label={
+                      <small>
+                        I agree with the{" "}
+                        <u
+                          style={{ fontWeight: "bold" }}
+                          onClick={() => router.push("/terms-and-conditions")}
+                        >
+                          Terms & Conditions
+                        </u>
+                        ,{" "}
+                        <u
+                          style={{ fontWeight: "bold" }}
+                          onClick={() => router.push("/privacy-policy")}
+                        >
+                          {" "}
+                          Privacy Policy
+                        </u>{" "}
+                      </small>
+                    }
+                  />
+
+                  <Box mb={1} />
+                  <Button
+                    disabled={!formik.values.checked || loading}
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    startIcon={loading && <CircularProgress size={20} />}
+                    size={matchesSm ? "medium" : "large"}
+                    fullWidth
+                    style={{ color: "#FFFF" }}
+                  >
+                    Next
+                  </Button>
+                </form>
+              </Container>
+            )}
+
+            {activeStep === 1 && (
+              <MentorRegistrationForm2
+                setActiveStep={setActiveStep}
+                userId={signupUserId}
+              />
+            )}
+            {activeStep === 2 && (
+              <MentorRegistrationForm3
+                setActiveStep={setActiveStep}
+                userId={signupUserId}
+              />
+            )}
+            {activeStep === 3 && (
+              <MentorRegistrationForm4 userId={signupUserId} />
+            )}
+          </Typography>
+        </div>
+      </Box>
     </>
   );
 }
