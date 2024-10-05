@@ -13,13 +13,6 @@ import {
   Button,
   Card,
   Container,
-<<<<<<< HEAD
-  Stack,
-  Typography,
-  Rating,
-  Avatar,
-=======
->>>>>>> 5a6d95660c1ac4893d6fb1c083d87177f92c92be
   Divider,
   FormControl,
   InputLabel,
