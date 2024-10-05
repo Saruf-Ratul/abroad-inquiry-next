@@ -1,13 +1,12 @@
-import React from 'react'
-import NewsfeedIndex from '@/sections/newsfeed/NewsfeedIndex';
-import { RootStyle } from '../contact/style';
+import NewsfeedIndex from "@/sections/newsfeed/NewsfeedIndex";
+import { RootStyle } from "../contact/style";
 
-const NewsfeedPage = () => { 
+const NewsfeedPage = () => {
   return (
-    <RootStyle >
+    <RootStyle>
       <NewsfeedIndex />
     </RootStyle>
-  )
-}
+  );
+};
 
-export default NewsfeedPage
+export default NewsfeedPage;

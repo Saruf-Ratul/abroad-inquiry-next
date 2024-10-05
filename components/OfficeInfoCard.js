@@ -20,7 +20,6 @@ function OfficeInfoCard({ item }) {
     Bangladesh: "twemoji:flag-bangladesh",
     Netherlands: "twemoji:flag-netherlands",
   };
-  console.log(country);
 
   return (
     <Card
