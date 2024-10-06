@@ -14,13 +14,11 @@ const RootStyle = styled("div")(({ theme }) => ({
 }));
 
 export default function ChatHeaderDetail({
-  conversationKey,
-  details,
-  loading,
+  chatUser
 }) {
   return (
     <RootStyle>
-      <OneAvatar details={details} loading={loading} />
+      <OneAvatar chatUser={chatUser} />
       <Box sx={{ flexGrow: 1 }} />
       <IconButton>
         <Iconify icon="eva:phone-fill" width={20} height={20} />
@@ -35,30 +33,30 @@ export default function ChatHeaderDetail({
   );
 }
 
-function OneAvatar({ details, loading }) {
+function OneAvatar({ chatUser }) {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box sx={{ position: "relative" }}>
-        {loading ? (
+        {/* {loading ? (
           <SkeletonConversationItem />
-        ) : (
+        ) : ( */}
           <>
-            <Avatar src={`${BASE_URL}/${details.avatar}`} alt={details.name} />
+            <Avatar src={`${BASE_URL}/${chatUser.profilePic}`} alt={chatUser.name} />
             <BadgeStatus
               status="online"
               sx={{ position: "absolute", right: 2, bottom: 2 }}
             />
           </>
-        )}
+        {/* )} */}
       </Box>
-      {!loading && (
+      {/* {!loading && ( */}
         <Box sx={{ ml: 2 }}>
-          <Typography variant="subtitle2">{details?.name}</Typography>
+          <Typography variant="subtitle2">{chatUser?.name}</Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             online
           </Typography>
         </Box>
-      )}
+      {/* )} */}
     </Box>
   );
 }

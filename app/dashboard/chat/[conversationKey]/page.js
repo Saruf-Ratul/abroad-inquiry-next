@@ -38,6 +38,8 @@ export default function Chat({ params }) {
   }, [dispatch, conversationId]);
 
 
+
+
   return (
     <Container maxWidth={"xl"}>
       <Card sx={{ height: "80vh", display: "flex" }}>

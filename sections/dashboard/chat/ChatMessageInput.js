@@ -13,6 +13,7 @@ import Iconify from "../../../components/Iconify";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import Cookies from "js-cookie";
+import { useUser } from "@/contexts/UserContext";
 
 const RootStyle = styled("div")(({ theme }) => ({
   minHeight: 56,
@@ -23,14 +24,17 @@ const RootStyle = styled("div")(({ theme }) => ({
 }));
 
 export default function ChatMessageInput({
-  disabled,
-  conversationKey,
-  chatmessages,
-  setChatMessages,
-  conversations,
   setLastMessage,
+  setMessages,
+  messages,
+  loading ,
+  chatUser ,
+  userStatus,
 }) {
  
+  const { user, lastMsg } = useUser();
+  const [loggedInUser, setLoggedInUser] = user;
+
   const socket = io("https://realtime.abroadinquiry.com:2096", {
     path: "/socket.io",       
     secure: true,             
@@ -41,29 +45,14 @@ export default function ChatMessageInput({
   const [cloudinaryMessage, setCloudinaryMessage] = useState("");
   const [mentorId, setMentorId] = useState();
   const [studentId, setSudentId] = useState();
-  const fcmToken = Cookies.get("fcmToken");
-  const conversationId = Cookies.get("conversationId");
-  const { userInfo } = useSelector((state) => state.user);
+
+
 
   useEffect(() => {
     if (message) {
       setLastMessage(message);
     }
   }, [setLastMessage, message]);
-
-  useEffect(() => {
-    conversations?.forEach((con) => {
-      chatmessages?.forEach((m) => {
-        if (`mentor${con.id}` === m.sender) {
-          setMentorId(con.id);
-        }
-        if (`student${con.id}` === m.sender) {
-          setSudentId(con.id);
-        }
-      });
-    });
-  }, [conversations, chatmessages]);
-
 
 
 
@@ -168,34 +157,42 @@ export default function ChatMessageInput({
     if (!message && !cloudinaryMessage) {
       return "";
     }
-    let timeStamp = new Date().getTime();
+    let timeStam = new Date().getTime();
     const token = Cookies.get("token")
       ? `Bearer ${Cookies.get("token")}`
       : null;
 
     socket?.emit("sendMessage", {
       text: message ? message.trim() : cloudinaryMessage.trim(),
-      sender: userInfo.userStatus.concat(userInfo.id.toString()),
-      chatId: conversationId,
-      messagesId: new Date().getTime(),
-      receiver: mentorId
-        ? "mentor".concat(mentorId)
-        : "student".concat(studentId),
-      timeStamp: new Date().getTime(),
-      senderName: userInfo?.name,
+      sender: loggedInUser.userStatus.concat(loggedInUser.id.toString()),
+      chatId: chatUser?.chatDetails,
+      messagesId: timeStam,
+      receiver: userStatus.concat(chatUser?.id),
+      timeStamp: timeStam,
+      senderName: loggedInUser?.name,
       isMyMessage: false,
-      fcmToken: fcmToken,
+      fcmToken: chatUser.fcmToken,
       authentication_token: token,
     });
 
-    setChatMessages((prevMessages) => [
-      ...prevMessages,
+    setLastMessage({
+      text: JSON.stringify(message.trim()),
+      sender: loggedInUser.userStatus.concat(loggedInUser.id.toString()),
+      chatId: chatUser?.chatDetails,
+      messagesId: timeStam,
+      timeStamp: timeStam,
+      receiver: chatUser?.id,
+      isMyMessage: true,
+    });
+
+    setMessages([
+      ...messages,
       {
-        text: message ? message.trim() : cloudinaryMessage.trim(),
-        sender: userInfo.userStatus.concat(userInfo.id.toString()),
-        chatId: conversationKey,
-        timeStamp: timeStamp,
-        messagesId: timeStamp,
+        text: JSON.stringify(message.trim()),
+        sender: loggedInUser.userStatus.concat(loggedInUser.id.toString()),
+        chatId: chatUser?.chatDetails,
+        timeStamp: timeStam,
+        messagesId: timeStam,
         isReceived: false,
       },
     ]);
@@ -207,7 +204,7 @@ export default function ChatMessageInput({
   return (
     <RootStyle>
       <Input
-        disabled={disabled}
+        // disabled={disabled}
         fullWidth
         multiline
         rows={2} 
@@ -228,7 +225,7 @@ export default function ChatMessageInput({
               onChange={handleImageUpload}
             />
             <IconButton
-              disabled={disabled}
+              // disabled={disabled}
               size="small"
               onClick={() => fileInputRef.current?.click()}
             >
@@ -238,7 +235,7 @@ export default function ChatMessageInput({
                 height={22}
               />
             </IconButton>
-            <IconButton disabled={disabled} size="small">
+            <IconButton  size="small">
               {recording ? (
                 <Iconify
                   icon="icon-park-outline:voice-off"

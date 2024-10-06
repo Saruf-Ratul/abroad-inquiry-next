@@ -1,4 +1,4 @@
-import { formatDistanceToNowStrict } from "date-fns";
+import { format } from "timeago.js";
 import {
   Avatar,
   Box,
@@ -97,9 +97,7 @@ export default function ChatConversationItem({
                 color: "text.disabled",
               }}
             >
-              {formatDistanceToNowStrict(new Date(conversation.updatedAt), {
-                addSuffix: false,
-              })}
+               {format(conversation.timeStamp)}
             </Box>
             {/* <BadgeStatus status="unread" size="small" /> */}
           </Box>

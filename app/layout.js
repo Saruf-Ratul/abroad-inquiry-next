@@ -1,4 +1,3 @@
-
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import "simplebar-react/dist/simplebar.min.css";
@@ -11,6 +10,7 @@ import { store } from "@/redux/store";
 import ThemeProvider from "@/theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { Providers } from "../redux/provider";
+import { UserProvider } from "@/contexts/UserContext"; // Import UserProvider
 
 import { cookies } from "next/headers";
 
@@ -18,7 +18,6 @@ export const metadata = {
   title: "Abroad Inquiry - Your Guide to Study Abroad",
   description:
     "Abroad Inquiry provides aspiring students with reliable information on studying abroad, offering expert guidance on admissions, scholarships, visa services, and document legalization. From applying on your behalf to ensuring a smooth visa process for both students and dependents, we help you achieve your dream of higher education abroad with comprehensive support.",
-
   openGraph: {
     images: [
       {
@@ -44,7 +43,9 @@ export default function RootLayout({ children }) {
             <ThemeProvider>
               <NotistackProvider>
                 <MotionLazyContainer>
-                  <Providers store={store}>{children}</Providers>
+                  <UserProvider> {/* Wrap children with UserProvider */}
+                    <Providers store={store}>{children}</Providers>
+                  </UserProvider>
                 </MotionLazyContainer>
               </NotistackProvider>
             </ThemeProvider>

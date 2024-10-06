@@ -18,6 +18,7 @@ const ICONS = {
   profile: getIcon("carbon:user-profile"),
   notifications: getIcon("hugeicons:notification-01"),
   explore: getIcon("fluent-mdl2:education"),
+  chat: getIcon("tabler:message-2"),
 };
 
 const navConfig = [
@@ -69,8 +70,8 @@ const navConfig = [
       },
       {
         title: "Messages",
-        path: PATH_DASHBOARD.chat.root,
-        icon: ICONS.messages,
+        path: PATH_DASHBOARD.message.root,
+        icon: ICONS.chat,
         userStatus: "",
       },
       {

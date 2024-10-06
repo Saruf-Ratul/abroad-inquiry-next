@@ -14,6 +14,7 @@ import { isJsonString } from "@/utils/isJsonString";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { PATH_DASHBOARD } from "@/routes/paths";
+import { format } from "timeago.js";
 
 const AVATAR_SIZE = 48;
 
@@ -30,14 +31,9 @@ const AvatarWrapperStyle = styled("div")(() => ({
   "& .MuiAvatar-root": { width: "100%", height: "100%" },
 }));
 
-export default function ChatSearchResults({ query, results, onSelectContact }) {
+export default function ChatSearchResults({ query, results, handleConversationClick }) {
   const router = useRouter();
   const isFound = results.length > 0;
-  const handleSelectConversation = (id,conversationId,fcmToken) => {
-    Cookies.set("fcmToken", fcmToken);
-    Cookies.set("conversationId", conversationId);
-    router.push(PATH_DASHBOARD.chat.view(id));
- };
 
   return (
     <>
@@ -57,7 +53,7 @@ export default function ChatSearchResults({ query, results, onSelectContact }) {
         <RootStyle
           disableGutters
           onClick={() =>
-            handleSelectConversation(conversation.id,conversation.chatDetails,conversation.fcmToken,)
+            handleConversationClick(conversation)
           }
         >
           <ListItemAvatar>
@@ -124,9 +120,7 @@ export default function ChatSearchResults({ query, results, onSelectContact }) {
                 color: "text.disabled",
               }}
             >
-              {formatDistanceToNowStrict(new Date(conversation.updatedAt), {
-                addSuffix: false,
-              })}
+              {format(conversation.timeStamp)}
             </Box>
             <BadgeStatus status="unread" size="small" />
           </Box>

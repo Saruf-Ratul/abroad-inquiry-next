@@ -36,8 +36,7 @@ const RowTextStyle = styled(Typography)(({ theme }) => ({
 export default function ChatRoomOneParticipant({
   isCollapse,
   onCollapse,
-  conversationKey,
-  details,
+  chatUser,
   loading,
 }) {
   return (
@@ -56,12 +55,12 @@ export default function ChatRoomOneParticipant({
             }}
           >
             <Avatar
-              alt={details.name}
-              src={`${BASE_URL}/${details.avatar}`}
+              alt={chatUser.name}
+              src={`${BASE_URL}/${chatUser.profilePic}`}
               sx={{ width: 96, height: 96 }}
             />
             <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="subtitle1">{details?.name}</Typography>
+              <Typography variant="subtitle1">{chatUser?.name}</Typography>
             </Box>
           </Box>
           <Divider />
@@ -94,7 +93,7 @@ export default function ChatRoomOneParticipant({
                     marginTop: "3px",
                   }}
                 />
-                <RowTextStyle>{details.email}</RowTextStyle>
+                <RowTextStyle>{chatUser.email}</RowTextStyle>
               </RowStyle>
             </Box>
           </Collapse>

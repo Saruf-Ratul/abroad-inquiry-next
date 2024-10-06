@@ -4,7 +4,7 @@ import Scrollbar from "../../../components/Scrollbar";
 import ChatMessageItem from "./ChatMessageItem";
 
 
-export default function ChatMessageList({ conversation,chatmessages,loading,conversationKey}) {
+export default function ChatMessageList({ conversation,messages,loading,conversationKey}) {
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function ChatMessageList({ conversation,chatmessages,loading,conv
       }
     };
     scrollMessagesToBottom();
-  }, [chatmessages]);
+  }, [messages]);
 
   return (
     <>
@@ -22,7 +22,7 @@ export default function ChatMessageList({ conversation,chatmessages,loading,conv
         scrollableNodeProps={{ ref: scrollRef }}
         sx={{ p: 3, height: 1 }}
       >
-        {chatmessages?.map((message) => (
+        {messages?.map((message) => (
           <ChatMessageItem
             key={message.timeStamp}
             message={message}

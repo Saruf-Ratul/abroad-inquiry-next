@@ -52,6 +52,12 @@ export const PATH_DASHBOARD = {
     view: (name) => path(ROOTS_DASHBOARD, `/chat/${name}`),
     conversation: path(ROOTS_DASHBOARD, "/chat/:conversationKey"),
   },
+  message: {
+    root: path(ROOTS_DASHBOARD, "/message"),
+    new: path(ROOTS_DASHBOARD, "/chat/new"),
+    view: (name) => path(ROOTS_DASHBOARD, `/chat/${name}`),
+    conversation: path(ROOTS_DASHBOARD, "/chat/:conversationKey"),
+  },
   notifications: { root: path(ROOTS_DASHBOARD, "/notifications") },
   updates: { root: path(ROOTS_DASHBOARD, "/application-updates") },
   profile: {

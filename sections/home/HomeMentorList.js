@@ -196,9 +196,7 @@ function MemberCard({ mentor }) {
 
   const handleMessageClick = (mentorId) => {
     if (token) {
-      Cookies.remove("fcmToken");
-      Cookies.remove("conversationId");
-      router.push(`/dashboard/chat/${mentorId}`);
+      router.push(`/dashboard/message/mentor/${mentorId}`);
     } else {
       router.push("/auth/login");
     }
