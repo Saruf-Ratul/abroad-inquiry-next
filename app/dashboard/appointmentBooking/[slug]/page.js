@@ -91,7 +91,7 @@ function AppointmentBooking() {
       dispatch(fetchMentorProfileDetails(slug));
       dispatch(fetchMentoravailableSlots(data));
     }
-  }, [dispatch, date, slug, userInfo.userStatus,data]);
+  }, [dispatch, date, slug, userInfo.userStatus, data]);
 
   useEffect(() => {
     let timeSlots = makingTimeSlot(mentorAvaialeSlots, date);
@@ -135,8 +135,7 @@ function AppointmentBooking() {
         severity: "success",
         text: "An Appointment Request is Given",
       });
-      // alerts.success("An Appointment Request is Given.");
-    } else if (appointmentApplyRes.isAppointmentCreated == false) {
+    } else if (appointmentApplyRes.isAppointmentCreated === false) {
       setSnackbarOpen({
         ...snackbarOpen,
         status: true,
@@ -144,7 +143,7 @@ function AppointmentBooking() {
         text: `${appointmentApplyRes.message}`,
       });
     }
-  }, [appointmentApplyRes,data,snackbarOpen]);
+  }, [appointmentApplyRes, data, selectedDate?.id, snackbarOpen]);
 
   return (
     <CalendarWrapper>
@@ -295,12 +294,13 @@ function AppointmentBooking() {
                   </>
                 ) : (
                   <Typography
-                  variant="h5"
-                  sx={{
-                    fontWeight:"bold"
-                  }}
+                    variant="h5"
+                    sx={{
+                      fontWeight: "bold",
+                    }}
                   >
-                    No Available Slots. <span style={{color:"red"}}>Try Another Date.</span> 
+                    No Available Slots.{" "}
+                    <span style={{ color: "red" }}>Try Another Date.</span>
                   </Typography>
                 )}
               </Box>

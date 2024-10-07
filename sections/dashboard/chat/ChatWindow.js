@@ -1,5 +1,5 @@
 "use client";
-import { Box, Divider } from "@mui/material";
+import { Box, CircularProgress, Divider,useTheme } from "@mui/material";
 import ChatHeaderCompose from "./ChatHeaderCompose";
 import ChatHeaderDetail from "./ChatHeaderDetail";
 import ChatMessageInput from "./ChatMessageInput";
@@ -18,6 +18,7 @@ export default function ChatWindow({
 
 
 }) {
+  const theme = useTheme();
   const [chatmessages, setChatMessages] = useState([]);
   const mode = messages ? "DETAIL" : "COMPOSE";
 
@@ -31,7 +32,7 @@ export default function ChatWindow({
     <>
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         {mode === "DETAIL" ? (
-          <ChatHeaderDetail  chatUser={chatUser}/>
+          <ChatHeaderDetail  chatUser={chatUser} loading={loading}/>
         ) : (
           <ChatHeaderCompose />
         )}
@@ -39,7 +40,26 @@ export default function ChatWindow({
         <Divider />
 
         <Box sx={{ flexGrow: 1, display: "flex", overflow: "hidden" }}>
-          <Box sx={{ display: "flex", flexGrow: 1, flexDirection: "column" }}>
+          {
+            loading ? (
+              <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              mt: 2,
+              ml:24,
+              mr:24
+
+            }}
+          >
+            <CircularProgress
+              sx={{ color: theme.palette.mode === "dark" ? "white" : "black" }}
+            />
+          </Box>
+            ):(
+              <Box sx={{ display: "flex", flexGrow: 1, flexDirection: "column" }}>
             <ChatMessageList
               messages={messages}              
             />
@@ -56,6 +76,8 @@ export default function ChatWindow({
               />
             ) : null}
           </Box>
+            )
+          }
 
           {mode === "DETAIL" && (
             <ChatRoom

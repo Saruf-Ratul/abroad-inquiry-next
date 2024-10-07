@@ -1,6 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Box, Button, Drawer, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Drawer,
+  IconButton,
+} from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import useResponsive from "@/hooks/useResponsive";
 import Iconify from "@/components/Iconify";
@@ -9,11 +15,10 @@ import ChatContactSearch from "./ChatContactSearch";
 import ChatConversationList from "./ChatConversationList";
 import ChatSearchResults from "./ChatSearchResults";
 import { useUser } from "@/contexts/UserContext";
-import io from "socket.io-client";
-import { debounce } from "lodash";
 import ConversationController from "@/services/controllers/conversation";
 import { UPDATE_CONVERSATION } from "@/services/mentorRequests";
 import { useRouter } from "next/navigation";
+import { CREATE_NEW_CONVERSATION_CALL } from "@/services/conversationRequest";
 
 const ToggleButtonStyle = styled((props) => (
   <IconButton disableRipple {...props} />
@@ -36,27 +41,95 @@ const ToggleButtonStyle = styled((props) => (
 const SIDEBAR_WIDTH = 320;
 const SIDEBAR_COLLAPSE_WIDTH = 96;
 
-export default function ChatSidebar({ lastMessage, setLastMessage, chatUser }) {
+export default function ChatSidebar({
+  lastMessage,
+  setLastMessage,
+  chatUser,
+  userStatus,
+  userId,
+  setChatUser,
+  setChatUserCode,
+}) {
   const theme = useTheme();
   const router = useRouter();
   const { user, lastMsg } = useUser();
   const [loggedInUser, setLoggedInUser] = user;
-  const [conversation, setConversation] = useState([]);
+  const [conversations, setConversations] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [fetchActive, setFetchActive] = useState(false);
-  const [page, setPage] = useState(1); // Handle page for pagination
-  const [loadMore, setLoadMore] = useState(true); // Control "Load More" state
+  const [page, setPage] = useState(1);
+  const [loadMore, setLoadMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // New loading state
   const isDesktop = useResponsive("up", "md");
   const displayResults = searchTerm.length > 0;
   const [openSidebar, setOpenSidebar] = useState(true);
   const [isSearchFocused, setSearchFocused] = useState(false);
-
   const isCollapse = isDesktop && !openSidebar;
 
-  const socket = io("https://realtime.abroadinquiry.com:2096", {
-    path: "/socket.io",
-    secure: true,
-  });
+  useEffect(() => {
+    if (
+      userStatus !== loggedInUser.userStatus &&
+      userStatus &&
+      userId &&
+      lastMessage?.text != null
+    ) {
+      const newConversationData = {
+        mentorId:
+          userStatus === "mentor" ? Number(userId) : Number(loggedInUser.id),
+        studentId:
+          userStatus === "student" ? Number(userId) : Number(loggedInUser.id),
+      };
+
+      CREATE_NEW_CONVERSATION_CALL(newConversationData)
+        .then((newConversation) => {
+          const updatedConversation = {
+            id: newConversation?.data?.id,
+            chatDetails: newConversation?.data?.chatDetails,
+            lastText: newConversation?.data?.lastText,
+            name: newConversation?.data?.name,
+            profilePic: newConversation?.data?.profilePic,
+            timeStamp: new Date().getTime(),
+            isUnread: false,
+          };
+          setChatUser(newConversation.data);
+          setChatUserCode(
+            userStatus == "mentor"
+              ? "student".concat(newConversation.data.id)
+              : "mentor".concat(newConversation.data.id)
+          );
+
+          setConversations((prevConversations) => {
+            const updatedConversations = prevConversations.map((conv) => {
+              if (conv.id === newConversation?.data?.id) {
+                return {
+                  ...conv, // Spread the existing conversation
+                  lastText: newConversation?.data?.lastText,
+                  timeStamp: new Date().getTime(),
+                };
+              }
+              return conv;
+            });
+            const isUpdated = updatedConversations.some(
+              (conv) => conv.id === newConversation?.data?.id
+            );
+            if (!isUpdated) {
+              updatedConversations.push(updatedConversation);
+            }
+            return updatedConversations.sort(
+              (a, b) => b.timeStamp - a.timeStamp
+            );
+          });
+        })
+        .catch((error) => {
+          console.error("Error creating conversation:", error);
+        });
+    }
+  }, [
+    userStatus,
+    userId,
+    lastMessage?.text,
+    loggedInUser.userStatus,
+    chatUser?.id,
+  ]);
 
   function uniqueById(items) {
     const set = new Set();
@@ -67,12 +140,13 @@ export default function ChatSidebar({ lastMessage, setLastMessage, chatUser }) {
     });
   }
 
-  // Fetch conversations based on searchTerm and page
+  // Fetch conversations
   useEffect(() => {
+    setIsLoading(true);
     ConversationController.Search(searchTerm, page)
       .then((res) => {
         if (searchTerm) {
-          setConversation(
+          setConversations(
             uniqueById(
               res.sort((x, y) => {
                 return y.timeStamp - x.timeStamp;
@@ -81,7 +155,7 @@ export default function ChatSidebar({ lastMessage, setLastMessage, chatUser }) {
           );
         } else {
           if (res?.length) {
-            setConversation((prevConversations) =>
+            setConversations((prevConversations) =>
               uniqueById([
                 ...prevConversations,
                 ...res.sort((x, y) => y.timeStamp - x.timeStamp),
@@ -94,56 +168,24 @@ export default function ChatSidebar({ lastMessage, setLastMessage, chatUser }) {
       })
       .catch((err) => {
         setLoadMore(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [searchTerm, page]);
 
-  const getActiveUsers = () => {
-    let users = [];
-    if (loggedInUser.userStatus === "student" && conversation.length) {
-      conversation?.map((data) => {
-        users.push("mentor".concat(data.id));
-      });
-    } else if (loggedInUser.userStatus === "mentor" && conversation.length) {
-      conversation?.map((data) => {
-        users.push("student".concat(data.id));
-      });
-    }
-    if (user.length) {
-      socket.emit("sendUsers", {
-        sender: loggedInUser.userStatus.concat(loggedInUser.id),
-        users: users,
-      });
-    }
-  };
-
-  useEffect(() => {
-    getActiveUsers();
-  }, [fetchActive]);
-
-  useEffect(() => {
-    let callBack = (data) => {
-      setLastMessage(data);
-    };
-
-    socket?.on("getMessage", callBack);
-
-    return () => {
-      socket?.off("getMessage", callBack);
-    };
-  }, [socket]);
-
   const handleConversationClick = async (item) => {
     item.isUnread = false;
-    const index = conversation.findIndex((x) => x.id === item.id);
+    const index = conversations.findIndex((x) => x.id === item.id);
     if (index !== -1) {
-      const updatedConversation = [...conversation];
+      const updatedConversation = [...conversations];
       updatedConversation[index].isUnread = false;
-      setConversation(updatedConversation);
+      setConversations(updatedConversation);
     }
 
     try {
       await UPDATE_CONVERSATION({
-        conversation: item.chatDetails,
+        conversations: item.chatDetails,
         user: loggedInUser.id,
       });
     } catch (error) {
@@ -159,25 +201,28 @@ export default function ChatSidebar({ lastMessage, setLastMessage, chatUser }) {
     );
   };
 
-  // Updated useEffect to update conversation with the lastMessage
   useEffect(() => {
-    if (conversation.length && lastMessage != null && !lastMessage.isMyMessage) {
-      let index = conversation.findIndex(
-        (x) => x["id"] === lastMessage.chatId
-      ); // Use chatId instead of fixed id (4)
+    if (conversations.length && lastMessage?.text != null) {
+      const index = conversations.findIndex(
+        (conv) => conv.chatDetails === lastMessage.chatId
+      );
 
       if (index !== -1) {
-        let updatedState = [...conversation];
-        updatedState[index]["lastText"] = lastMessage.text; // Update the last text
-        updatedState[index]["timeStamp"] = lastMessage.timeStamp; // Update the timestamp
-
-        // Sort the conversations based on the updated timestamps
-        setConversation(
-          uniqueById(updatedState.sort((x, y) => y.timeStamp - x.timeStamp))
-        );
+        let updatedConversations = [...conversations];
+        if (
+          updatedConversations[index].lastText !== lastMessage.text ||
+          updatedConversations[index].timeStamp !== lastMessage.timeStamp
+        ) {
+          updatedConversations[index].lastText = lastMessage.text;
+          updatedConversations[index].timeStamp = lastMessage.timeStamp;
+          updatedConversations = updatedConversations.sort(
+            (a, b) => b.timeStamp - a.timeStamp
+          );
+          setConversations(updatedConversations);
+        }
       }
     }
-  }, [lastMessage, conversation, searchTerm]);
+  }, [lastMessage, conversations]);
 
   const handleClickAwaySearch = () => {
     setSearchFocused(false);
@@ -215,14 +260,14 @@ export default function ChatSidebar({ lastMessage, setLastMessage, chatUser }) {
           <ChatSearchResults
             query={searchTerm}
             setSearchQuery={setSearchTerm}
-            results={conversation}
+            results={conversations}
             handleConversationClick={handleConversationClick}
           />
         ) : (
           <ChatConversationList
             lastMessage={lastMessage}
             setLastMessage={setLastMessage}
-            conversations={conversation}
+            conversations={conversations}
             handleConversationClick={handleConversationClick}
             isOpenSidebar={openSidebar}
             chatUser={chatUser}
@@ -231,14 +276,21 @@ export default function ChatSidebar({ lastMessage, setLastMessage, chatUser }) {
       </Scrollbar>
 
       <Box pt={2} pb={3} textAlign={"center"}>
-        {searchTerm === "" && conversation.length >= 10 && (
-          <Button
-            onClick={() => setPage((prev) => prev + 1)} // Increment page
-            variant="contained"
-            disabled={!loadMore} // Disable if no more data
-          >
-            Load More
+        {isLoading ? (
+          <Button variant="contained" disabled>
+            Loading....
           </Button>
+        ) : (
+          searchTerm === "" &&
+          conversations.length >= 10 && (
+            <Button
+              onClick={() => setPage((prev) => prev + 1)}
+              variant="contained"
+              disabled={!loadMore}
+            >
+              Load More
+            </Button>
+          )
         )}
       </Box>
     </>

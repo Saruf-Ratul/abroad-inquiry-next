@@ -29,7 +29,6 @@ class StudentController {
     setLoading(true);
     GET_NOTIFICATIONS(studentId, pageNumber)
       .then((res) => {
-        console.log("Notification Response:",res);
         setLoading(false);
         outputData(res.data);
       })

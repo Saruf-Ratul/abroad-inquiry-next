@@ -27,7 +27,7 @@ export default function ChatConversationList({
           ))
         : conversations.map((conversation) => {
             const isSelected =
-              String(chatUser.id).trim() === String(conversation.id).trim();
+              String(chatUser?.id).trim() === String(conversation?.id).trim();
             return (
               <ChatConversationItem
                 key={conversation.id}

@@ -13,12 +13,10 @@ const RootStyle = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 3),
 }));
 
-export default function ChatHeaderDetail({
-  chatUser
-}) {
+export default function ChatHeaderDetail({ chatUser, loading }) {
   return (
     <RootStyle>
-      <OneAvatar chatUser={chatUser} />
+      <OneAvatar chatUser={chatUser} loading={loading} />
       <Box sx={{ flexGrow: 1 }} />
       <IconButton>
         <Iconify icon="eva:phone-fill" width={20} height={20} />
@@ -33,30 +31,34 @@ export default function ChatHeaderDetail({
   );
 }
 
-function OneAvatar({ chatUser }) {
+function OneAvatar({ chatUser, loading }) {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ position: "relative" }}>
-        {/* {loading ? (
+      {!chatUser?.name ? (
+        <Box sx={{ ml: 2, width: "300px" }}>
           <SkeletonConversationItem />
-        ) : ( */}
-          <>
-            <Avatar src={`${BASE_URL}/${chatUser.profilePic}`} alt={chatUser.name} />
+        </Box>
+      ) : (
+        <div style={{ display: "flex" }}>
+          <Box sx={{ position: "relative" }}>
+            <Avatar
+              src={`${BASE_URL}/${chatUser.profilePic}`}
+              alt={chatUser?.name}
+            />
             <BadgeStatus
               status="online"
               sx={{ position: "absolute", right: 2, bottom: 2 }}
             />
-          </>
-        {/* )} */}
-      </Box>
-      {/* {!loading && ( */}
-        <Box sx={{ ml: 2 }}>
-          <Typography variant="subtitle2">{chatUser?.name}</Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            online
-          </Typography>
-        </Box>
-      {/* )} */}
+          </Box>
+
+          <Box sx={{ ml: 2 }}>
+            <Typography variant="subtitle2">{chatUser?.name}</Typography>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              online
+            </Typography>
+          </Box>
+        </div>
+      )}
     </Box>
   );
 }
