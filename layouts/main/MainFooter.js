@@ -1,33 +1,34 @@
 "use client";
-import NextLink from "next/link";
+import { varFade } from "@/components/animate";
+import FeedbackForm from "@/components/FeedbackForm";
+import Iconify from "@/components/Iconify";
+import Logo from "@/components/Logo";
+import SocialsButton from "@/components/SocialsButton";
+import { email, officeLocation, phoneNumbers } from "@/data/contact";
+import appleStore from "@/public/assets/banner-slide-imgs/apple-app-store.webp";
+import googlePlay from "@/public/assets/banner-slide-imgs/google-play-store.webp";
+import footer from "@/public/assets/images/img/footer.webp";
+import logo from "@/public/assets/images/img/logo.png";
+import { PATH_PAGE } from "@/routes/paths";
 import {
   Box,
   ButtonBase,
   Container,
+  Dialog,
+  DialogTitle,
   Divider,
   Grid,
+  IconButton,
   Link,
   Stack,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { PATH_PAGE } from "@/routes/paths";
-import Logo from "@/components/Logo";
-import SocialsButton from "@/components/SocialsButton";
-import { email, officeLocation, phoneNumbers } from "@/data/contact";
+import { m } from "framer-motion";
 import Image from "next/image";
-import logo from "@/public/assets/images/img/logo.png";
-import footer from "@/public/assets/images/img/footer.webp";
-import { backIn, color, m } from "framer-motion";
-import {
-  MotionContainer,
-  MotionViewport,
-  varBounce,
-  varFade,
-} from "@/components/animate";
-import googlePlay from "@/public/assets/banner-slide-imgs/google-play-store.webp";
-import appleStore from "@/public/assets/banner-slide-imgs/apple-app-store.webp";
+import NextLink from "next/link";
+import { useState } from "react";
 
 const LINKS = [
   {
@@ -59,6 +60,7 @@ const LINKS = [
         rel: "noreferrer", // Adds security for opening a new tab
       },
       { href: "/office-visit-student", name: "Office Visit Form" },
+      { href: "", name: "Feedback", type: "feedback" },
     ],
   },
 ];
@@ -78,8 +80,19 @@ const FooterImgStyle = styled(Image)(({ theme }) => ({
   opacity: theme.palette.mode === "light" ? 0.1 : 0.5,
 }));
 
+const CustomDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
 export default function MainFooter() {
   const matchesSm = useMediaQuery("(max-width:400px)");
+  const [openForm, setOpenForm] = useState(false);
+
   return (
     <RootStyle>
       <Divider />
@@ -155,18 +168,37 @@ export default function MainFooter() {
                 <Typography component="p" variant="overline">
                   {list.headline}
                 </Typography>
-                {list.children.map((link) => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    component={NextLink}
-                    target={link.target}
-                    color="inherit"
-                    variant="body2"
-                    sx={{ display: "block" }}
-                  >
-                    {link.name}
-                  </Link>
+                {list.children.map((link, idx) => (
+                  <div key={idx}>
+                    {link.type === "feedback" ? (
+                      <>
+                        <Typography
+                          onClick={() => setOpenForm(true)}
+                          variant="body2"
+                          sx={{
+                            ":hover": {
+                              textDecoration: "underline",
+                              cursor: "pointer",
+                            },
+                          }}
+                        >
+                          {link.name}
+                        </Typography>
+                      </>
+                    ) : (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        component={NextLink}
+                        target={link.target}
+                        color="inherit"
+                        variant="body2"
+                        sx={{ display: "block" }}
+                      >
+                        {link.name}
+                      </Link>
+                    )}
+                  </div>
                 ))}
               </Stack>
             </Grid>
@@ -303,6 +335,32 @@ export default function MainFooter() {
       </Typography>
 
       <FooterImgStyle width={500} height={300} src={footer} />
+
+      <CustomDialog
+        onClose={() => setOpenForm(false)}
+        aria-labelledby="customized-dialog-title"
+        open={openForm} // Changed to use the correct state 'openForm'
+      >
+        <DialogTitle
+          sx={{ m: 0, p: 2, textAlign: "center" }}
+          id="customized-dialog-title"
+        >
+          Provide Feedback
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={() => setOpenForm(false)} // Corrected 'onClose' to 'onClick'
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Iconify icon={"material-symbols:close"} />
+        </IconButton>
+        <FeedbackForm setFormOpen={setOpenForm} />
+      </CustomDialog>
     </RootStyle>
   );
 }
