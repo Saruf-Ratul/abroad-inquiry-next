@@ -12,9 +12,10 @@ export async function generateMetadata({ params }) {
   const currentURL = `https://www.abroadinquiry.com`;
 
   // Ensure the profilePicUrl is an absolute URL
-  const profilePicUrl = mentorDetails?.mentorProfilePic
+  const defaultProfilePicUrl = `${currentURL}/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-small.0c580bcb.webp&w=48&q=100`; // Ensure this URL is valid
+  const profilePic = mentorDetails?.mentorProfilePic
     ? `${BASE_URL}/${mentorDetails.mentorProfilePic}`
-    : null;
+    : ""; // Fallback to a default profile picture
 
   // Use the current base URL dynamically
   const ogImageUrl = `${currentURL}/api/og/mentor?name=${encodeURIComponent(
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }) {
     mentorDetails?.mentorStudyingIn || "Course"
   )}&country=${encodeURIComponent(
     mentorDetails?.mentorCity || "Country"
-  )}&profilePic=${encodeURIComponent(profilePicUrl)}`;
+  )}&profilePic=${encodeURIComponent(profilePic)}`;
 
   return {
     title: `${mentorDetails?.mentorName} - Abroad Inquiry`,

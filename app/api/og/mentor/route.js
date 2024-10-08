@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ImageResponse } from "next/og";
 
 export async function GET(request) {
@@ -29,7 +28,7 @@ export async function GET(request) {
       >
         {/* Mentor's Profile Picture */}
         {profilePic && (
-          <Image
+          <img
             src={profilePic}
             alt="Mentor Avatar"
             width={250}
