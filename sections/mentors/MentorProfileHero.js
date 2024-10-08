@@ -109,7 +109,7 @@ export default function MentorProfileHero({ profileDeatails }) {
   ];
 
   const handleProfileShare = (platform) => {
-    const profileLink = `${window.location.origin}/profile/${profileDeatails.mentorId}`;
+    const profileLink = `${window.location.origin}/mentors/${profileDeatails.mentorId}`;
 
     if (platform === "copy") {
       navigator.clipboard.writeText(profileLink).then(() => {
