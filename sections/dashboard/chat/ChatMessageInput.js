@@ -35,10 +35,10 @@ export default function ChatMessageInput({
   const { user, lastMsg } = useUser();
   const [loggedInUser, setLoggedInUser] = user;
 
-  // const socket = io("https://realtime.abroadinquiry.com:2096", {
-  //   path: "/socket.io",       
-  //   secure: true,             
-  // });
+  const socket = io("https://realtime.abroadinquiry.com:2096", {
+    path: "/socket.io",       
+    secure: true,             
+  });
 
   const fileInputRef = useRef(null);
   const [message, setMessage] = useState("");
@@ -162,18 +162,18 @@ export default function ChatMessageInput({
       ? `Bearer ${Cookies.get("token")}`
       : null;
 
-    // socket?.emit("sendMessage", {
-    //   text: message ? message.trim() : cloudinaryMessage.trim(),
-    //   sender: loggedInUser.userStatus.concat(loggedInUser.id.toString()),
-    //   chatId: chatUser?.chatDetails,
-    //   messagesId: timeStam,
-    //   receiver: userStatus.concat(chatUser?.id),
-    //   timeStamp: timeStam,
-    //   senderName: loggedInUser?.name,
-    //   isMyMessage: false,
-    //   fcmToken: chatUser.fcmToken,
-    //   authentication_token: token,
-    // });
+    socket?.emit("sendMessage", {
+      text: message ? message.trim() : cloudinaryMessage.trim(),
+      sender: loggedInUser.userStatus.concat(loggedInUser.id.toString()),
+      chatId: chatUser?.chatDetails,
+      messagesId: timeStam,
+      receiver: userStatus.concat(chatUser?.id),
+      timeStamp: timeStam,
+      senderName: loggedInUser?.name,
+      isMyMessage: false,
+      fcmToken: chatUser.fcmToken,
+      authentication_token: token,
+    });
 
     setLastMessage({
       text: JSON.stringify(message.trim()),

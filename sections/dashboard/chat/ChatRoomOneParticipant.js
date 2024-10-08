@@ -54,29 +54,29 @@ export default function ChatRoomOneParticipant({
   const [mentorData, setMentorData] = useState({});
   const [studentData, setStudentData] = useState({});
 
-  // useEffect(() => {
-  //   if (!chatUser?.id) return; 
+  useEffect(() => {
+    if (!chatUser?.id) return; 
   
-  //   const fetchData = async () => {
-  //     try {
-  //       setLoading(true);
-  //       if (loggedInUser?.userStatus === "student") {
-  //         const response = await MENTORS_PROFILE_VIEW(chatUser.id);
-  //         setMentorData(response.data);
-  //       } 
-  //       if(loggedInUser?.userStatus === "mentor"){
-  //         const response = await STUDENT_PROFILE_VIEW_CALL(chatUser.id);
-  //         setStudentData(response.data);
-  //       }
-  //     } catch (err) {
-  //       console.error("Error fetching data:", err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        if (loggedInUser?.userStatus === "student") {
+          const response = await MENTORS_PROFILE_VIEW(chatUser.id);
+          setMentorData(response.data);
+        } 
+        if(loggedInUser?.userStatus === "mentor"){
+          const response = await STUDENT_PROFILE_VIEW_CALL(chatUser.id);
+          setStudentData(response.data);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
   
-  //   fetchData();
-  // }, [loggedInUser?.userStatus, chatUser.id]);
+    fetchData();
+  }, [loggedInUser?.userStatus, chatUser.id]);
   
 
   function formatMentorPhone(phoneString) {
