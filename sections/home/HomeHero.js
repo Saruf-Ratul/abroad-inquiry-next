@@ -124,7 +124,7 @@ export default function HomeHero() {
     infinite: true,
     pauseOnHover: false,
     slidesToShow: 1,
-    centerPadding: isMobile ? "30px" : "215px", // Adjust padding for less space between slides
+    centerPadding: isMobile ? "30px" : "215px",
     beforeChange: (current, next) => setCurrentIndex(next),
     ...CarouselDots({
       color: "secondary.main",
