@@ -37,14 +37,14 @@ export default function ChatMessageItem({ message, loading, conversationKey }) {
   const { profileDeatails } = useSelector((state) => state.mentors);
   const { studentProfileView } = useSelector((state) => state.student);
 
-  useEffect(() => {
-    if (userInfo.userStatus === "student") {
-      dispatch(fetchMentorProfileDetails(conversationKey));
-    }
-    if (userInfo.userStatus === "mentor") {
-      dispatch(fetchStudentProfileView(conversationKey));
-    }
-  }, [dispatch, conversationKey, userInfo.userStatus]);
+  // useEffect(() => {
+  //   if (userInfo.userStatus === "student") {
+  //     dispatch(fetchMentorProfileDetails(conversationKey));
+  //   }
+  //   if (userInfo.userStatus === "mentor") {
+  //     dispatch(fetchStudentProfileView(conversationKey));
+  //   }
+  // }, [dispatch, conversationKey, userInfo.userStatus]);
 
   const isMe =
     userInfo?.userStatus?.concat(userInfo?.id.toString()) === message?.sender;

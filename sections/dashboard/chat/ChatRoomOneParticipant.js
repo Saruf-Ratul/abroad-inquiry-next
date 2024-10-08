@@ -13,8 +13,8 @@ import { SkeletonConversationItem } from "@/components/skeleton";
 import { useUser } from "@/contexts/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchMentorProfileDetails } from "@/redux/features/mentor/mentorSlice";
-import { fetchStudentProfileView } from "@/redux/features/student/studentSlice";
+// import { fetchMentorProfileDetails } from "@/redux/features/mentor/mentorSlice";
+// import { fetchStudentProfileView } from "@/redux/features/student/studentSlice";
 import {
   GET_MENTOR_OVERVIEW,
   MENTORS_PROFILE_VIEW,
@@ -54,30 +54,30 @@ export default function ChatRoomOneParticipant({
   const [mentorData, setMentorData] = useState({});
   const [studentData, setStudentData] = useState({});
 
-  useEffect(() => {
-    setLoading(true);
-    if (loggedInUser?.userStatus === "student") {
-      MENTORS_PROFILE_VIEW(chatUser.id)
-        .then((res) => {
-          setMentorData(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
-    } else {
-      STUDENT_PROFILE_VIEW_CALL(chatUser.id)
-        .then((res) => {
-          setStudentData(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
-    }
-  }, [loggedInUser?.userStatus, chatUser.id, chatUser]);
+  // useEffect(() => {
+  //   if (!chatUser?.id) return; 
+  
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       if (loggedInUser?.userStatus === "student") {
+  //         const response = await MENTORS_PROFILE_VIEW(chatUser.id);
+  //         setMentorData(response.data);
+  //       } 
+  //       if(loggedInUser?.userStatus === "mentor"){
+  //         const response = await STUDENT_PROFILE_VIEW_CALL(chatUser.id);
+  //         setStudentData(response.data);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error fetching data:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  
+  //   fetchData();
+  // }, [loggedInUser?.userStatus, chatUser.id]);
+  
 
   function formatMentorPhone(phoneString) {
     if (!phoneString) {

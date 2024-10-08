@@ -19,6 +19,7 @@ import ConversationController from "@/services/controllers/conversation";
 import { UPDATE_CONVERSATION } from "@/services/mentorRequests";
 import { useRouter } from "next/navigation";
 import { CREATE_NEW_CONVERSATION_CALL } from "@/services/conversationRequest";
+import { updateConversationRead } from "@/redux/features/chat/chatSlice";
 
 const ToggleButtonStyle = styled((props) => (
   <IconButton disableRipple {...props} />
@@ -101,7 +102,7 @@ export default function ChatSidebar({
             const updatedConversations = prevConversations.map((conv) => {
               if (conv.id === newConversation?.data?.id) {
                 return {
-                  ...conv, // Spread the existing conversation
+                  ...conv, 
                   lastText: newConversation?.data?.lastText,
                   timeStamp: new Date().getTime(),
                 };
@@ -185,7 +186,7 @@ export default function ChatSidebar({
 
     try {
       await UPDATE_CONVERSATION({
-        conversations: item.chatDetails,
+        conversation: item.chatDetails,
         user: loggedInUser.id,
       });
     } catch (error) {

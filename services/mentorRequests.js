@@ -20,7 +20,7 @@ const configParamsWithToken = () => {
   return {
     "Content-Type": "application/json",
     authentication_token: Cookies.get("token")
-      ? `Bearer ${JSON.parse(Cookies.get("token"))}`
+      ? `Bearer ${Cookies.get("token")}` 
       : null,
   };
 };

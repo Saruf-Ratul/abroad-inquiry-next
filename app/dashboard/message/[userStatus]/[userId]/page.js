@@ -5,7 +5,6 @@ import {
   Card,
   CircularProgress,
   Container,
-  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { ChatSidebar, ChatWindow } from "@/sections/dashboard/chat";
@@ -16,8 +15,8 @@ import { GET_MESSAGE_CALL } from "@/services/conversationRequest";
 export default function MessageView({ params }) {
   const theme = useTheme();
   const { userStatus, userId } = params;
-  const { user, socketId, lastMsg } = useUser();
-  const [loggedInUser, setLoggedInUser] = user;
+  const { user, lastMsg } = useUser();
+  const [loggedInUser] = user;
   const [chatUser, setChatUser] = useState({});
   const [chatUserCode, setChatUserCode] = useState("");
   const [lastMessage, setLastMessage] = lastMsg;
@@ -25,50 +24,60 @@ export default function MessageView({ params }) {
   const [loading, setLoading] = useState(false);
   const [loadMsg, setLoadMsg] = useState(true);
   const [scrollToBottom, setScrollToBottom] = useState(false);
-
-  const stateRef = useRef();
   const [page, setPage] = useState(1);
 
-
+  const stateRef = useRef();
 
   const loadMsgFromDb = () => {
     if (loadMsg) {
       GET_MESSAGE_CALL(chatUser?.chatDetails, page)
         .then((res) => {
-          
           if (res?.data.length) {
-            setMessages((prevMsgs) => [...res.data, ...prevMsgs]);
+            setMessages((prevMsgs) => {
+              // Filter out duplicate messages
+              const newMessages = res.data.filter(
+                (msg) =>
+                  !prevMsgs.some((prevMsg) => prevMsg.timeStamp === msg.timeStamp)
+              );
+              return [...newMessages, ...prevMsgs];
+            });
             setLoadMsg(false);
             setLoading(false);
           }
         })
-        .catch((err) => { });
+        .catch((err) => {
+          console.error("Error loading messages", err);
+        });
     }
   };
 
- 
-
   useEffect(() => {
- 
     loadMsgFromDb();
   }, [chatUser, loadMsg, userStatus, userId]);
 
   useEffect(() => {
-    if (page === 1 && messages.length) setScrollToBottom(!scrollToBottom);
+    if (page === 1 && messages.length) {
+      setScrollToBottom(!scrollToBottom);
+    }
   }, [messages]);
 
-  
+  // Handling new incoming messages and avoiding duplicates
   useEffect(() => {
-    if (lastMessage != null && lastMessage?.sender == chatUserCode) {
+    if (lastMessage != null && lastMessage?.sender === chatUserCode) {
+      setMessages((prevMsgs) => {
+        // Avoid duplicate messages by checking if it already exists
+        if (!prevMsgs.some((msg) => msg.timeStamp === lastMessage.timeStamp)) {
+          return [...prevMsgs, lastMessage];
+        }
+        return prevMsgs;
+      });
       setScrollToBottom(!scrollToBottom);
-      setMessages((prevMsgs) => [...prevMsgs, lastMessage]);
     }
-  }, [lastMessage]);
+  }, [lastMessage, chatUserCode]);
 
-  
   useEffect(() => {
     if (userStatus !== loggedInUser.userStatus && userStatus && userId) {
-      conversation.CREATE_NEW_CONVERSATION(
+      const result = conversation.CREATE_NEW_CONVERSATION(
         {
           mentorId: userStatus === "mentor" ? userId : loggedInUser.id,
           studentId: userStatus === "student" ? userId : loggedInUser.id,
@@ -77,6 +86,7 @@ export default function MessageView({ params }) {
         setChatUserCode,
         loggedInUser.userStatus
       );
+  
       if (chatUser.isNewConversation) {
         setLastMessage({
           text: "This is hello message from mentor",
@@ -88,31 +98,27 @@ export default function MessageView({ params }) {
           isMyMessage: false,
         });
       }
-    } else {
-      // Handle navigation if needed
-      // router.push("/user/messages");
     }
-
+  
     return () => {
       setChatUser({});
       setChatUserCode("");
     };
   }, [userStatus, userId]);
-
+  
 
   return (
-    <Container maxWidth={"xl"} >
+    <Container maxWidth={"xl"}>
       <Card sx={{ height: "80vh", display: "flex" }}>
-         <ChatSidebar 
-         lastMessage = {lastMessage}
-         setLastMessage = {setLastMessage}
-         chatUser = {chatUser}
-         userStatus={userStatus}
-         userId={userId}
-         setChatUser={setChatUser}
-         setChatUserCode={setChatUserCode}
-
-         />
+        <ChatSidebar
+          lastMessage={lastMessage}
+          setLastMessage={setLastMessage}
+          chatUser={chatUser}
+          userStatus={userStatus}
+          userId={userId}
+          setChatUser={setChatUser}
+          setChatUserCode={setChatUserCode}
+        />
         {loading ? (
           <Box
             sx={{
@@ -121,7 +127,7 @@ export default function MessageView({ params }) {
               alignItems: "center",
               height: "100%",
               mt: 2,
-              ml:36
+              ml: 36,
             }}
           >
             <CircularProgress
@@ -136,11 +142,9 @@ export default function MessageView({ params }) {
             loading={loading}
             chatUser={chatUser}
             userStatus={userStatus}
-            
           />
         )}
       </Card>
     </Container>
   );
 }
-
