@@ -219,7 +219,7 @@ export default function MainHeader() {
                           </Badge>
                         </ListItemIcon>
                         <Link
-                          href={PATH_DASHBOARD.chat.root}
+                          href={PATH_DASHBOARD.message.root}
                           style={{
                             textDecoration: "none",
                             color:
