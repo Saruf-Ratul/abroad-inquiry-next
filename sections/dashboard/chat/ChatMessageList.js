@@ -4,7 +4,14 @@ import Scrollbar from "../../../components/Scrollbar";
 import ChatMessageItem from "./ChatMessageItem";
 
 
-export default function ChatMessageList({ conversation,messages,loading,conversationKey}) {
+export default function ChatMessageList({ 
+  conversation,
+  messages,
+  loading,
+  chatUser,
+  userStatus,
+  userId 
+}) {
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -28,7 +35,9 @@ export default function ChatMessageList({ conversation,messages,loading,conversa
             message={message}
             loading={loading}
             conversation={conversation}
-            conversationKey={conversationKey}
+            chatUser={chatUser}
+            userStatus={userStatus}
+            userId = {userId}   
           />
         ))}
       </Scrollbar>

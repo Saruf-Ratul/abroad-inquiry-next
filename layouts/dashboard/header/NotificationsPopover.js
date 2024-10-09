@@ -139,6 +139,7 @@ export default function NotificationsPopover() {
           <Button
             fullWidth
             disableRipple
+            color="success"
             onClick={() => {
               handleClose();
               router.push("/dashboard/notifications");

@@ -258,7 +258,7 @@ export default function ChatMessageInput({
 
       <Divider orientation="vertical" flexItem />
 
-      <IconButton color="primary" onClick={handleSend} sx={{ mx: 1 }}>
+      <IconButton  onClick={handleSend} sx={{ mx: 1 }}>
         <Iconify icon="ic:round-send" width={22} height={22} />
       </IconButton>
     </RootStyle>

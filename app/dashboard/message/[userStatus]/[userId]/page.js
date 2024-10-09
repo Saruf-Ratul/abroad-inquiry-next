@@ -61,11 +61,9 @@ export default function MessageView({ params }) {
     }
   }, [messages]);
 
-  // Handling new incoming messages and avoiding duplicates
   useEffect(() => {
     if (lastMessage != null && lastMessage?.sender === chatUserCode) {
       setMessages((prevMsgs) => {
-        // Avoid duplicate messages by checking if it already exists
         if (!prevMsgs.some((msg) => msg.timeStamp === lastMessage.timeStamp)) {
           return [...prevMsgs, lastMessage];
         }
@@ -142,6 +140,7 @@ export default function MessageView({ params }) {
             loading={loading}
             chatUser={chatUser}
             userStatus={userStatus}
+            userId = {userId}
           />
         )}
       </Card>

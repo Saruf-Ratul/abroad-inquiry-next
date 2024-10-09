@@ -60,7 +60,6 @@ function Schedule() {
   const [page, setPage] = useState(1);
   const matchesSm = useMediaQuery("(max-width:600px)");
 
-  // This one state handles date-time picking
   const [scheduleDateTime, setScheduleDateTime] = useState({
     appointment_starting_date: new Date(),
     appointment_ending_date: new Date(),
@@ -74,7 +73,6 @@ function Schedule() {
 
   const { userInfo } = useSelector((state) => state.user);
 
-  // Will hanle api request
   const handleCreateSchedule = () => {
     const data = {
       mentor_id: userInfo.id,
@@ -111,10 +109,8 @@ function Schedule() {
       severity: "success",
       text: "Schedule Create Successfully",
     });
-    // window.location.reload();
   };
 
-  // Handles date time state update
   const hanleDateTimeChange = (key, value) => {
     setScheduleDateTime({
       ...scheduleDateTime,
@@ -218,16 +214,16 @@ function Schedule() {
                         <TextField
                           {...params}
                           sx={{
-                            input: { color: "black" }, // text color
+                            input: { color: "black" },
                             ".MuiOutlinedInput-root": {
                               "& fieldset": {
-                                borderColor: "black", // border color
+                                borderColor: "black",
                               },
                               "&:hover fieldset": {
-                                borderColor: "black", // border color on hover
+                                borderColor: "black",
                               },
                               "&.Mui-focused fieldset": {
-                                borderColor: "black", // border color when focused
+                                borderColor: "black",
                               },
                             },
                           }}
@@ -247,16 +243,16 @@ function Schedule() {
                         <TextField
                           {...params}
                           sx={{
-                            input: { color: "black" }, // text color
+                            input: { color: "black" },
                             ".MuiOutlinedInput-root": {
                               "& fieldset": {
-                                borderColor: "black", // border color
+                                borderColor: "black",
                               },
                               "&:hover fieldset": {
-                                borderColor: "black", // border color on hover
+                                borderColor: "black",
                               },
                               "&.Mui-focused fieldset": {
-                                borderColor: "black", // border color when focused
+                                borderColor: "black",
                               },
                             },
                           }}

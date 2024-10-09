@@ -1,13 +1,14 @@
-import { Avatar, Box, List, Typography } from "@mui/material";
+import { Avatar, Box, List, Typography, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useDispatch, useSelector } from "react-redux";
 import { isJsonString } from "@/utils/isJsonString";
 import Image from "next/image";
 import { SkeletonConversationItem } from "@/components/skeleton";
-import { fetchMentorProfileDetails } from "@/redux/features/mentor/mentorSlice";
-import { fetchStudentProfileView } from "@/redux/features/student/studentSlice";
 import { BASE_URL } from "@/utils/axios";
-import { useEffect } from "react";
+import { useState } from "react";
+import { useUser } from "@/contexts/UserContext";
+import { format } from "timeago.js";
+import Iconify from "../../../components/Iconify";
+
 
 const RootStyle = styled("div")(({ theme }) => ({
   display: "flex",
@@ -31,25 +32,20 @@ const MessageImgStyle = styled("Image")(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
 }));
 
-export default function ChatMessageItem({ message, loading, conversationKey }) {
-  const dispatch = useDispatch();
-  const { userInfo } = useSelector((state) => state.user);
-  const { profileDeatails } = useSelector((state) => state.mentors);
-  const { studentProfileView } = useSelector((state) => state.student);
-
-  // useEffect(() => {
-  //   if (userInfo.userStatus === "student") {
-  //     dispatch(fetchMentorProfileDetails(conversationKey));
-  //   }
-  //   if (userInfo.userStatus === "mentor") {
-  //     dispatch(fetchStudentProfileView(conversationKey));
-  //   }
-  // }, [dispatch, conversationKey, userInfo.userStatus]);
-
+export default function ChatMessageItem({
+  message,
+  chatUser,
+  userStatus,
+  userId,
+}) {
+  const theme = useTheme();
+  const { user, socketId, lastMsg } = useUser();
+  const [loggedInUser, setLoggedInUser] = user;
+  const [loading, setLoading] = useState(false);
   const isMe =
-    userInfo?.userStatus?.concat(userInfo?.id.toString()) === message?.sender;
+    loggedInUser?.userStatus?.concat(loggedInUser?.id.toString()) ===
+    message?.sender;
 
- 
   return (
     <RootStyle>
       {loading ? (
@@ -71,13 +67,11 @@ export default function ChatMessageItem({ message, loading, conversationKey }) {
         >
           <Avatar
             src={
-              userInfo?.userStatus?.concat(userInfo?.id.toString()) ===
-              message?.sender
-                ? `${BASE_URL}/${userInfo?.profilePic}`
-                : profileDeatails?.mentorId
-                ? `${BASE_URL}/${profileDeatails?.mentorProfilePic}`
-                : `${BASE_URL}/${studentProfileView?.studentProfilePic}`
+              isMe
+                ? `${BASE_URL}/${loggedInUser.profilePic}`
+                : `${BASE_URL}/${chatUser?.profilePic}`
             }
+            alt={isMe ? `${loggedInUser.name}` : `${chatUser?.name}`}
             sx={{ width: 36, height: 36, mt: 1 }}
           />
 
@@ -86,7 +80,9 @@ export default function ChatMessageItem({ message, loading, conversationKey }) {
               sx={{
                 ...(isMe && {
                   color: "wheat",
-                  bgcolor: "blueviolet",
+                  bgcolor: message?.text.includes("res.cloudinary.com")
+                    ? undefined
+                    : "blueviolet",
                 }),
               }}
             >
@@ -129,6 +125,35 @@ export default function ChatMessageItem({ message, loading, conversationKey }) {
                 </Typography>
               )}
             </ContentStyle>
+
+            <Box
+              display="flex"
+              justifyContent="right"
+              alignItems="center"
+              mb={-1.5}
+            >
+              <Typography
+                display="inline"
+                variant="caption"
+                sx={{
+                  fontSize: "10px",
+                  color: theme.palette.mode === "dark" ? "white" : "black",
+                }}
+              >
+                {format(message?.timeStamp)}
+              </Typography>
+              &nbsp;
+              {message?.isReceived ? (
+                <Iconify
+                  icon="codicon:check-all"
+                  width={12}
+                  height={12}
+                  style={{ color: "blue" }}
+                />
+              ) : (
+                <Iconify icon="codicon:check-all" width={12} height={12} />
+              )}
+            </Box>
           </Box>
         </Box>
       )}

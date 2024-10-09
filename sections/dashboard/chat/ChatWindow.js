@@ -14,9 +14,8 @@ export default function ChatWindow({
   messages,
   loading,
   chatUser,
-  userStatus
-
-
+  userStatus,
+  userId 
 }) {
   const theme = useTheme();
   const [chatmessages, setChatMessages] = useState([]);
@@ -61,7 +60,10 @@ export default function ChatWindow({
             ):(
               <Box sx={{ display: "flex", flexGrow: 1, flexDirection: "column" }}>
             <ChatMessageList
-              messages={messages}              
+              messages={messages}  
+              chatUser ={chatUser} 
+              userStatus={userStatus}
+              userId = {userId}           
             />
             <Divider />
 

@@ -308,9 +308,13 @@ const appointmentSlice = createSlice({
         state.loading = false;
         state.isError = false;
         state.totalSchedules -= 1;
-        state.schedules = state.schedules.filter(
-          (item) => item.scheduleId !== action.payload.scheduleId
-        );
+        if (action.payload.isDeleted) {
+          state.schedules = state.schedules.filter(
+            (item) => !item.isDeleted
+          );
+        } else {
+          state.error = "Failed to delete the schedule.";
+        }
       })
       .addCase(removeSchedule.rejected, (state, action) => {
         state.loading = false;

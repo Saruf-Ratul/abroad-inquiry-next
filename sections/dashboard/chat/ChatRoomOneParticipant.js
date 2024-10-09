@@ -11,12 +11,8 @@ import Iconify from "../../../components/Iconify";
 import { BASE_URL } from "@/utils/axios";
 import { SkeletonConversationItem } from "@/components/skeleton";
 import { useUser } from "@/contexts/UserContext";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-// import { fetchMentorProfileDetails } from "@/redux/features/mentor/mentorSlice";
-// import { fetchStudentProfileView } from "@/redux/features/student/studentSlice";
 import {
-  GET_MENTOR_OVERVIEW,
   MENTORS_PROFILE_VIEW,
 } from "@/services/mentorRequests";
 import { STUDENT_PROFILE_VIEW_CALL } from "@/services/studentRequests";

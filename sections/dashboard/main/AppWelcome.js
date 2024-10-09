@@ -4,8 +4,9 @@ import { Button, Card, CardContent, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import { useSelector } from "react-redux";
-import banner from "@/public/assets/images/others/dashboard.webp"
+import banner from "@/public/assets/images/others/dashboard.webp";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/UserContext";
 
 // ----------------------------------------------------------------------
 
@@ -22,11 +23,10 @@ const RootStyle = styled(Card)(({ theme }) => ({
   },
 }));
 
-
-
 export default function AppWelcome({ displayName }) {
   const router = useRouter();
-  const {userInfo } = useSelector((state)=> state.user)
+  const { user, socketId, lastMsg } = useUser();
+  const [loggedInUser, setLoggedInUser] = user;
 
   return (
     <RootStyle>
@@ -39,7 +39,7 @@ export default function AppWelcome({ displayName }) {
       >
         <Typography gutterBottom variant="h4">
           Welcome back,
-          <br /> {userInfo.name}!
+          <br /> {loggedInUser.name}!
         </Typography>
 
         <Typography
@@ -51,12 +51,14 @@ export default function AppWelcome({ displayName }) {
           updated on application statuses and deadlines
         </Typography>
 
-        <Button 
-        variant="contained"
-        onClick={()=>router.push("/dashboard/application-abroad")}
-        >
-        Apply Abroad
-        </Button>
+        {loggedInUser?.userStatus === "mentor" ? (
+         null
+        ) : (   <Button
+            variant="contained"
+            onClick={() => router.push("/dashboard/application-abroad")}
+          >
+            Apply Abroad
+          </Button>)}
       </CardContent>
       <Image
         src={banner}
