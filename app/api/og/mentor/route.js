@@ -1,7 +1,8 @@
+import MentorsBanner from "@/public/assets/bannerImage/mentorProfile.jpg";
 import { ImageResponse } from "next/og";
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
+  const { searchParams, origin } = new URL(request.url); // Get the base URL dynamically
   const name = searchParams.get("name") || "Mentor";
   const position = searchParams.get("position") || "Position";
   const institution = searchParams.get("institution") || "Institution";
@@ -19,13 +20,28 @@ export async function GET(request) {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          background: "linear-gradient(135deg, #1e293b, #64748b)",
+          background: `url(${origin}${MentorsBanner.src})`, // Dynamically set the image URL
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           color: "#ffffff",
           padding: "40px",
           fontFamily: "Arial, sans-serif",
           position: "relative",
         }}
       >
+        {/* Overlay with full height and width */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "linear-gradient(135deg, #0D0D0D, #0D0D0D)",
+            opacity: 0.8,
+          }}
+        />
+
         {/* Mentor's Profile Picture */}
         {profilePic && (
           <img
@@ -53,6 +69,7 @@ export async function GET(request) {
             margin: "0 0 10px 0",
             textAlign: "center",
             lineHeight: "1.2",
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
           }}
         >
           {name}
@@ -66,6 +83,7 @@ export async function GET(request) {
             margin: "5px 0",
             textAlign: "center",
             opacity: 0.85,
+            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.6)",
           }}
         >
           {position}
@@ -78,6 +96,7 @@ export async function GET(request) {
             margin: "5px 0",
             textAlign: "center",
             opacity: 0.75,
+            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.6)",
           }}
         >
           {institution} - {course}
@@ -90,6 +109,7 @@ export async function GET(request) {
             marginTop: "5px",
             textAlign: "center",
             opacity: 0.75,
+            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.6)",
           }}
         >
           {country}

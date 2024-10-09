@@ -1,23 +1,19 @@
 import { mentorProfileView } from "@/redux/features/mentor/mentorAPI";
 import MentorProfileTabs from "@/sections/mentors/MentorProfileTabs";
 import { BASE_URL } from "@/utils/axios";
-import { headers } from "next/headers"; // Import headers to get the current domain
+import { headers } from "next/headers";
 
 export async function generateMetadata({ params }) {
   const mentorDetails = await mentorProfileView(params.slug);
 
-  // Get the current host from headers
   const host = headers().get("host");
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   const currentURL = `https://www.abroadinquiry.com`;
 
-  // Ensure the profilePicUrl is an absolute URL
-  const defaultProfilePicUrl = `${currentURL}/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-small.0c580bcb.webp&w=48&q=100`; // Ensure this URL is valid
   const profilePic = mentorDetails?.mentorProfilePic
     ? `${BASE_URL}/${mentorDetails.mentorProfilePic}`
-    : ""; // Fallback to a default profile picture
+    : "";
 
-  // Use the current base URL dynamically
   const ogImageUrl = `${currentURL}/api/og/mentor?name=${encodeURIComponent(
     mentorDetails?.mentorName || "Mentor"
   )}&position=${encodeURIComponent(
