@@ -47,12 +47,10 @@ export async function GET(request) {
           <img
             src={profilePic}
             alt="Mentor Avatar"
-            width={250}
-            height={250}
             style={{
               borderRadius: "50%",
-              width: "250px",
-              height: "250px",
+              width: "290px",
+              height: "290px",
               objectFit: "cover",
               border: "6px solid #ffffff",
               marginBottom: "20px",
@@ -64,7 +62,7 @@ export async function GET(request) {
         {/* Mentor's Name */}
         <h1
           style={{
-            fontSize: "52px",
+            fontSize: "54px",
             fontWeight: "bold",
             margin: "0 0 10px 0",
             textAlign: "center",
@@ -78,10 +76,11 @@ export async function GET(request) {
         {/* Mentor's Position */}
         <p
           style={{
-            fontSize: "32px",
+            fontSize: "34px",
             fontWeight: "500",
             margin: "5px 0",
             textAlign: "center",
+            fontWeight: "bold",
             opacity: 0.85,
             textShadow: "1px 1px 3px rgba(0, 0, 0, 0.6)",
           }}
@@ -92,7 +91,8 @@ export async function GET(request) {
         {/* Mentor's Institution and Course */}
         <p
           style={{
-            fontSize: "28px",
+            fontSize: "30px",
+            fontWeight: "bold",
             margin: "5px 0",
             textAlign: "center",
             opacity: 0.75,
