@@ -188,6 +188,18 @@ export const RESET_PASSWORD_CALL = (data) => {
   return axios.post(api.auth.resetPassword, data);
 };
 
+//=========================== PUSH NOTIFICATIONS =====================================//
 
+export const GET_PUSH_NOTIFICATIONS = (studentId) => {
+  return axios.get(`${api.notification.getPushNotification}/${studentId}`, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
+export const UPDATE_PUSH_NOTIFICATIONS = (studentId,push_notification_id) => {
+  return axios.put(`${api.notification.getPushNotification}/${studentId}/${push_notification_id}`, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
 
 
