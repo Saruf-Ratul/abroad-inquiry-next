@@ -156,18 +156,37 @@ export default function HomeHero() {
           alignItems="center"
           justifyContent="center"
         >
-          {/* Left Content */}
           <Grid item xs={12} md={5}>
             <Box component={m.div} pb={2} variants={varFade().inRight}>
               <Typography variant="h2" sx={{ color: "common.white" }}>
-                A Whole World of
-                <Typography
+                A Whole World of{" "}
+                <Box
                   component="span"
-                  variant="h2"
-                  sx={{ color: "secondary.main", ml: 1 }}
+                  sx={{ position: "relative", display: "inline-block" }}
                 >
-                  Opportunities
-                </Typography>
+                  <Typography component="span" variant="h2">
+                    Opportunities
+                  </Typography>
+                  <Box
+                    component={m.div}
+                    initial={{ width: "0%" }}
+                    animate={{ width: "90%" }}
+                    transition={{
+                      duration: 1.5,
+                      ease: "easeInOut",
+                    }}
+                    sx={{
+                      position: "absolute",
+                      ml: 2,
+                      left: 0,
+                      bottom: -2,
+                      height: "6px",
+                      backgroundColor: theme.palette.secondary.main,
+                      zIndex: -1,
+                      borderRadius: "50% 50% 40% 40% / 60% 60% 20% 20%",
+                    }}
+                  />
+                </Box>
                 <br /> Awaits you
               </Typography>
             </Box>
