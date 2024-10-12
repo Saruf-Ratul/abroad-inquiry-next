@@ -75,7 +75,7 @@ export default function MentorProfileHero({ profileDeatails }) {
 
   const handleMessageClick = (mentorId) => {
     if (token) {
-      router.push(`/dashboard/chat/${mentorId}`);
+      router.push(`/dashboard/message/mentor/${mentorId}`);
     } else {
       router.push("/auth/login");
     }
@@ -131,7 +131,7 @@ export default function MentorProfileHero({ profileDeatails }) {
       window.open(shareUrls[platform], "_blank");
     }
   };
-
+  console.log(profileDeatails, ">>>>>>>>>>");
   return (
     <RootStyle>
       <Container
@@ -241,7 +241,7 @@ export default function MentorProfileHero({ profileDeatails }) {
               </Box>
 
               <Button
-                onClick={() => handleAppointmentClick(profileDeatails.id)}
+                onClick={() => handleAppointmentClick(profileDeatails.mentorId)}
                 size={matchesSm ? "small" : "medium"}
                 style={{ marginTop: 10, marginRight: 10 }}
                 variant="contained"
@@ -251,7 +251,7 @@ export default function MentorProfileHero({ profileDeatails }) {
               </Button>
 
               <Button
-                onClick={() => handleMessageClick(profileDeatails.id)}
+                onClick={() => handleMessageClick(profileDeatails.mentorId)}
                 size={matchesSm ? "small" : "medium"}
                 style={{ marginTop: 10 }}
                 variant="outlined"

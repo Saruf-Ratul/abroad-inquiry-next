@@ -1,5 +1,4 @@
 "use client";
-import MakingTimeSlots from "@/components/makingTimeSlot";
 import ManageTime from "@/components/managingTime";
 import { profileViewData } from "@/data/ProfileViewData";
 import { fetchMentorProfileDetails } from "@/redux/features/mentor/mentorSlice";
@@ -10,22 +9,16 @@ import TabPanel from "@mui/lab/TabPanel";
 import {
   Alert,
   Box,
-  Button,
   CircularProgress,
   Container,
   Divider,
   Grid,
-  InputLabel,
-  Paper,
-  TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import { styled } from "@mui/material/styles";
-import { CalendarPicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -191,13 +184,13 @@ function MentorProfileTabs({ slug }) {
                   value="1"
                   sx={{ fontWeight: "bold" }}
                 />
-                {userInfo.userStatus === "student" ? (
+                {/* {userInfo.userStatus === "student" ? (
                   <Tab
                     label="Appointment"
                     value="2"
                     sx={{ fontWeight: "bold" }}
                   />
-                ) : null}
+                ) : null} */}
               </TabList>
             </Box>
             <TabPanel value="1" sx={{ m: 2 }}>
@@ -269,7 +262,7 @@ function MentorProfileTabs({ slug }) {
               </Grid>
             </TabPanel>
             <TabPanel value="2">
-              <CalendarWrapper>
+              {/* <CalendarWrapper>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <Paper>
                     <Grid container>
@@ -358,7 +351,7 @@ function MentorProfileTabs({ slug }) {
                     </Grid>
                   </Paper>
                 </LocalizationProvider>
-              </CalendarWrapper>
+              </CalendarWrapper> */}
             </TabPanel>
           </TabContext>
         </Box>

@@ -225,7 +225,10 @@ export default function HomeHero() {
               >
                 <ButtonBase
                   onClick={() =>
-                    window.open("https://play.google.com", "_blank")
+                    window.open(
+                      "https://play.google.com/store/apps/details?id=com.abroadinquiry.app",
+                      "_blank"
+                    )
                   }
                 >
                   <m.img variants={varFade().inRight} src={googlePlay.src} />
@@ -233,7 +236,10 @@ export default function HomeHero() {
 
                 <ButtonBase
                   onClick={() =>
-                    window.open("https://apps.apple.com", "_blank")
+                    window.open(
+                      "https://apps.apple.com/app/abroad-inquiry/id1664679066",
+                      "_blank"
+                    )
                   }
                 >
                   <m.img variants={varFade().inRight} src={appleStore.src} />

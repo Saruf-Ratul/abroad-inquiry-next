@@ -3,33 +3,14 @@ import { MotionViewport, varFade } from "@/components/animate";
 import { CarouselArrows } from "@/components/carousel";
 import DataLoading from "@/components/DataLoading";
 import Iconify from "@/components/Iconify";
-import Label from "@/components/Label";
+import MentorCard from "@/components/mentor-card/MentorCard";
 import { fetchMentors } from "@/redux/features/mentor/mentorSlice";
-import { BASE_URL } from "@/utils/axios";
 import cssStyles from "@/utils/cssStyles";
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Container,
-  Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Rating,
-  Select,
-  Stack,
-  styled,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, styled, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { m } from "framer-motion";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Slider from "react-slick";
 
@@ -155,7 +136,7 @@ export default function HomeMentorList() {
                   // variants={varFade().in}
                   sx={{ px: 1.5, py: 10 }}
                 >
-                  <MemberCard mentor={mentor} />
+                  <MentorCard mentor={mentor} />
                 </Box>
               ))}
             </Slider>
@@ -179,206 +160,3 @@ export default function HomeMentorList() {
 }
 
 // ----------------------------------------------------------------------
-
-function MemberCard({ mentor }) {
-  const [open, setOpen] = useState(false);
-  const handleClose = () => setOpen(false);
-  const [rating, setRating] = useState("");
-  const theme = useTheme();
-
-  const handleChange = (event) => {
-    setRating(event.target.value);
-  };
-
-  const router = useRouter();
-  const token = Cookies.get("token");
-  const { userInfo } = useSelector((state) => state.user);
-
-  const handleMessageClick = (mentorId) => {
-    if (token) {
-      router.push(`/dashboard/message/mentor/${mentorId}`);
-    } else {
-      router.push("/auth/login");
-    }
-  };
-
-  const handleAppointmentClick = (mentorId) => {
-    if (token) {
-      router.push(`/dashboard/appointmentBooking/${mentorId}`);
-    } else {
-      router.push("/auth/login");
-    }
-  };
-
-  const handleFeedbackClick = () => {
-    if (token) {
-      setOpen(true);
-    } else {
-      router.push("/auth/login");
-    }
-  };
-  return (
-    <>
-      <Card>
-        <Box sx={{ position: "relative" }}>
-          <Avatar
-            alt={mentor.mentorName}
-            src={`${BASE_URL}/${mentor.profilePic}`}
-            sx={{
-              width: 76,
-              height: 76,
-              zIndex: 11,
-              bottom: -32,
-              ml: 4,
-              border: "4px solid white",
-              // position: "absolute",
-            }}
-          />
-          <OverlayStyle />
-          {/* 
-            <Image src={cover} alt={cover} ratio="16/9" /> */}
-        </Box>
-
-        <Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
-            <Typography variant="subtitle1" sx={{ mt: 6 }}>
-              {mentor.mentorName}
-            </Typography>
-
-            <Label variant="outlined" color="success" sx={{ mt: 6, mr: 4 }}>
-              Active
-            </Label>
-          </Box>
-
-          <Typography variant="body2" sx={{ color: "text.secondary", ml: 1 }}>
-            {mentor.mentoringFor}
-          </Typography>
-        </Box>
-        <Stack
-          justifyContent="space-between"
-          direction="row"
-          alignItems="center"
-          sx={{ mx: 3, my: 2 }}
-        >
-          <Button
-            disabled={userInfo?.userStatus === "mentor"}
-            onClick={() => handleMessageClick(mentor.id)}
-            variant="contained"
-            startIcon={
-              <Iconify icon={"tabler:message"} width={24} height={24} />
-            }
-          >
-            Message
-          </Button>
-          <Stack justifyContent="center" direction="row">
-            <Button
-              disabled={userInfo?.userStatus === "mentor"}
-              onClick={() => handleAppointmentClick(mentor.id)}
-              variant="contained"
-              startIcon={
-                <Iconify
-                  icon={"fluent-mdl2:date-time-mirrored"}
-                  width={24}
-                  height={24}
-                />
-              }
-            >
-              Appoinment
-            </Button>
-          </Stack>
-        </Stack>
-
-        <Divider sx={{ borderStyle: "dashed" }} />
-
-        <Box
-          sx={{
-            py: 2,
-            px: 3,
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            <Button
-              disabled={userInfo?.userStatus === "mentor"}
-              onClick={handleFeedbackClick}
-              variant="outlined"
-              color="error"
-              size="small"
-              endIcon={
-                <Iconify icon={"carbon:review"} width={14} height={14} />
-              }
-              sx={{ fontSize: "12px" }}
-            >
-              Feedback
-            </Button>
-          </div>
-
-          <div>
-            <Rating
-              name="simple-controlled"
-              value={5}
-              // onChange={(event, newValue) => {
-              //   setValue(newValue);
-              // }}
-              size="small"
-            />
-          </div>
-        </Box>
-      </Card>
-
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={{ ...style, bgcolor: theme.palette.background.paper }}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Please Provide {mentor.mentorName} Mentoring Feedback
-          </Typography>
-
-          <Box sx={{ mt: 2 }}>
-            <TextField
-              id="outlined-multiline-static"
-              label="Message"
-              multiline
-              rows={4}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel id="demo-simple-select-label">Rating</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={rating}
-                label="Rating"
-                onChange={handleChange}
-              >
-                <MenuItem value={1}>1</MenuItem>
-                <MenuItem value={2}>2</MenuItem>
-                <MenuItem value={3}>3</MenuItem>
-                <MenuItem value={4}>4</MenuItem>
-                <MenuItem value={5}>5</MenuItem>
-              </Select>
-            </FormControl>
-
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              fullWidth
-              endIcon={
-                <Iconify icon={"carbon:review"} width={14} height={14} />
-              }
-            >
-              Submit Feedback
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
-    </>
-  );
-}
