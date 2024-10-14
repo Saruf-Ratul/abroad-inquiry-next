@@ -25,6 +25,11 @@ import {
   fetchAllStudentNotifications,
 } from "@/redux/features/notification/notificationSlice";
 import { useRouter } from "next/navigation";
+import {
+  GET_UNREAD_NOTIFICATIONS,
+  GET_UNREAD_PUSH_NOTIFICATIONS,
+} from "@/services/studentRequests";
+import { GET_UNREAD_MENTOR_NOTIFICATIONS } from "@/services/mentorRequests";
 
 export default function NotificationsPopover() {
   const router = useRouter();
@@ -34,6 +39,39 @@ export default function NotificationsPopover() {
   const { notifications, loading, totalNotification } = useSelector(
     (state) => state.notification
   );
+
+  const [totalStdNotification, setTotalStdNotification] = useState();
+  const [TotalStdPushNotification, setTotalStdPushNotification] = useState();
+  const [totalMentorNotification, setTotalMentorNotification] = useState();
+
+  useEffect(() => {
+    if (userInfo?.userStatus === "student") {
+      GET_UNREAD_PUSH_NOTIFICATIONS(userInfo?.id)
+        .then((res) => {
+          setTotalStdPushNotification(res?.data?.totalUnread);
+        })
+        .catch((err) => console.log(err));
+      GET_UNREAD_NOTIFICATIONS()
+        .then((resonse) => {
+          setTotalStdNotification(resonse?.data?.totalNotification);
+        })
+        .catch((err) => console.log(err));
+    } else if (userInfo?.userStatus === "mentor") {
+      GET_UNREAD_MENTOR_NOTIFICATIONS()
+        .then((res) => {
+          setTotalMentorNotification(res?.data?.totalNotification);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [userInfo?.userStatus, userInfo?.id]);
+
+  const badgeContent =
+    totalMentorNotification !== 0 &&
+    totalStdNotification + TotalStdPushNotification !== 0
+      ? userInfo?.userStatus === "student"
+        ? totalStdNotification + TotalStdPushNotification
+        : totalMentorNotification
+      : null;
 
   useEffect(() => {
     if (userInfo?.id && page) {
@@ -63,9 +101,15 @@ export default function NotificationsPopover() {
         onClick={handleOpen}
         sx={{ width: 40, height: 40 }}
       >
-        <Badge badgeContent={totalUnRead} color="error">
-          <Iconify icon="eva:bell-fill" width={20} height={20} />
-        </Badge>
+        {badgeContent > 0 ? (
+          <Badge badgeContent={badgeContent} color="error">
+            <Iconify icon="eva:bell-fill" width={20} height={20} />
+          </Badge>
+        ):(
+          <Badge  color="error">
+            <Iconify icon="eva:bell-fill" width={20} height={20} />
+          </Badge>
+        )}
       </IconButtonAnimate>
 
       <MenuPopover
@@ -78,13 +122,13 @@ export default function NotificationsPopover() {
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="subtitle1">Notifications</Typography>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              You have {totalUnRead} unread messages
+              You have {badgeContent} unread messages
             </Typography>
           </Box>
 
-          {totalUnRead > 0 && (
+          {badgeContent > 0 && (
             <Tooltip title=" Mark all as read">
-              <IconButtonAnimate color="primary" onClick={handleMarkAllAsRead}>
+              <IconButtonAnimate color="primary">
                 <Iconify icon="eva:done-all-fill" width={20} height={20} />
               </IconButtonAnimate>
             </Tooltip>

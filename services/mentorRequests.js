@@ -209,7 +209,7 @@ export const MENTORS_PROFILE_VIEW = (mentorId) => {
  * @memberof module:api/request
  * @returns {Object}
  */
-export const GET_UNREAD_NOTIFICATIONS = () => {
+export const GET_UNREAD_MENTOR_NOTIFICATIONS = () => {
   return axios.get(`${api.mentor.showTotalUnReadNotification}`, {
     headers: configParamsWithToken(),
   });

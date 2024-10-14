@@ -190,8 +190,14 @@ export const RESET_PASSWORD_CALL = (data) => {
 
 //=========================== PUSH NOTIFICATIONS =====================================//
 
-export const GET_PUSH_NOTIFICATIONS = (studentId) => {
-  return axios.get(`${api.notification.getPushNotification}/${studentId}`, {
+export const GET_PUSH_NOTIFICATIONS = (studentId,pushPage) => {
+  return axios.get(`${api.notification.getPushNotification}/${studentId}?page=${pushPage}`, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
+export const GET_UNREAD_PUSH_NOTIFICATIONS = (studentId) => {
+  return axios.get(`${api.notification.getUnreadPushNotification}/${studentId}`, {
     headers: { "Content-Type": "application/json" },
   });
 };
@@ -201,5 +207,8 @@ export const UPDATE_PUSH_NOTIFICATIONS = (studentId,push_notification_id) => {
     headers: { "Content-Type": "application/json" },
   });
 };
+
+
+
 
 

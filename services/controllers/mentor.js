@@ -4,7 +4,7 @@ import {
   GET_MENTOR_INFO_CALL,
   GET_NOTIFICATIONS,
   GET_PREVIOUS_ALL_SCHEDULES,
-  GET_UNREAD_NOTIFICATIONS,
+  GET_UNREAD_MENTOR_NOTIFICATIONS,
   MENTORS_PROFILE_VIEW,
 } from "../mentorRequests";
 
@@ -71,7 +71,7 @@ class MentorController {
   };
 
   GET_UNREAD_NOTIFICATIONS = (setOutput) => {
-    GET_UNREAD_NOTIFICATIONS()
+    GET_UNREAD_MENTOR_NOTIFICATIONS()
       .then((res) => {
         setOutput(res.data.totalNotification);
       })

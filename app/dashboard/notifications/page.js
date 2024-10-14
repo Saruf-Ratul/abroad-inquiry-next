@@ -42,8 +42,10 @@ const Notifications = () => {
     notificationData: [],
   });
   const [pushNotifications, setPushNotifications] = useState([]);
+  const [totalPushNotifications, setTotalPushNotifications] = useState([]);
   const [socket, setSocket] = useState(null);
   const [page, setPage] = useState(1);
+  const [pushPage, setPushPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [pushLoading, setPushLoading] = useState(true);
   const [clickedNotification, setClickedNotification] = useState(null);
@@ -55,10 +57,23 @@ const Notifications = () => {
   const handleClickOpen = (notification) => {
     setPushTitle(notification?.title);
     setPushDescription(notification?.description);
-    UPDATE_PUSH_NOTIFICATIONS(userInfo?.id, notification?.push_notification_id).then((res) => {
-      setOpen(true);
-    });
-    setOpen(true);
+    const updatedNotifications = pushNotifications.map((notif) =>
+      notif.push_notification_id === notification.push_notification_id
+        ? {
+            ...notif,
+            student_push_notifications: [
+              { ...notif.student_push_notifications[0], is_read: true },
+            ],
+          }
+        : notif
+    );
+    setPushNotifications(updatedNotifications);
+
+    UPDATE_PUSH_NOTIFICATIONS(userInfo?.id, notification?.push_notification_id)
+      .then((res) => {
+        setOpen(true);
+      })
+      .catch((err) => console.log("Error updating notification", err));
   };
 
   const handleClose = () => {
@@ -73,10 +88,11 @@ const Notifications = () => {
         setNotifications,
         setLoading
       );
-      GET_PUSH_NOTIFICATIONS(userInfo?.id)
+      GET_PUSH_NOTIFICATIONS(userInfo?.id, pushPage)
         .then((res) => {
           setPushLoading(false);
-          setPushNotifications(res?.data);
+          setPushNotifications(res?.data?.notifications);
+          setTotalPushNotifications(res?.data?.totalNotifications);
         })
         .catch((err) => console.log(err));
     } else {
@@ -87,7 +103,7 @@ const Notifications = () => {
         setLoading
       );
     }
-  }, [page, userInfo.id, userInfo.userStatus]);
+  }, [pushPage, userInfo.id, userInfo.userStatus,page]);
 
   socket?.on("getNotification", (message) => {
     const newNotifcation = {
@@ -109,6 +125,10 @@ const Notifications = () => {
 
   const handleChangePage = (event, value) => {
     setPage(value);
+  };
+
+  const handleChangePushPage = (event, value) => {
+    setPushPage(value);
   };
 
   const handleAppointmentClick = (data) => {
@@ -141,91 +161,14 @@ const Notifications = () => {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          flexDirection: matchesSm ? "column" : "row",
+          flexDirection: matchesSm ? "column-reverse" : "row",
           gap: matchesSm ? "5px" : "16px",
         }}
       >
         {" "}
-        <Box sx={{ marginTop: "32px", flex: 1 }}>
-          {" "}
-          <Typography
-            py={2}
-            variant={matchesSm ? "h5" : "h3"}
-            textAlign="center"
-          >
-            Appointment Notifications
-          </Typography>
-          <Divider />
-          {loading ? (
-            <Box textAlign="center" py={5}>
-              <CircularProgress />
-            </Box>
-          ) : notifications.notificationData?.length !== 0 ? (
-            <>
-              <List>
-                {notifications.notificationData.map((notification, idx) => (
-                  <React.Fragment key={idx}>
-                    <ButtonBase
-                      sx={{
-                        width: "100%",
-                        py: 0.8,
-                        backgroundColor: notification.isRead
-                          ? ""
-                          : "rgb(242, 242, 242)",
-                      }}
-                      onClick={() => handleAppointmentClick(notification)}
-                    >
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <Iconify
-                              icon={"carbon:notification"}
-                              width={24}
-                              height={24}
-                            />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary={notification.notification} />
-                        {managingTime.isTodaysDate(notification.createdAt) ? (
-                          managingTime.getLocalTime(notification.createdAt)
-                        ) : (
-                          <>{format(notification.createdAt)}</>
-                        )}
-                      </ListItem>
-                    </ButtonBase>
-                    <Divider variant="fullWidth" fullWidth />
-                  </React.Fragment>
-                ))}
-              </List>
-              <Pagination
-                page={page}
-                handleChangePage={handleChangePage}
-                totalItem={notifications.totalNotification}
-                itemPerPage={10}
-              />
-              <br />
-            </>
-          ) : (
-            <Box textAlign="center">
-              <Typography py={3}>No Notifications yet!</Typography>
-              <Iconify
-                icon={"hugeicons:notification-off-01"}
-                width={44}
-                height={44}
-              />
-              <Typography py={3}>
-                We will notify you when something arrives!
-              </Typography>
-            </Box>
-          )}
-        </Box>
-        {matchesSm && userInfo?.userStatus === "student" ? (
-          <Divider orientation="vertical" flexItem />
-        ) : null}
         {userInfo.userStatus === "student" ? (
           <Box sx={{ marginTop: "32px", flex: 1 }}>
             {" "}
-            {/* Added flex: 1 to make it responsive */}
             <Typography
               py={2}
               variant={matchesSm ? "h5" : "h3"}
@@ -281,9 +224,9 @@ const Notifications = () => {
                 </List>
 
                 <Pagination
-                  page={page}
-                  handleChangePage={handleChangePage}
-                  totalItem={notifications.totalNotification}
+                  page={pushPage}
+                  handleChangePage={handleChangePushPage}
+                  totalItem={totalPushNotifications}
                   itemPerPage={10}
                 />
                 <br />
@@ -303,6 +246,82 @@ const Notifications = () => {
             )}
           </Box>
         ) : null}
+        {userInfo?.userStatus === "student" && !matchesSm ? (
+          <Divider orientation="vertical" flexItem />
+        ) : null}
+        <Box sx={{ marginTop: "32px", flex: 1 }}>
+          {" "}
+          <Typography
+            py={2}
+            variant={matchesSm ? "h5" : "h3"}
+            textAlign="center"
+          >
+            Appointment Notifications
+          </Typography>
+          <Divider />
+          {loading ? (
+            <Box textAlign="center" py={5}>
+              <CircularProgress />
+            </Box>
+          ) : notifications.notificationData?.length !== 0 ? (
+            <>
+              <List>
+                {notifications.notificationData.map((notification, idx) => (
+                  <React.Fragment key={idx}>
+                    <ButtonBase
+                      sx={{
+                        width: "100%",
+                        py: 0.8,
+                        backgroundColor: notification.isRead
+                          ? ""
+                          : "rgb(242, 242, 242)",
+                      }}
+                      onClick={() => handleAppointmentClick(notification)}
+                    >
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <Iconify
+                              icon={"carbon:notification"}
+                              width={24}
+                              height={24}
+                            />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary={notification.notification}  sx={{ marginRight: 1 }}/>
+                        {managingTime.isTodaysDate(notification.createdAt) ? (
+                          managingTime.getLocalTime(notification.createdAt)
+                        ) : (
+                          <>{format(notification.createdAt)}</>
+                        )}
+                      </ListItem>
+                    </ButtonBase>
+                    <Divider variant="fullWidth" fullWidth />
+                  </React.Fragment>
+                ))}
+              </List>
+              <Pagination
+                page={page}
+                handleChangePage={handleChangePage}
+                totalItem={notifications.totalNotification}
+                itemPerPage={10}
+              />
+              <br />
+            </>
+          ) : (
+            <Box textAlign="center">
+              <Typography py={3}>No Notifications yet!</Typography>
+              <Iconify
+                icon={"hugeicons:notification-off-01"}
+                width={44}
+                height={44}
+              />
+              <Typography py={3}>
+                We will notify you when something arrives!
+              </Typography>
+            </Box>
+          )}
+        </Box>
       </div>
 
       {clickedNotification && (

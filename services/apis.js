@@ -115,6 +115,7 @@ export const api = {
     addToCalender: `${BASE_URL}/notification/add_to_calender`,
 
     getPushNotification:`${BASE_URL}/push-notification/notifications`,
+    getUnreadPushNotification:`${BASE_URL}/push-notification/notifications/unread`,
     updatePushNotification:`${BASE_URL}/push-notification/notifications`
   },
 };

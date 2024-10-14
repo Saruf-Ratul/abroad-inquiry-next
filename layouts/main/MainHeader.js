@@ -39,6 +39,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import navConfig from "./MenuConfig";
 import MenuMobile from "./MenuMobile";
+import {
+  GET_UNREAD_NOTIFICATIONS,
+  GET_UNREAD_PUSH_NOTIFICATIONS,
+} from "@/services/studentRequests";
+import { GET_UNREAD_MENTOR_NOTIFICATIONS } from "@/services/mentorRequests";
 
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   height: HEADER.MOBILE_HEIGHT,
@@ -67,6 +72,42 @@ const ToolbarShadowStyle = styled("div")(({ theme }) => ({
 export default function MainHeader() {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const token = Cookies.get("token");
+  const id = open ? "simple-popover" : undefined;
+  const { userInfo } = useSelector((state) => state.user);
+  const [totalStdNotification, setTotalStdNotification] = useState();
+  const [TotalStdPushNotification, setTotalStdPushNotification] = useState();
+  const [totalMentorNotification, setTotalMentorNotification] = useState();
+
+  useEffect(() => {
+    if (userInfo?.userStatus === "student") {
+      GET_UNREAD_PUSH_NOTIFICATIONS(userInfo?.id)
+        .then((res) => {
+          setTotalStdPushNotification(res?.data?.totalUnread);
+        })
+        .catch((err) => console.log(err));
+      GET_UNREAD_NOTIFICATIONS()
+        .then((resonse) => {
+          setTotalStdNotification(resonse?.data?.totalNotification);
+        })
+        .catch((err) => console.log(err));
+    } else if (userInfo?.userStatus === "mentor") {
+      GET_UNREAD_MENTOR_NOTIFICATIONS()
+        .then((res) => {
+          setTotalMentorNotification(res?.data?.totalNotification);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [userInfo?.userStatus, userInfo?.id]);
+
+  const badgeContent =
+    totalMentorNotification !== 0 &&
+    totalStdNotification + TotalStdPushNotification !== 0
+      ? userInfo?.userStatus === "student"
+        ? totalStdNotification + TotalStdPushNotification
+        : totalMentorNotification
+      : null;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -76,11 +117,6 @@ export default function MainHeader() {
     setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
-  const { userInfo } = useSelector((state) => state.user);
-  const token = Cookies.get("token");
   useEffect(() => {
     if (token) {
       dispatch(fetchUserInfo(token));
@@ -233,13 +269,23 @@ export default function MainHeader() {
 
                       <ListItemButton>
                         <ListItemIcon>
-                          <Badge color="error">
-                            <Iconify
-                              icon={"basil:notification-solid"}
-                              width={24}
-                              height={24}
-                            />
-                          </Badge>
+                          {badgeContent > 0 ? (
+                            <Badge color="error" badgeContent={badgeContent}>
+                              <Iconify
+                                icon={"basil:notification-solid"}
+                                width={24}
+                                height={24}
+                              />
+                            </Badge>
+                          ) : (
+                            <Badge color="error">
+                              <Iconify
+                                icon={"basil:notification-solid"}
+                                width={24}
+                                height={24}
+                              />
+                            </Badge>
+                          )}
                         </ListItemIcon>
                         <Link
                           href="/dashboard/notifications"
